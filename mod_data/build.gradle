@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.greenrobot.greendao'
+}
+
+android {
+    compileSdk rootProject.android.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.android.minSdk
+        targetSdk rootProject.android.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    // 基本导入
+    compileOnly rootProject.depsLibs.coreKtx
+    compileOnly rootProject.depsLibs.appcompat
+    compileOnly rootProject.depsLibs.material
+    compileOnly rootProject.depsLibs.constraintlayout
+    testCompileOnly rootProject.depsLibs.junit
+    androidTestCompileOnly rootProject.depsLibs.extJunit
+    androidTestCompileOnly rootProject.depsLibs.espressoCore
+
+    // 额外导入
+    compileOnly rootProject.depsLibs.greendao  // greenDAO 数据库
+    // kotlin viewModel
+    compileOnly rootProject.depsLibs.viewModelKtx
+    compileOnly rootProject.depsLibs.liveDataKtx
+//    compileOnly rootProject.depsLibs.activity
+//    compileOnly rootProject.depsLibs.activityKtx
+}
+
+// 数据库配置参数
+greendao {
+    schemaVersion 1  // 指定数据库schema版本号，迁移等操作会用到;
+    daoPackage 'com.bdtx.mod_data.Database.Dao'  // 指定生成数据库文件的dao包名（不需要先创建）
+    targetGenDir 'src/main/java'  // 生成数据库文件的目录
+}

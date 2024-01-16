@@ -1,0 +1,80 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk rootProject.android.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.android.minSdk
+        targetSdk rootProject.android.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        // ARouter kotlin java 混合开发要加上 javaCompileOptions
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    // 启用 viewBinding
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+}
+
+dependencies {
+    // 基本导入
+    compileOnly rootProject.depsLibs.coreKtx
+    compileOnly rootProject.depsLibs.appcompat
+    compileOnly rootProject.depsLibs.material
+    compileOnly rootProject.depsLibs.constraintlayout
+    testCompileOnly rootProject.depsLibs.junit
+    androidTestCompileOnly rootProject.depsLibs.extJunit
+    androidTestCompileOnly rootProject.depsLibs.espressoCore
+
+    // 额外导入
+    compileOnly rootProject.depsLibs.mmkv  // MMKV（强化版SharedPreferences）
+    // 路由
+    compileOnly rootProject.depsLibs.aroutreApi
+//    compileOnly (rootProject.depsLibs.aroutreApi){transitive(false)}
+    kapt rootProject.depsLibs.arouterCompiler
+
+    implementation 'androidx.wear:wear:1.2.0'  // 弧形列表（androidx.core:core-ktx 要改成1.6.0）
+    compileOnly rootProject.depsLibs.greendao  // greenDAO 数据库
+    // kotlin viewModel 同时要导入activityKtx适配
+    compileOnly rootProject.depsLibs.viewModelKtx
+    compileOnly rootProject.depsLibs.liveDataKtx
+    implementation rootProject.depsLibs.activityKtx
+    // 高德地图
+    implementation 'com.amap.api:3dmap:8.0.0'
+
+    // 导入模块
+    compileOnly project(path: ':mod_util')
+    compileOnly project(path: ':mod_data')
+
+}

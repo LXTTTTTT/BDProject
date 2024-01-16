@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<!--地图对象-->
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_above="@+id/center_vertical"
+            android:layout_marginBottom="-25dp">
+
+            <!--地图放大-->
+            <ImageView
+                android:id="@+id/zoom_up"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/zoom_up_icon" />
+
+            <!--地图缩小-->
+            <ImageView
+                android:id="@+id/zoom_down"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/zoom_down_icon"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:layout_above="@+id/center_vertical"
+            android:layout_marginBottom="-25dp">
+
+            <!--地图放大-->
+            <ImageView
+                android:id="@+id/download"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/download_icon" />
+
+            <!--地图缩小-->
+            <ImageView
+                android:id="@+id/my_location"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/location_icon"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_width="10dp"
+            android:layout_height="1dp"/>
+
+
+
+    </RelativeLayout>
+
+
+<!-- 文本信息 -->
+    <RelativeLayout
+        android:id="@+id/terminal_info"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:background="#212121"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/group_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备号码："
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/addr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15950044(备注)"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/group_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/group_1"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="位置："
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="113.2323 E 23.1232 N"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/group_2"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="定位时间："
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2022-10-23 12:53:50"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+
+        <!--上报按键-->
+        <RelativeLayout
+            android:id="@+id/send_group"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:background="@mipmap/button_bg_2"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/send_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/send_button" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

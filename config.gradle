@@ -1,0 +1,118 @@
+ext {
+    // 是否单独运行某个module
+    isModule = false
+
+    signingConfig = [
+            storePassword: 'xxx',
+            keyAlias     : 'xxx',
+            keyPassword  : 'xxx'
+    ]
+
+    android = [
+            applicationId    : "com.bdtx.main",
+            // 33有bug,xml写代码没有代码提示
+            compileSdk       : 32,
+            buildToolsVersion: '32.0.0',
+            minSdk           : 26,
+            targetSdk        : 32,
+
+            versionCode      : 1,
+            versionName      : "1.0.0",
+    ]
+
+    dependVersion = [
+            mmkvVersion           : '1.2.15',
+            aroutreApiVersion     : '1.5.2',
+            arouterCompilerVersion: '1.5.2',
+            greendaoVersion       : '3.3.0',
+
+            multidexVersion       : '2.0.1',
+            retrofitVersion       : '2.9.0',
+            retrofitGsonVersion   : '2.4.0',
+            okhttp3LogVersion     : '3.11.0',
+            gsonVersion           : '2.10.1',
+            refreshVersion        : '2.0.5',
+            glideVersion          : '4.15.0',
+            flexboxVersion        : '3.0.0',
+
+            tbssdkVersion         : '44132',
+            exoPlayerVersion      : '2.18.5',
+            permissionsVersion    : '0.12',
+            roomVersion           : '2.5.0',
+            rxjavaVersion         : '3.1.6',
+            rxandroidVersion      : '3.0.2',
+            cameraxVersion        : '1.3.0-alpha04',
+    ]
+
+    depsLibs = [
+            coreKtx           : 'androidx.core:core-ktx:1.6.0',
+            appcompat         : 'androidx.appcompat:appcompat:1.3.0',
+            material          : 'com.google.android.material:material:1.4.0',
+            constraintlayout  : 'androidx.constraintlayout:constraintlayout:2.0.4',
+            junit             : 'junit:junit:4.13.2',
+            extJunit          : 'androidx.test.ext:junit:1.1.3',
+            espressoCore      : 'androidx.test.espresso:espresso-core:3.4.0',
+
+            viewModel         : 'androidx.lifecycle:lifecycle-viewmodel:2.3.1',
+            liveData          : 'androidx.lifecycle:lifecycle-livedata:2.3.1',
+            viewModelKtx      : 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1',
+            liveDataKtx       : 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1',
+
+            activity          : 'androidx.activity:activity:1.3.1',
+            activityKtx       : 'androidx.activity:activity-ktx:1.3.1',
+
+
+            navigationFragment: 'androidx.navigation:navigation-fragment-ktx:2.3.5',
+            navigationUI      : 'androidx.navigation:navigation-ui-ktx:2.3.5',
+            lifecycleCommon   : 'androidx.lifecycle:lifecycle-common:2.5.0-beta01',
+
+            // MMKV（强化版SharedPreferences）
+            mmkv              : "com.tencent:mmkv:${dependVersion["mmkvVersion"]}",
+            // 路由
+            aroutreApi        : "com.alibaba:arouter-api:${dependVersion["aroutreApiVersion"]}",
+            arouterCompiler   : "com.alibaba:arouter-compiler:${dependVersion["arouterCompilerVersion"]}",
+            // greendao 数据库
+            greendao          : "org.greenrobot:greendao:${dependVersion["greendaoVersion"]}",
+
+            //room数据库
+            roomKtx           : "androidx.room:room-ktx:${dependVersion["roomVersion"]}",
+            roomCompiler      : "androidx.room:room-compiler:${dependVersion["roomVersion"]}",
+
+            multidex          : "androidx.multidex:multidex:${dependVersion["multidexVersion"]}",
+            //网络请求
+            retrofit2         : "com.squareup.retrofit2:retrofit:${dependVersion["retrofitVersion"]}",
+            retrofit2Gson     : "com.squareup.retrofit2:converter-gson:${dependVersion["retrofitGsonVersion"]}",
+            //日志打印
+            loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${dependVersion["okhttp3LogVersion"]}",
+
+            gson              : "com.google.code.gson:gson:${dependVersion["gsonVersion"]}",
+//            xlog              : "com.tencent.mars:mars-xlog:1.2.5",
+
+            //下拉刷新
+            refreshLayout     : "io.github.scwang90:refresh-layout-kernel:${dependVersion["refreshVersion"]}",
+            refreshHeader     : "io.github.scwang90:refresh-header-classics:${dependVersion["refreshVersion"]}",
+            refreshFooter     : "io.github.scwang90:refresh-footer-classics:${dependVersion["refreshVersion"]}",
+
+            //图片加载
+            glide             : "com.github.bumptech.glide:glide:${dependVersion["glideVersion"]}",
+            glideCompiler     : "com.github.bumptech.glide:compiler:${dependVersion["glideVersion"]}",
+
+            //流式布局
+            flexbox           : "com.google.android.flexbox:flexbox:${dependVersion["flexboxVersion"]}",
+
+            //腾讯X5
+            tbssdk            : "com.tencent.tbs:tbssdk:${dependVersion["tbssdkVersion"]}",
+
+            //ExoPlayer播放器
+            exoPlayer         : "com.google.android.exoplayer:exoplayer:${dependVersion["exoPlayerVersion"]}",
+
+            //相机
+//            cameraX           : "androidx.camera:camera-camera2:${dependVersion["cameraxVersion"]}",
+
+            //权限处理
+            rxPermission      : "com.github.tbruyelle:rxpermissions:${dependVersion["permissionsVersion"]}",
+            rxjava            : "io.reactivex.rxjava3:rxjava:${dependVersion["rxjavaVersion"]}",
+            rxandroid         : "io.reactivex.rxjava3:rxandroid:${dependVersion["rxandroidVersion"]}",
+    ]
+
+}
