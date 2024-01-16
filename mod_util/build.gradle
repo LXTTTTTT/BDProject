@@ -27,6 +27,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -39,6 +44,10 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.extJunit
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
+    // 额外导入
+    compileOnly rootProject.depsLibs.mmkv  // MMKV
+    // 中大压缩库
+    implementation project(':mod_main').file('libs/compression_online.aar')
     // 模块导入
     compileOnly project(path: ':mod_data')
 }

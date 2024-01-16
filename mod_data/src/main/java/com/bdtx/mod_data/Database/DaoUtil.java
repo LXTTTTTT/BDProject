@@ -1,6 +1,7 @@
 package com.bdtx.mod_data.Database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bdtx.mod_data.Database.Dao.ContactDao;
 import com.bdtx.mod_data.Database.Dao.DaoMaster;
@@ -18,9 +19,11 @@ import java.util.List;
 // 数据库使用工具
 public class DaoUtil {
 
+    public static String TAG = "DaoUtil";
     private Context mContext;
     //创建数据库的名字
-    private static final String DB_NAME = "ChatLXT.db";
+//    private static final String DB_NAME = "ChatLXT.db";
+    private static final String DB_NAME = "BDTX_Watch.db";
 
     //它里边实际上是保存数据库的对象
     private static DaoMaster mDaoMaster;
@@ -49,14 +52,14 @@ public class DaoUtil {
         return instance;
     }
 
-// 初始化
+    // 初始化
     public void init(Context context) {
         this.mContext = context;
         addPlatformContact();
     }
 
 
-// 判断是否有存在数据库，如果没有则创建
+    // 判断是否有存在数据库，如果没有则创建
     public DaoMaster getDaoMaster() {
         if (mDaoMaster == null) {
             mHelper = new DaoMaster.DevOpenHelper(mContext, DB_NAME, null);
@@ -65,7 +68,7 @@ public class DaoUtil {
         return mDaoMaster;
     }
 
-// 完成对数据库的添加、删除、修改、查询操作，
+    // 完成对数据库的添加、删除、修改、查询操作，
     public DaoSession getDaoSession() {
         if (mDaoSession == null) {
             if (mDaoMaster == null) {
@@ -74,15 +77,6 @@ public class DaoUtil {
             mDaoSession = mDaoMaster.newSession();
         }
         return mDaoSession;
-    }
-
-// 获取所有联系人方法 --------------------------
-    public static List<Contact> getContacts(){
-        return getInstance().getDaoSession().getContactDao().loadAll();
-    }
-
-    public static List<Message> getMessages(String number){
-        return getInstance().getDaoSession().getMessageDao().queryBuilder().where(MessageDao.Properties.Number.eq(number)).list();
     }
 
     // 首次初始化指挥中心
@@ -98,6 +92,38 @@ public class DaoUtil {
             getInstance().getDaoSession().insertOrReplace(contact);
         }
     }
+
+    public static List<Contact> getContacts(){
+        return getInstance().getDaoSession().getContactDao().loadAll();
+    }
+
+    public static List<Message> getMessages(String number){
+        return getInstance().getDaoSession().getMessageDao().queryBuilder().where(MessageDao.Properties.Number.eq(number)).list();
+    }
+
+    // 添加联系人
+    public void addContact(String number){
+        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(number)).list();
+        if(contacts.size()<1){
+            Contact contact = new Contact();
+            contact.number = number;
+            contact.updateTimer = System.currentTimeMillis() / 1000;
+            contact.unreadCount = 0;
+            getDaoSession().insertOrReplace(contact);
+            Log.e(TAG, "添加联系人："+number);
+        }
+    }
+
+    // 添加消息
+    public void addMessage(Message message){
+        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(message.number)).list();
+        if(contacts.size()<1){
+            addContact(message.number);
+        }
+        getDaoSession().insertOrReplace(message);
+        Log.e(TAG, "添加消息："+message.content);
+    }
+
 
 
 // 联系人数据库查询指令器（查询联系人时用这个） ----------------------

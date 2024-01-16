@@ -34,6 +34,7 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
     ) {
         if (item == null) return
         val ioType = item.ioType
+        // 发送方
         if(ioType==Constant.TYPE_SEND){
             var viewBinding = holder as BaseBindViewHolder<AdapterChatSendBinding>
             viewBinding.binding.apply {
@@ -46,16 +47,61 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
                     if(item.state==Constant.STATE_FAILURE){
                         state.visibility = View.VISIBLE
                         state.setOnClickListener{
-                            onRecentClickListener?.let { it.invoke() }  // 重发消息
+                            onMessageClick?.let { it.onRecentClick(item) }  // 重发消息
                         }
                     }else{state.visibility = View.GONE}
                 }
+                // 语音消息
+                else{
+                    textGroup.visibility = View.GONE  // 隐藏文本组
+                    voiceGroup.visibility = View.VISIBLE  // 显示语音组
+                    content.text = "语音消息"  // 消息文本
+                    // 状态
+                    if(item.state==Constant.STATE_FAILURE){
+                        state.visibility = View.VISIBLE
+                        state.setOnClickListener{
+                            onMessageClick?.let { it.onRecentClick(item) }  // 重发消息
+                        }
+                    }else{state.visibility = View.GONE}
+                    voiceGroup.setOnClickListener {
+                        onMessageClick?.let { it.onVoiceClick(item) }  // 播放语音
+                    }
+                }
             }
         }
+        // 接收方
         else{
             var viewBinding = holder as BaseBindViewHolder<AdapterChatReceiveBinding>
             viewBinding.binding.apply {
-
+                // 文本消息
+                if(item.messageType==Constant.MESSAGE_TEXT){
+                    textGroup.visibility = View.VISIBLE  // 显示文本组
+                    voiceGroup.visibility = View.GONE  // 隐藏语音组
+                    content.text = item.content  // 消息文本
+                    // 状态
+                    if(item.state==Constant.STATE_FAILURE){
+                        state.visibility = View.VISIBLE
+                        state.setOnClickListener{
+                            onMessageClick?.let { it.onRecentClick(item) }  // 重发消息
+                        }
+                    }else{state.visibility = View.GONE}
+                }
+                // 语音消息
+                else{
+                    textGroup.visibility = View.GONE  // 隐藏文本组
+                    voiceGroup.visibility = View.VISIBLE  // 显示语音组
+                    content.text = "语音消息"  // 消息文本
+                    // 状态
+                    if(item.state==Constant.STATE_FAILURE){
+                        state.visibility = View.VISIBLE
+                        state.setOnClickListener{
+                            onMessageClick?.let { it.onRecentClick(item) }  // 重发消息
+                        }
+                    }else{state.visibility = View.GONE}
+                    voiceGroup.setOnClickListener {
+                        onMessageClick?.let { it.onVoiceClick(item) }  // 播放语音
+                    }
+                }
             }
         }
     }
@@ -65,6 +111,11 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
     }
 
 // 接口 ----------------------------------------------------------
-    var onRecentClickListener: (() -> Unit)? = null  // 点击
+    private var onMessageClick : OnMessageClick? = null
+    fun setOnMessageClick(listener: OnMessageClick) { onMessageClick = listener }
+    interface OnMessageClick {
+        fun onRecentClick(message: Message)
+        fun onVoiceClick(message: Message)
+    }
 
 }

@@ -175,8 +175,6 @@ public class BluetoothTransferUtil {
             super.onDescriptorWrite(gatt, descriptor, status);
             Log.e(TAG, " onDescriptorWrite：写入描述符 " + status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
-//                Constant.isConnectBluetooth = true;
-//                NotificationCenter.standard().postNotification(Constant.BLE_CONNECT);
                 init_device();  // 下发初始化指令
             }else {
                 Log.e(TAG, "onDescriptorWrite：写入描述符失败");
@@ -311,8 +309,8 @@ public class BluetoothTransferUtil {
 
     // 下发北斗消息
     public void sendMessage(String targetCardNumber, int type, String content){
-//        write(ProtocolUtil.CCTCQ(type,targetCardNumber,content));
-//        ProtocolUtil.getInstance().startCountdown();
+        write(ProtocolUtil.CCTCQ(type,targetCardNumber,content));
+        ProtocolUtil.getInstance().startCountdown();
     }
 
     public void write(byte[] data_bytes) {
@@ -403,7 +401,6 @@ public class BluetoothTransferUtil {
                     ProtocolUtil.parseData(s_str);
                 }
             }
-//            ProtocolUtil.parseData(data_str);  // 直接处理
             baos.reset();  // 重置
         }
 
@@ -430,6 +427,7 @@ public class BluetoothTransferUtil {
                 onBluetoothWork.onDisconnect();
             }
             ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 初始化参数
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -466,7 +464,6 @@ public class BluetoothTransferUtil {
     public void onDestroy() {
         stopDiscovery();
         disconnectDevice();
-//        unregister();
         bluetoothTransferUtil = null;
     }
 

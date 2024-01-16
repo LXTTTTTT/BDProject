@@ -2,6 +2,8 @@ package com.bdtx.mod_util.Util;
 
 import android.util.Log;
 
+import com.bdtx.mod_data.ViewModel.MainVM;
+
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -112,9 +114,7 @@ public class ProtocolUtil {
                 }
             }else if (head.contains("GLL") && values.length > 6){
                 if (values[6].equals("V")) return;  // V - 无效  A - 有效
-
             }else if (head.contains("GNS")){
-
                 // GNS消息，这里转发给接收机
 
             }else if (head.contains("VTG")){
@@ -122,7 +122,6 @@ public class ProtocolUtil {
                 // VTG消息，这里转发给接收机
 
             }else if (head.contains("ZDA")){
-
                 // ZDA消息，这里转发给接收机
 
             }
@@ -148,9 +147,19 @@ public class ProtocolUtil {
     // 北三 --------------------------------------
     // ICP 卡号、频度等
     public  static void BDICP(String[] value){
-
         try {
-
+            String cardId = value[1];
+            int cardFre = Integer.parseInt(value[14]);
+            int cardLevel = -1;
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
+            if(Integer.parseInt(value[15]) == 0){
+                cardLevel = 5;  // 0就是5级卡
+            }else {
+                cardLevel = Integer.parseInt(value[15]);
+            }
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
+            Log.e(TAG, "BDICP 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel );
         }catch (Exception e){
             Log.e(TAG, "BDICP: 解析错误" + e.toString());
             e.printStackTrace();
@@ -163,25 +172,28 @@ public class ProtocolUtil {
     public static void BDPWI(String[] values){
         // 尽量用 try 避免线程中断
         try {
-            if(values.length < 3){
-                return;
-            }
-            int rdss2Count1 = Integer.parseInt(values[2]);  // 0
-            int index = 2 + (rdss2Count1*3) + 1;  // 3
-            int rdss3Count = Integer.parseInt(values[index]);  // 3
-            index++;  // 4
+            int rdss2Count1 = Integer.parseInt(values[2]);
+            int index = 2+rdss2Count1*3+1;
+            int rdss3Count = Integer.parseInt(values[index]);
+            index++;
             int s21[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-            for (int i = 0 ;i < rdss3Count; i++) {  // 0,1,2,3
-                if(values.length < index+2){
-                    return;  // 越界检测
-                }
-                int id = Integer.parseInt(values[index]);  // 18
-                if (id > 21 || id <= 0) continue;
+            for (int i =0 ;i < rdss3Count; i++){
+                int id = Integer.parseInt(values[index]);
+                if (id > 21) continue;
                 int number = Integer.parseInt(values[index+1]);
                 s21[id-1] = number;
-                index += 4;
+//                index += 3;  // 正常数据只要+3，这个版本是正常的
+                if(values.length>index+3 && (values[index+3].equals("0") || values[index+3].equals(""))){
+                    index += 4;
+                } else {
+                    index += 3;
+                }
             }
-            Log.e(TAG, "当前信号状况: "+Arrays.toString(s21) );
+            Log.e(TAG, "BDPWI 当前信号状况: "+Arrays.toString(s21) );
+
+            Arrays.sort(s21);  // 排序
+            int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
         }catch (Exception e){
             Log.e(TAG, "BDPWI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -228,7 +240,6 @@ public class ProtocolUtil {
             }
             final boolean result_b = result.equals("Y");
             Log.e(TAG, "通信成功: "+result_b );
-
         }catch (Exception e){
             Log.e(TAG, "BDFKI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -253,7 +264,42 @@ public class ProtocolUtil {
     // 收到了 ZDX 盒子信息
     public static void BDZDX(String[] values){
         try {
+            String cardId = values[1];
+            int cardFre = Integer.parseInt(values[24]);
+            int cardLevel = Integer.parseInt(values[25]);
+            int batteryLevel = Integer.parseInt(values[2]);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceBatteryLevel().postValue(batteryLevel);
+            Log.e(TAG, "BDZDX 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel+" 电量-"+batteryLevel );
 
+            int s21[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+            s21[0] = Integer.parseInt(values[3]);
+            s21[1] = Integer.parseInt(values[4]);
+            s21[2] = Integer.parseInt(values[5]);
+            s21[3] = Integer.parseInt(values[6]);
+            s21[4] = Integer.parseInt(values[7]);
+            s21[5] = Integer.parseInt(values[8]);
+            s21[6] = Integer.parseInt(values[9]);
+            s21[7] = Integer.parseInt(values[10]);
+            s21[8] = Integer.parseInt(values[11]);
+            s21[9] = Integer.parseInt(values[12]);
+            s21[10] = Integer.parseInt(values[13]);
+            s21[11] = Integer.parseInt(values[14]);
+            s21[12] = Integer.parseInt(values[15]);
+            s21[13] = Integer.parseInt(values[16]);
+            s21[14] = Integer.parseInt(values[17]);
+            s21[15] = Integer.parseInt(values[18]);
+            s21[16] = Integer.parseInt(values[19]);
+            s21[17] = Integer.parseInt(values[20]);
+            s21[18] = Integer.parseInt(values[21]);
+            s21[19] = Integer.parseInt(values[22]);
+            s21[20] = Integer.parseInt(values[23]);
+            Arrays.sort(s21);  // 排序
+            int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
+            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
+            Log.e(TAG, "BDZDX 解析信号状况: "+Arrays.toString(s21) );
         }catch (Exception  e){
             Log.e(TAG, "BDTCI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -283,13 +329,6 @@ public class ProtocolUtil {
     public static String  CCRNS(int GGA, int GSV,int GLL,int GSA,int RMC,int ZDA){
         String command = "CCRNS,"+GGA+","+GSV+","+GLL+","+GSA+","+RMC+","+ZDA;
 //        String command = "CCRNS,"+GGA+","+GSV+","+GLL+","+GSA+","+RMC+","+ZDA+",0";  // 最后一个是时区，不填
-        return packaging(command);
-    }
-
-    // RNSS输出频度指令：星宇设备
-    // 共有 6 个，每个代表对应指令的输出频度，最大为 9
-    public static String PCAS03(int GGA, int GLL,int GSA,int GSV,int RMC,int VTG,int ZDA,int GRS){
-        String command = "PCAS03,"+GGA+","+GLL+","+GSA+","+GSV+","+RMC+","+VTG+","+ZDA+","+GRS;
         return packaging(command);
     }
 
@@ -329,7 +368,7 @@ public class ProtocolUtil {
 
 
 // 倒计时 -------------------------------------------------------
-    public int countdown = -1;
+
     //计时器
     private Timer timer;
     // 默认倒计时方法：倒计时60秒
@@ -340,17 +379,21 @@ public class ProtocolUtil {
 
     // 自定义倒计时方法：传入一个计时数值
     public void startCountdown(int count){
-        this.countdown = count+1;
         cancelCountdown();
         timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                countdown--;
-                // 开启线程消息中心发送广播进入倒计时
-                if (countdown < 0){
+                if(!ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().getValue()){
                     cancelCountdown();
-                    return;
+                } else {
+                    int countDown = ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().getValue();
+                    if(countDown<=0){
+                        cancelCountdown();
+                    } else {
+                        countDown--;
+                        ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().postValue(countDown);
+                    }
                 }
             }
         };

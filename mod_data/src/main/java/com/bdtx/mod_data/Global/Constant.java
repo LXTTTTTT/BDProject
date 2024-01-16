@@ -11,6 +11,12 @@ public class Constant {
     public static final String STATE_ACTIVITY = "/main/activity/state";
     public static final String SOS_ACTIVITY = "/main/activity/sos";
     public static final String MAP_ACTIVITY = "/main/activity/map";
+    public static final String SETTING_ACTIVITY = "/main/activity/setting";
+    public static final String VOICE_AUTH_ACTIVITY = "/main/activity/setting/voice_auth";
+    public static final String COMPRESSION_RATE_ACTIVITY = "/main/activity/setting/compression_rate";
+    public static final String PLATFORM_SETTING_ACTIVITY = "/main/activity/setting/platform_setting";
+    public static final String MESSAGE_TYPE_ACTIVITY = "/main/activity/setting/message_type";
+    public static final String ABOUT_US_ACTIVITY = "/main/activity/setting/about_us";
 
     public static final String CONNECT_BLUETOOTH_ACTIVITY = "/main/activity/connect_bluetooth";
 

@@ -30,6 +30,8 @@ ext {
             retrofitVersion       : '2.9.0',
             retrofitGsonVersion   : '2.4.0',
             okhttp3LogVersion     : '3.11.0',
+            okhttp3Version        : '3.14.9',
+            okioVersion           : '2.4.0',
             gsonVersion           : '2.10.1',
             refreshVersion        : '2.0.5',
             glideVersion          : '4.15.0',
@@ -74,16 +76,18 @@ ext {
             // greendao 数据库
             greendao          : "org.greenrobot:greendao:${dependVersion["greendaoVersion"]}",
 
-            //room数据库
+            // room数据库
             roomKtx           : "androidx.room:room-ktx:${dependVersion["roomVersion"]}",
             roomCompiler      : "androidx.room:room-compiler:${dependVersion["roomVersion"]}",
 
             multidex          : "androidx.multidex:multidex:${dependVersion["multidexVersion"]}",
-            //网络请求
+            // 网络请求
             retrofit2         : "com.squareup.retrofit2:retrofit:${dependVersion["retrofitVersion"]}",
             retrofit2Gson     : "com.squareup.retrofit2:converter-gson:${dependVersion["retrofitGsonVersion"]}",
-            //日志打印
+            // okhttp
             loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${dependVersion["okhttp3LogVersion"]}",
+            okhttp3           : "com.squareup.okhttp3:okhttp:${dependVersion["okhttp3Version"]}",
+            okio              : "com.squareup.okio:okio:${dependVersion["okioVersion"]}",
 
             gson              : "com.google.code.gson:gson:${dependVersion["gsonVersion"]}",
 //            xlog              : "com.tencent.mars:mars-xlog:1.2.5",

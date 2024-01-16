@@ -1,5 +1,6 @@
 package com.bdtx.mod_data.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 class CommunicationVM : BaseViewModel() {
 
+    private val TAG = "CommunicationVM"
     private val contactList : MutableLiveData<MutableList<Contact>?> = MutableLiveData()  // 联系人列表
     private val messageList : MutableLiveData<MutableList<Message>?> = MutableLiveData()  // 消息列表
 
@@ -23,6 +25,7 @@ class CommunicationVM : BaseViewModel() {
             },
             successBlock = {
                 it?.let { contacts ->
+                    Log.e(TAG, "成功查询到: ${contacts.size} contact" )
                     contactList.value = contacts
                 }
             }
@@ -36,8 +39,9 @@ class CommunicationVM : BaseViewModel() {
                 DaoUtil.getMessages(number)
             },
             successBlock = {
-                it?.let { contacts ->
-                    messageList.value = contacts
+                it?.let { messages ->
+                    Log.e(TAG, "成功查询到: ${messages.size} messages" )
+                    messageList.value = messages
                 }
             }
         )

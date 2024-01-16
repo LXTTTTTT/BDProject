@@ -4,11 +4,6 @@ import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
-import com.bdtx.mod_data.ViewModel.MainVM
-import com.bdtx.mod_util.Extension.saveAs
 
 // 应用程序工具
 object ApplicationUtil {

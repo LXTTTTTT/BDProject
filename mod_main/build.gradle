@@ -45,10 +45,19 @@ android {
         dataBinding = true
         viewBinding = true
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
 }
+
 
 dependencies {
     // 基本导入
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly rootProject.depsLibs.coreKtx
     compileOnly rootProject.depsLibs.appcompat
     compileOnly rootProject.depsLibs.material
@@ -72,6 +81,11 @@ dependencies {
     implementation rootProject.depsLibs.activityKtx
     // 高德地图
     implementation 'com.amap.api:3dmap:8.0.0'
+    // okhttp
+    implementation rootProject.depsLibs.okhttp3
+    implementation rootProject.depsLibs.okio
+    // 中大压缩库
+    implementation files('libs/compression_online.aar')
 
     // 导入模块
     compileOnly project(path: ':mod_util')

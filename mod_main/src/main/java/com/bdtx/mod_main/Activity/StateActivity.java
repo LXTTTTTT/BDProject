@@ -19,8 +19,9 @@ import java.util.Collections;
 
 @Route(path = Constant.STATE_ACTIVITY)
 public class StateActivity extends BaseMVVMActivity<ActivityStateBinding,MainVM> {
-    public StateActivity() {}
-    public StateActivity(boolean global_model) {super(true);}  // 声明全局 viewModel
+
+    public StateActivity() {super(true);}  // 声明使用全局 viewModel
+//    public StateActivity(boolean global_model) {super(true);}
     @Override public void beforeSetLayout() {}
 
     @Override

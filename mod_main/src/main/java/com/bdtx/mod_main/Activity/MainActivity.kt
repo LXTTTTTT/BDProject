@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.launcher.ARouter
+import com.bdtx.mod_data.Database.DaoUtil
+import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
 import com.bdtx.mod_util.Util.ApplicationUtil
 import com.bdtx.mod_util.Util.BluetoothTransferUtil
+import com.bdtx.mod_util.Util.DataUtil
 import com.bdtx.mod_util.Util.GlobalControlUtil
 
 // 用不上 ViewModel
@@ -44,9 +47,31 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
             }
         })
 
+        viewBinding.settingPage.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                ARouter.getInstance().build(Constant.SETTING_ACTIVITY).navigation()
+            }
+        })
 
+        viewBinding.test1.setOnClickListener {
+            var message = Message()
+            message.content = "测试发送"
+            message.messageType = Constant.MESSAGE_TEXT
+            message.ioType = Constant.TYPE_SEND
+            message.number = "666666"
+            message.state = Constant.STATE_SENDING
+            message.time = DataUtil.getTimeSecond()
+            DaoUtil.getInstance().addMessage(message)
 
-
+            var message2 = Message()
+            message2.content = "测试接收"
+            message2.messageType = Constant.MESSAGE_TEXT
+            message2.ioType = Constant.TYPE_RECEIVE
+            message2.number = "666666"
+            message2.state = Constant.STATE_SUCCESS
+            message2.time = DataUtil.getTimeSecond()
+            DaoUtil.getInstance().addMessage(message2)
+        }
 
     }
 
@@ -75,6 +100,9 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                     }
                 }
             }
+        })
+        viewModel.deviceCardID.observe(this,{
+            it?.let { loge("监听到卡号变化 $it") }
         })
 
         viewModel.getUnreadMessageCount().observe(this,{

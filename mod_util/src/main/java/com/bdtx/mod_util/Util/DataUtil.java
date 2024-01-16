@@ -437,5 +437,11 @@ public class DataUtil {
         return sdf.format(new Date(seconds*1000));
     }
 
+    // 获取秒时间戳
+    public static long getTimeSecond() {
+        return System.currentTimeMillis() / 1000;
+    }
+
+
 
 }

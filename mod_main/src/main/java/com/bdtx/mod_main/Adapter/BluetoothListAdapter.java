@@ -25,7 +25,7 @@ public class BluetoothListAdapter extends BaseRecyclerViewAdapter<BluetoothDevic
         AdapterBluetoothItemBinding binding = holder.getBinding();
         if(binding!=null){
             binding.deviceName.setText(item.getName());
-            binding.deviceAddr.setText(item.getName());
+            binding.deviceAddr.setText(item.getAddress());
         }
     }
 
