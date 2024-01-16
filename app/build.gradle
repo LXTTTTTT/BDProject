@@ -72,6 +72,10 @@ dependencies {
 //    implementation rootProject.depsLibs.viewModelKtx
 //    implementation rootProject.depsLibs.liveDataKtx
 //    implementation rootProject.depsLibs.activityKtx
+    // rx
+    implementation rootProject.depsLibs.rxPermission
+    implementation rootProject.depsLibs.rxjava
+    implementation rootProject.depsLibs.rxandroid
 
 
     // 模块导入 -----------------

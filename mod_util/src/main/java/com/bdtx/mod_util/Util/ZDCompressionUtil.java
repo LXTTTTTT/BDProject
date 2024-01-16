@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bdtx.mod_util.View.AuthInfoDialog;
+import com.pancoit.compression.CompressionInterface;
+import com.pancoit.compression.ZDCompression;
 import com.tencent.mmkv.MMKV;
 
 
@@ -61,11 +63,11 @@ public class ZDCompressionUtil {
     public void initZipSdk(){
         String picKey=MMKV.defaultMMKV().decodeString(PIC_ONLINE_ACTIVATION_KEY,"");
         if("".equals(picKey)){
-            .getInstance().off_img_init(mContext,PIC_OFF_ACTIVATION_VALUE,picCOInterface);
+            ZDCompression.getInstance().off_img_init(mContext,PIC_OFF_ACTIVATION_VALUE,picCOInterface);
         }else{
             ZDCompression.getInstance().initImgZip(mContext,picKey,picCOInterface);
         }
-        String voKey=SharedPreferencesUtil.get(VO_ONLINE_ACTIVATION_KEY,"");
+        String voKey=MMKV.defaultMMKV().decodeString(VO_ONLINE_ACTIVATION_KEY,"");
         if("".equals(voKey)){
             ZDCompression.getInstance().off_voice_init(mContext,VO_OFF_ACTIVATION_VALUE,voCOInterface);
         }else{
@@ -85,9 +87,9 @@ public class ZDCompressionUtil {
         }
         String[] array = str.split(",");
         int usageCount=Integer.parseInt(array[0]);
-        String startDate= DateUtils.getDateLongSerial();
+//        String startDate= DataUtil.getTimeSecond();
         String endDate=array[2];
-        int code= DateUtils.dataContrast(startDate, endDate);
+//        int code= DateUtils.dataContrast(startDate, endDate);
         if (code==-1||code==0||0>=usageCount) {
             if(isPic){
                 AuthInfoDialog.show(authPicInfoDialog);

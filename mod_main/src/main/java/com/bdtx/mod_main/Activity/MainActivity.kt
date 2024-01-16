@@ -1,5 +1,6 @@
 package com.bdtx.mod_main.Activity
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -14,11 +15,13 @@ import com.bdtx.mod_util.Util.ApplicationUtil
 import com.bdtx.mod_util.Util.BluetoothTransferUtil
 import com.bdtx.mod_util.Util.DataUtil
 import com.bdtx.mod_util.Util.GlobalControlUtil
+import com.tbruyelle.rxpermissions3.RxPermissions
+import java.util.function.Consumer
 
 // 用不上 ViewModel
 class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
-
+    lateinit var rxPermissions : RxPermissions
     override fun beforeSetLayout() {}
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -77,6 +80,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
     override fun initData() {
         super.initData()  // 在父类初始化 viewModel
+        rxPermissions = RxPermissions(this)
         // 全局数据变化监听
         viewModel.isConnectDevice.observe(this,object : Observer<Boolean?>{
             override fun onChanged(isConnect: Boolean?) {
@@ -96,7 +100,14 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                         )
                     }
                     else{
-                        ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe{  granted->
+                            if(granted){
+                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                            }else{
+                                GlobalControlUtil.showToast("请先授予权限！",0)
+                            }
+                        }
+
                     }
                 }
             }

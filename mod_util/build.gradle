@@ -47,7 +47,7 @@ dependencies {
     // 额外导入
     compileOnly rootProject.depsLibs.mmkv  // MMKV
     // 中大压缩库
-    implementation project(':mod_main').file('libs/compression_online.aar')
+    implementation project(':mod_main').files('libs/compression_online.aar')
     // 模块导入
     compileOnly project(path: ':mod_data')
 }

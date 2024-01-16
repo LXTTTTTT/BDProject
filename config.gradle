@@ -25,24 +25,23 @@ ext {
             aroutreApiVersion     : '1.5.2',
             arouterCompilerVersion: '1.5.2',
             greendaoVersion       : '3.3.0',
+            permissionsVersion    : '0.12',
+            rxjavaVersion         : '3.1.6',
+            rxandroidVersion      : '3.0.2',
+            okhttp3LogVersion     : '3.11.0',
+            okhttp3Version        : '3.14.9',
+            okioVersion           : '2.4.0',
 
             multidexVersion       : '2.0.1',
             retrofitVersion       : '2.9.0',
             retrofitGsonVersion   : '2.4.0',
-            okhttp3LogVersion     : '3.11.0',
-            okhttp3Version        : '3.14.9',
-            okioVersion           : '2.4.0',
             gsonVersion           : '2.10.1',
             refreshVersion        : '2.0.5',
             glideVersion          : '4.15.0',
             flexboxVersion        : '3.0.0',
-
             tbssdkVersion         : '44132',
             exoPlayerVersion      : '2.18.5',
-            permissionsVersion    : '0.12',
             roomVersion           : '2.5.0',
-            rxjavaVersion         : '3.1.6',
-            rxandroidVersion      : '3.0.2',
             cameraxVersion        : '1.3.0-alpha04',
     ]
 
@@ -75,6 +74,10 @@ ext {
             arouterCompiler   : "com.alibaba:arouter-compiler:${dependVersion["arouterCompilerVersion"]}",
             // greendao 数据库
             greendao          : "org.greenrobot:greendao:${dependVersion["greendaoVersion"]}",
+            //权限处理
+            rxPermission      : "com.github.tbruyelle:rxpermissions:${dependVersion["permissionsVersion"]}",
+            rxjava            : "io.reactivex.rxjava3:rxjava:${dependVersion["rxjavaVersion"]}",
+            rxandroid         : "io.reactivex.rxjava3:rxandroid:${dependVersion["rxandroidVersion"]}",
 
             // room数据库
             roomKtx           : "androidx.room:room-ktx:${dependVersion["roomVersion"]}",
@@ -113,10 +116,6 @@ ext {
             //相机
 //            cameraX           : "androidx.camera:camera-camera2:${dependVersion["cameraxVersion"]}",
 
-            //权限处理
-            rxPermission      : "com.github.tbruyelle:rxpermissions:${dependVersion["permissionsVersion"]}",
-            rxjava            : "io.reactivex.rxjava3:rxjava:${dependVersion["rxjavaVersion"]}",
-            rxandroid         : "io.reactivex.rxjava3:rxandroid:${dependVersion["rxandroidVersion"]}",
     ]
 
 }
