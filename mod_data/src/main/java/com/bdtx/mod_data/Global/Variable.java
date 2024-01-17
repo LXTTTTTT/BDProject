@@ -4,8 +4,16 @@ package com.bdtx.mod_data.Global;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.tencent.mmkv.MMKV;
+
 // 项目使用的全局变量
 public class Variable {
+
+    public static int getSystemNumber(){return MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER,Constant.default_platform_number);}
+    public static void setSystemNumber(int number){MMKV.defaultMMKV().encode(Constant.SYSTEM_NUMBER,number);}
+    public static int getCompressRate(){return MMKV.defaultMMKV().decodeInt(Constant.VOICE_COMPRESSION_RATE,666);}
+    public static void setCompressRate(int rate){MMKV.defaultMMKV().encode(Constant.VOICE_COMPRESSION_RATE,rate);}
+
 
     public static boolean DebugMode = true;  // 调试模式
 

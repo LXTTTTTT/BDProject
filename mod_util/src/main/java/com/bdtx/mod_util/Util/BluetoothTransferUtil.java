@@ -18,7 +18,10 @@ import android.os.Build;
 import android.util.Log;
 
 
+import com.bdtx.mod_data.Global.Constant;
+import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
+import com.tencent.mmkv.MMKV;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -165,6 +168,7 @@ public class BluetoothTransferUtil {
                     onBluetoothWork.onConnectSucceed();
                 }
                 ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(true);
+                Log.e(TAG, "平台号码: "+ MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER));
             }else {
                 Log.e(TAG, "onServicesDiscovered：发现服务失败");
             }
