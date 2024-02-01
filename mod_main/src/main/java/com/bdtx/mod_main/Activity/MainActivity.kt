@@ -12,10 +12,7 @@ import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
-import com.bdtx.mod_util.Util.ApplicationUtil
-import com.bdtx.mod_util.Util.BluetoothTransferUtil
-import com.bdtx.mod_util.Util.DataUtil
-import com.bdtx.mod_util.Util.GlobalControlUtil
+import com.bdtx.mod_util.Util.*
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.tencent.mmkv.MMKV
 import java.util.function.Consumer
@@ -80,7 +77,6 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
         viewBinding.test2.setOnClickListener {
             loge("当前压缩码率 ${Variable.getCompressRate()} 平台号码 ${Variable.getSystemNumber()}")
-            loge("当前压缩码率 ${MMKV.defaultMMKV().decodeInt(Constant.VOICE_COMPRESSION_RATE)} 平台号码 ${MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER)}")
         }
 
     }

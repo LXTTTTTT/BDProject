@@ -46,8 +46,8 @@ dependencies {
 
     // 额外导入
     compileOnly rootProject.depsLibs.mmkv  // MMKV
-    // 中大压缩库
-    implementation project(':mod_main').files('libs/compression_online.aar')
+    api project(':app').files('libs/compression_online.aar')  // 中大压缩库
+    api 'com.journeyapps:zxing-android-embedded:4.3.0'  // 扫码
     // 模块导入
     compileOnly project(path: ':mod_data')
 }

@@ -46,17 +46,11 @@ android {
         viewBinding = true
     }
 
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
-
 }
 
 
 dependencies {
-    // 基本导入
+    // 基本导入 ---------------------------------------------------
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly rootProject.depsLibs.coreKtx
     compileOnly rootProject.depsLibs.appcompat
@@ -66,7 +60,7 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.extJunit
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
-    // 额外导入
+    // 额外导入 ---------------------------------------------------
     compileOnly rootProject.depsLibs.mmkv  // MMKV（强化版SharedPreferences）
     // 路由
     compileOnly rootProject.depsLibs.aroutreApi
@@ -84,14 +78,11 @@ dependencies {
     // okhttp
     implementation rootProject.depsLibs.okhttp3
     implementation rootProject.depsLibs.okio
-    // 中大压缩库
-    implementation files('libs/compression_online.aar')
     // rx
     compileOnly rootProject.depsLibs.rxPermission
     compileOnly rootProject.depsLibs.rxjava
     compileOnly rootProject.depsLibs.rxandroid
-
-    // 导入模块
+    // 导入模块 ---------------------------------------------------
     compileOnly project(path: ':mod_util')
     compileOnly project(path: ':mod_data')
 

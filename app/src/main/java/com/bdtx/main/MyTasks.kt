@@ -1,6 +1,7 @@
 package com.bdtx.main
 
 import android.app.Application
+import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
@@ -8,12 +9,13 @@ import com.bdtx.mod_data.Database.DaoUtil
 import com.bdtx.mod_util.Util.ApplicationUtil
 import com.bdtx.mod_util.Util.Log.LogUtil
 import com.bdtx.mod_util.Util.SystemInfoUtil
+import com.bdtx.mod_util.Util.ZDCompressionUtil
 import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
 
 // 初始化任务 ------------------------------------------------------
-
+val TAG = "MyTask"
 // 初始化全局APP工具
 class InitAppUtilTask(val application: Application) : Task() {
 
@@ -24,6 +26,7 @@ class InitAppUtilTask(val application: Application) : Task() {
 
     override fun run() {
         ApplicationUtil.init(application, BuildConfig.DEBUG)
+        Log.e(TAG, "初始化APP工具" )
     }
 }
 
@@ -78,6 +81,7 @@ class InitSystemInfoTask() : Task() {
 
     override fun run() {
         SystemInfoUtil.init(ApplicationUtil.getApplication())
+        Log.e(TAG, "初始化系统信息" )
     }
 }
 
@@ -97,6 +101,7 @@ class InitGreenDaoTask() : Task() {
 
     override fun run() {
         DaoUtil.getInstance().init(ApplicationUtil.getApplication())
+        Log.e(TAG, "初始化GreenDao" )
     }
 }
 
@@ -125,6 +130,28 @@ class InitArouterTask() : Task() {
             ARouter.openDebug()
         }
         ARouter.init(ApplicationUtil.getApplication())
+        Log.e(TAG, "初始化ARouter" )
+    }
+}
+
+// 初始化中大压缩库
+class InitZDCompression() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitMmkvTask::class.java)  // 压缩库要用到 mmkv
+        return tasks
+    }
+
+    override fun run() {
+        ZDCompressionUtil.getInstance().initZipSdk()
+        Log.e(TAG, "初始化压缩库" )
     }
 }
 

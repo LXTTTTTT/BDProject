@@ -43,6 +43,10 @@ public class Constant {
     public static final String VOICE_AUTH_NO = "no";  // 语音未授权
     public static final String VOICE_AUTH_YES = "yes";  // 语音已授权
 
+    public static final String VO_ONLINE_ACTIVATION_KEY = "vo_online_activation_key";  // 语音在线激活key
+    public static final String PIC_ONLINE_ACTIVATION_KEY = "pic_online_activation_key";  // 图片在线激活key
+    public static final String VO_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBV";  // 离线语音key
+    public static final String PIC_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBP";  // 离线图片key
 
 
 }

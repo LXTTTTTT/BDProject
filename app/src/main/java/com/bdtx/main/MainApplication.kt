@@ -33,6 +33,7 @@ class MainApplication:Application() {
             .addTask(InitSystemInfoTask())
             .addTask(InitGreenDaoTask())
             .addTask(InitArouterTask())
+            .addTask(InitZDCompression())
             .start()
         TaskDispatcher.createInstance().await()
 

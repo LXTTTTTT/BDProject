@@ -13,6 +13,7 @@ import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityPlatformSettingBinding;
 import com.bdtx.mod_util.Util.GlobalControlUtil;
+import com.bdtx.mod_util.Util.MMKVUtil;
 import com.tencent.mmkv.MMKV;
 
 @Route(path = Constant.PLATFORM_SETTING_ACTIVITY)
@@ -24,8 +25,7 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-//        change_platform = Variable.systemNumber;
-        change_platform = MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
+        change_platform = Variable.getSystemNumber();
         Log.e("当前平台号码是：", ""+change_platform);
         // 初始化平台通道设置
         if(change_platform == Constant.default_platform_number){
@@ -58,13 +58,11 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
                 }
 
                 if(viewBinding.editText.getText().toString().length() >= 6){
-//                    Variable.setSystemNumber(change_platform);
-                    MMKV.defaultMMKV().encode(Constant.SYSTEM_NUMBER,change_platform);
+                    MMKVUtil.INSTANCE.put(Constant.SYSTEM_NUMBER,change_platform);
                     GlobalControlUtil.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else if(viewBinding.editText.getText().toString().equals("")){
-//                    Variable.setSystemNumber(Constant.default_platform_number);
-                    MMKV.defaultMMKV().encode(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
+                    MMKVUtil.INSTANCE.put(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
                     GlobalControlUtil.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else {

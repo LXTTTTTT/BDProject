@@ -3,6 +3,7 @@ package com.bdtx.mod_util.Util;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 高位在前地位在后
@@ -428,9 +429,13 @@ public class DataUtil {
     return sdf.format(new Date());
     }
 
-    public static String FORMATDATE = "yyyy-MM-dd HH:mm:ss";
+    public static String FORMAT_DATE_YMDHMS = "yyyy-MM-dd HH:mm:ss";
+    private static final String FORMAT_DATE_YMD = "yyyy-MM-dd";
+    private static final String FORMAT_DATE_YMDHM = "yyyy-MM-dd HH:mm";
+
+    // 时间戳转字符串
     public static String timeStampToString(long seconds) {
-        return timeStampToString(seconds,FORMATDATE);
+        return timeStampToString(seconds,FORMAT_DATE_YMDHMS);
     }
     public static String timeStampToString(long seconds,String forma) {
         SimpleDateFormat sdf = new SimpleDateFormat(forma);
@@ -442,6 +447,23 @@ public class DataUtil {
         return System.currentTimeMillis() / 1000;
     }
 
+    public static long stringToTimeStamp(String dateStr, boolean isPreciseTime) {
+        return stringToTimeStamp(dateStr, getFormatPattern(isPreciseTime));
+    }
 
-
+    private static long stringToTimeStamp(String dateStr, String pattern) {
+        try {
+            return new SimpleDateFormat(pattern, Locale.CHINA).parse(dateStr).getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    private static String getFormatPattern(boolean showSpecificTime) {
+        if (showSpecificTime) {
+            return FORMAT_DATE_YMDHM;
+        } else {
+            return FORMAT_DATE_YMD;
+        }
+    }
 }

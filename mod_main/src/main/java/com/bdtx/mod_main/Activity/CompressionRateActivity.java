@@ -15,6 +15,7 @@ import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityCompressionRateBinding;
 import com.bdtx.mod_util.Util.GlobalControlUtil;
+import com.bdtx.mod_util.Util.MMKVUtil;
 import com.pancoit.compression.ZDCompression;
 import com.tencent.mmkv.MMKV;
 
@@ -31,8 +32,7 @@ public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCom
     public void initView(@Nullable Bundle savedInstanceState) {
         select_img = viewBinding.autoChecked;
         select_text = viewBinding.textAuto;
-//        change_rate = Variable.compressRate;
-        change_rate = MMKV.defaultMMKV().decodeInt(Constant.VOICE_COMPRESSION_RATE,666);
+        change_rate = Variable.getCompressRate();
         Log.e("当前码率模式是：",""+change_rate);
         // 初始化默认选中项，没用 600 和 800 码率，手表界面小这几个可以满足需求
         switch (change_rate){
@@ -108,8 +108,7 @@ public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCom
         viewBinding.sendGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Variable.setCompressRate(change_rate);
-                MMKV.defaultMMKV().encode(Constant.VOICE_COMPRESSION_RATE,change_rate);
+                MMKVUtil.INSTANCE.put(Constant.VOICE_COMPRESSION_RATE,change_rate);
                 GlobalControlUtil.INSTANCE.showToast("保存成功",0);
                 finish();
             }
