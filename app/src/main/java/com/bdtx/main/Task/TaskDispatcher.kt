@@ -4,7 +4,7 @@ import android.app.Application
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.UiThread
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -84,10 +84,10 @@ class TaskDispatcher private constructor() {
             mAllTasks = TaskSortUtil.getSortResult(mAllTasks, mClsAllTasks).toMutableList()  // 任务排序
             mCountDownLatch = CountDownLatch(mNeedWaitCount.get())  // 创建倒计时计数器
             sendAndExecuteAsyncTasks()
-            LogUtil.i("task analyse cost ${(System.currentTimeMillis() - mStartTime)} begin main ")
+            LogUtils.i("task analyse cost ${(System.currentTimeMillis() - mStartTime)} begin main ")
             executeTaskMain()
         }
-        LogUtil.i("task analyse cost startTime cost ${(System.currentTimeMillis() - mStartTime)}")
+        LogUtils.i("task analyse cost startTime cost ${(System.currentTimeMillis() - mStartTime)}")
     }
 
     fun cancel() {
@@ -100,11 +100,11 @@ class TaskDispatcher private constructor() {
         mStartTime = System.currentTimeMillis()
         for (task in mMainThreadTasks) {
             val time = System.currentTimeMillis()
-            LogUtil.i(
+            LogUtils.i(
                 "real main ${task.javaClass.simpleName} cost ${(System.currentTimeMillis() - time)}"
             )
         }
-        LogUtil.i("mainTask cost ${(System.currentTimeMillis() - mStartTime)}")
+        LogUtils.i("mainTask cost ${(System.currentTimeMillis() - mStartTime)}")
     }
 
     private fun sendAndExecuteAsyncTasks() {
@@ -122,13 +122,13 @@ class TaskDispatcher private constructor() {
 
     // 被依赖信息
     private fun printDependedMsg(isPrintAllTask: Boolean) {
-        LogUtil.e("需要等待的任务数量 : ${mNeedWaitCount.get()}")
+        LogUtils.e("需要等待的任务数量 : ${mNeedWaitCount.get()}")
         if (isPrintAllTask) {
             for (cls in mDependedHashMap.keys) {
-                LogUtil.e("cls: ${cls.simpleName} ${mDependedHashMap[cls]?.size}")
+                LogUtils.e("cls: ${cls.simpleName} ${mDependedHashMap[cls]?.size}")
                 mDependedHashMap[cls]?.let {
                     for (task in it) {
-                        LogUtil.e("cls:${task.javaClass.simpleName}")
+                        LogUtils.e("cls:${task.javaClass.simpleName}")
                     }
                 }
             }
@@ -164,7 +164,7 @@ class TaskDispatcher private constructor() {
                         task.isFinished = true
                         satisfyChildren(task)
                         markTaskDone(task)
-                        LogUtil.i("${task.javaClass.simpleName} finish")
+                        LogUtils.i("${task.javaClass.simpleName} finish")
                         Log.i("testLog", "call")
                     }
                 })
@@ -189,10 +189,10 @@ class TaskDispatcher private constructor() {
     @UiThread
     fun await() {
         try {
-            if (LogUtil.isDebug) {
-                LogUtil.e("还有任务数量： ${mNeedWaitCount.get()}")
+            if (LogUtils.isDebug) {
+                LogUtils.e("还有任务数量： ${mNeedWaitCount.get()}")
                 for (task in mNeedWaitTasks) {
-                    LogUtil.e("需要等待: ${task.javaClass.simpleName}")
+                    LogUtils.e("需要等待: ${task.javaClass.simpleName}")
                 }
             }
             if (mNeedWaitCount.get() > 0) {

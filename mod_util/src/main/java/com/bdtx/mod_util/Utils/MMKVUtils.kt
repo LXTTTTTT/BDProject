@@ -1,10 +1,10 @@
-package com.bdtx.mod_util.Util
+package com.bdtx.mod_util.Utils
 
 import android.os.Parcelable
 import com.tencent.mmkv.MMKV
 import java.util.*
 
-object MMKVUtil {
+object MMKVUtils {
 
     val mmkv = MMKV.defaultMMKV()
 

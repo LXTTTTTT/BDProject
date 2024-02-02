@@ -29,8 +29,10 @@ public class Constant {
 
     public static int MESSAGE_TEXT = 1;  // 文本消息
     public static int MESSAGE_VOICE = 2;  // 语音消息
+
     public static int TYPE_SEND = 1;  // 发送消息
     public static int TYPE_RECEIVE = 2;  // 接收消息
+
     public static int STATE_SENDING = 20;  // 发送中
     public static int STATE_SUCCESS = 21;  // 发送成功
     public static int STATE_FAILURE = 22;  // 发送失败

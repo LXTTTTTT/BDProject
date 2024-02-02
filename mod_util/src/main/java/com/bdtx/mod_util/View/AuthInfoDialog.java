@@ -5,18 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bdtx.mod_util.R;
-import com.bdtx.mod_util.Util.GlobalControlUtil;
+import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
 
 public class AuthInfoDialog extends Dialog {
@@ -66,7 +62,8 @@ public class AuthInfoDialog extends Dialog {
         // 确定
         yes.setOnClickListener(view -> {
             String str = key.getText().toString().trim();
-            if("".equals(str)){GlobalControlUtil.INSTANCE.showToast("请输入key",0);return;}
+            if("".equals(str)){
+                GlobalControlUtils.INSTANCE.showToast("请输入key",0);return;}
             onItemClickListener.onOK(str);
         });
 

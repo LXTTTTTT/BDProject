@@ -31,13 +31,14 @@ public class MessageDao extends AbstractDao<Message, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Number = new Property(1, String.class, "number", false, "NUMBER");
-        public final static Property MessageType = new Property(2, int.class, "messageType", false, "MESSAGE_TYPE");
-        public final static Property State = new Property(3, int.class, "state", false, "STATE");
-        public final static Property IoType = new Property(4, int.class, "ioType", false, "IO_TYPE");
-        public final static Property Content = new Property(5, String.class, "content", false, "CONTENT");
-        public final static Property Time = new Property(6, Long.class, "time", false, "TIME");
+        public final static Property Content = new Property(2, String.class, "content", false, "CONTENT");
+        public final static Property Time = new Property(3, Long.class, "time", false, "TIME");
+        public final static Property MessageType = new Property(4, int.class, "messageType", false, "MESSAGE_TYPE");
+        public final static Property State = new Property(5, int.class, "state", false, "STATE");
+        public final static Property IoType = new Property(6, int.class, "ioType", false, "IO_TYPE");
         public final static Property VoiceLength = new Property(7, int.class, "voiceLength", false, "VOICE_LENGTH");
         public final static Property VoicePath = new Property(8, String.class, "voicePath", false, "VOICE_PATH");
+        public final static Property FromNumber = new Property(9, String.class, "fromNumber", false, "FROM_NUMBER");
     }
 
     private DaoSession daoSession;
@@ -58,13 +59,14 @@ public class MessageDao extends AbstractDao<Message, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"MESSAGE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"NUMBER\" TEXT," + // 1: number
-                "\"MESSAGE_TYPE\" INTEGER NOT NULL ," + // 2: messageType
-                "\"STATE\" INTEGER NOT NULL ," + // 3: state
-                "\"IO_TYPE\" INTEGER NOT NULL ," + // 4: ioType
-                "\"CONTENT\" TEXT," + // 5: content
-                "\"TIME\" INTEGER," + // 6: time
+                "\"CONTENT\" TEXT," + // 2: content
+                "\"TIME\" INTEGER," + // 3: time
+                "\"MESSAGE_TYPE\" INTEGER NOT NULL ," + // 4: messageType
+                "\"STATE\" INTEGER NOT NULL ," + // 5: state
+                "\"IO_TYPE\" INTEGER NOT NULL ," + // 6: ioType
                 "\"VOICE_LENGTH\" INTEGER NOT NULL ," + // 7: voiceLength
-                "\"VOICE_PATH\" TEXT);"); // 8: voicePath
+                "\"VOICE_PATH\" TEXT," + // 8: voicePath
+                "\"FROM_NUMBER\" TEXT);"); // 9: fromNumber
     }
 
     /** Drops the underlying database table. */
@@ -86,24 +88,29 @@ public class MessageDao extends AbstractDao<Message, Long> {
         if (number != null) {
             stmt.bindString(2, number);
         }
-        stmt.bindLong(3, entity.getMessageType());
-        stmt.bindLong(4, entity.getState());
-        stmt.bindLong(5, entity.getIoType());
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(6, content);
+            stmt.bindString(3, content);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(7, time);
+            stmt.bindLong(4, time);
         }
+        stmt.bindLong(5, entity.getMessageType());
+        stmt.bindLong(6, entity.getState());
+        stmt.bindLong(7, entity.getIoType());
         stmt.bindLong(8, entity.getVoiceLength());
  
         String voicePath = entity.getVoicePath();
         if (voicePath != null) {
             stmt.bindString(9, voicePath);
+        }
+ 
+        String fromNumber = entity.getFromNumber();
+        if (fromNumber != null) {
+            stmt.bindString(10, fromNumber);
         }
     }
 
@@ -120,24 +127,29 @@ public class MessageDao extends AbstractDao<Message, Long> {
         if (number != null) {
             stmt.bindString(2, number);
         }
-        stmt.bindLong(3, entity.getMessageType());
-        stmt.bindLong(4, entity.getState());
-        stmt.bindLong(5, entity.getIoType());
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(6, content);
+            stmt.bindString(3, content);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(7, time);
+            stmt.bindLong(4, time);
         }
+        stmt.bindLong(5, entity.getMessageType());
+        stmt.bindLong(6, entity.getState());
+        stmt.bindLong(7, entity.getIoType());
         stmt.bindLong(8, entity.getVoiceLength());
  
         String voicePath = entity.getVoicePath();
         if (voicePath != null) {
             stmt.bindString(9, voicePath);
+        }
+ 
+        String fromNumber = entity.getFromNumber();
+        if (fromNumber != null) {
+            stmt.bindString(10, fromNumber);
         }
     }
 
@@ -157,13 +169,14 @@ public class MessageDao extends AbstractDao<Message, Long> {
         Message entity = new Message( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // number
-            cursor.getInt(offset + 2), // messageType
-            cursor.getInt(offset + 3), // state
-            cursor.getInt(offset + 4), // ioType
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // content
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // time
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // content
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // time
+            cursor.getInt(offset + 4), // messageType
+            cursor.getInt(offset + 5), // state
+            cursor.getInt(offset + 6), // ioType
             cursor.getInt(offset + 7), // voiceLength
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // voicePath
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // voicePath
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // fromNumber
         );
         return entity;
     }
@@ -172,13 +185,14 @@ public class MessageDao extends AbstractDao<Message, Long> {
     public void readEntity(Cursor cursor, Message entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNumber(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setMessageType(cursor.getInt(offset + 2));
-        entity.setState(cursor.getInt(offset + 3));
-        entity.setIoType(cursor.getInt(offset + 4));
-        entity.setContent(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setContent(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setMessageType(cursor.getInt(offset + 4));
+        entity.setState(cursor.getInt(offset + 5));
+        entity.setIoType(cursor.getInt(offset + 6));
         entity.setVoiceLength(cursor.getInt(offset + 7));
         entity.setVoicePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setFromNumber(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     @Override

@@ -8,6 +8,8 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/app/src/main/res/layout/activity_main2.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_healthy/src/main/res/layout/activity_main.xml" value="0.3515625" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_blue_1_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_gray_1.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_gray_3.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_gray_5.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_gray_8.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_gray_9.xml" value="0.181" />
@@ -15,9 +17,27 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_red_1.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/corner_fill_red_3.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/cornor_fill_black_2.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/half_oval_2.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/half_oval_down_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/healthy_page_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/keyboard_icon_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/map_page_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/selecter.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/selector_button_bg.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/selector_button_bg_1.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/send_message_button_bg.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/send_message_button_bg_2.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/setting_page_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/sos_page_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/status_page_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/swift_icon_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/voice_icon_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/arc_clip_shape.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/arc_shape.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_blue_1_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_green_3.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/half_circle.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/message_page_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_about_us.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_chat.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_compression_rate.xml" value="0.2928637627432808" />
@@ -38,6 +58,7 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_chat_send.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_contact_item.xml" value="0.25" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_setting_item.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_swift_item.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/layout_mylocation.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/layout_title_bar.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_util/src/main/res/drawable/corner_fill_white.xml" value="0.181" />

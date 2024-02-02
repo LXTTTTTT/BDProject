@@ -23,9 +23,8 @@ class MainVM : BaseViewModel() {
     val waitTime : MutableLiveData<Int?> = MutableLiveData()  // 等待时间
 
     val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 未读消息数量
-    init {
-        initParameter()
-    }
+
+    init { initParameter() }
 
     // 初始化默认参数
     fun initParameter(){
@@ -36,7 +35,7 @@ class MainVM : BaseViewModel() {
         deviceBatteryLevel.postValue(-1)
         signal.postValue(intArrayOf(0,0,0,0,0,0,0,0,0,0))
 //        unreadMessageCount.postValue(0)
-        waitTime.postValue(-1)
+        waitTime.postValue(0)
     }
 
     fun getUnreadMessageCount() : LiveData<Int?> {

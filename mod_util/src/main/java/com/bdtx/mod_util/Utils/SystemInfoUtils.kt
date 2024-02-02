@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util
+package com.bdtx.mod_util.Utils
 
 import android.app.Application
 import android.content.Context
@@ -9,14 +9,14 @@ import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 import kotlin.math.max
 import kotlin.math.min
 
 // 系统参数
-object SystemInfoUtil {
+object SystemInfoUtils {
 
-    private val TAG = SystemInfoUtil::class.java.simpleName
+    private val TAG = SystemInfoUtils::class.java.simpleName
 
     private lateinit var mContext: Application
 
@@ -222,7 +222,7 @@ object SystemInfoUtil {
                 return ""
             }
         } catch (e: Exception) {
-            LogUtil.e("VersionInfo", e)
+            LogUtils.e("VersionInfo", e)
         }
         return versionName
     }
@@ -239,7 +239,7 @@ object SystemInfoUtil {
                     .getPackageInfo(packageName, 0)
             appVersionCode = packageInfo.versionCode.toLong()
         } catch (e: PackageManager.NameNotFoundException) {
-            LogUtil.e("getAppVersionCode-${e.message}")
+            LogUtils.e("getAppVersionCode-${e.message}")
         }
         return appVersionCode
     }

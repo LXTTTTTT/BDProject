@@ -21,6 +21,7 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
     override fun beforeSetLayout() {}
 
     override fun initView(savedInstanceState: Bundle?) {
+        setTitle("消息")
         init_contact_list()
         init_control()
     }

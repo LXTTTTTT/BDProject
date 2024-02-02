@@ -22,13 +22,16 @@ public class Message {
     @Id(autoincrement = true)  // 自增
     public Long id;
     public String number;  // 号码
+    public String content;
+    public Long time;  // 时间戳（秒）
+
     public int messageType = Constant.MESSAGE_TEXT;  // 消息类型
     public int state = Constant.STATE_SENDING;  // 发送状态
     public int ioType = Constant.TYPE_SEND;  // 发送/接收
-    public String content;
-    public Long time;  // 时间戳（秒）
-    public int voiceLength;  // 语音的长度
+
+    public int voiceLength;  // 语音消息的长度
     public String voicePath;  // 语音文件路径
+    private String fromNumber;  // 发送方号码
 
     @ToOne (joinProperty = "id")  // Location 的 id 要和这里指定的 id 相同
     public Location location ;  // 位置
@@ -39,18 +42,19 @@ public class Message {
     @Generated(hash = 859287859)
     private transient MessageDao myDao;
 
-    @Generated(hash = 1712992255)
-    public Message(Long id, String number, int messageType, int state, int ioType,
-            String content, Long time, int voiceLength, String voicePath) {
+    @Generated(hash = 1563668676)
+    public Message(Long id, String number, String content, Long time, int messageType,
+            int state, int ioType, int voiceLength, String voicePath, String fromNumber) {
         this.id = id;
         this.number = number;
+        this.content = content;
+        this.time = time;
         this.messageType = messageType;
         this.state = state;
         this.ioType = ioType;
-        this.content = content;
-        this.time = time;
         this.voiceLength = voiceLength;
         this.voicePath = voicePath;
+        this.fromNumber = fromNumber;
     }
 
     @Generated(hash = 637306882)
@@ -202,6 +206,14 @@ public class Message {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getFromNumber() {
+        return this.fromNumber;
+    }
+
+    public void setFromNumber(String fromNumber) {
+        this.fromNumber = fromNumber;
     }
 
 

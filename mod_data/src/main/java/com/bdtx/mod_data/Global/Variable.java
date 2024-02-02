@@ -1,9 +1,13 @@
 package com.bdtx.mod_data.Global;
 
 
+import android.os.CountDownTimer;
+
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bdtx.mod_data.Database.DaoUtil;
+import com.bdtx.mod_data.Database.Entity.Message;
 import com.tencent.mmkv.MMKV;
 
 // 项目使用的全局变量
@@ -14,6 +18,37 @@ public class Variable {
     // MMKV无法在模块之间共享数据，直接保存或使用单例
 //    public static void setSystemNumber(int number){MMKV.defaultMMKV().encode(Constant.SYSTEM_NUMBER,number);}
 //    public static void setCompressRate(int rate){MMKV.defaultMMKV().encode(Constant.VOICE_COMPRESSION_RATE,rate);}
+
+    public static Message lastSendMsg = null;
+    public static CountDownTimer countDownTimer = null;
+    public static void checkSendState(){
+        if(lastSendMsg==null){return;}
+        countDownTimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(lastSendMsg.getState()==Constant.STATE_SUCCESS || lastSendMsg.getState()==Constant.STATE_FAILURE){
+                    DaoUtil.getInstance().getDaoSession().insertOrReplace(lastSendMsg);  // 记得插入数据库
+                    cancel();countDownTimer = null;lastSendMsg = null;
+//                    NotificationCenter.standard().postNotification(Constant.UPDATE_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                if(lastSendMsg.getState()==Constant.STATE_SUCCESS || lastSendMsg.getState()==Constant.STATE_FAILURE){
+                    DaoUtil.getInstance().getDaoSession().insertOrReplace(lastSendMsg);  // 记得插入数据库
+                    countDownTimer = null;lastSendMsg = null;
+                } else {
+                    DaoUtil.getInstance().getDaoSession().insertOrReplace(lastSendMsg);  // 记得插入数据库
+                    lastSendMsg.setState(Constant.STATE_FAILURE);
+                    countDownTimer = null;lastSendMsg = null;
+                }
+//                NotificationCenter.standard().postNotification(Constant.UPDATE_MESSAGE);
+            }
+        };
+        countDownTimer.start();
+    }
+
 
 
     public static boolean DebugMode = true;  // 调试模式

@@ -1,24 +1,27 @@
-package com.bdtx.mod_util.Util;
+package com.bdtx.mod_util.Utils.Protocol;
 
 import android.util.Log;
 
 import com.bdtx.mod_data.ViewModel.MainVM;
+import com.bdtx.mod_util.Utils.ApplicationUtils;
+import com.bdtx.mod_util.Utils.DataUtils;
+import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 // 协议工具：解析/封装
-public class ProtocolUtil {
+public class BDProtocolUtils {
 
     public static String TAG = "ProtocolUtil";
 // 单例 -------------------------
-    private static ProtocolUtil protocolUtil;
-    public static ProtocolUtil getInstance() {
-        if(protocolUtil == null){
-            protocolUtil = new ProtocolUtil();
+    private static BDProtocolUtils bdProtocolUtils;
+    public static BDProtocolUtils getInstance() {
+        if(bdProtocolUtils == null){
+            bdProtocolUtils = new BDProtocolUtils();
         }
-        return protocolUtil;
+        return bdProtocolUtils;
     }
 
     private static String datas = "";  // 需要拼接的总数据
@@ -151,14 +154,14 @@ public class ProtocolUtil {
             String cardId = value[1];
             int cardFre = Integer.parseInt(value[14]);
             int cardLevel = -1;
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
             if(Integer.parseInt(value[15]) == 0){
                 cardLevel = 5;  // 0就是5级卡
             }else {
                 cardLevel = Integer.parseInt(value[15]);
             }
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
             Log.e(TAG, "BDICP 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel );
         }catch (Exception e){
             Log.e(TAG, "BDICP: 解析错误" + e.toString());
@@ -193,7 +196,7 @@ public class ProtocolUtil {
 
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
         }catch (Exception e){
             Log.e(TAG, "BDPWI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -215,26 +218,26 @@ public class ProtocolUtil {
             result = values[3];  // 反馈结果 ： Y / N
             reason = values[4];  // 失败原因
             if(result.equals("Y")){
-                GlobalControlUtil.INSTANCE.showToast("发送成功",0);
+                GlobalControlUtils.INSTANCE.showToast("发送成功",0);
             }else {
                 switch ( reason ){
                     case "1":
-                        GlobalControlUtil.INSTANCE.showToast("频度未到，发射被抑制",0);
+                        GlobalControlUtils.INSTANCE.showToast("频度未到，发射被抑制",0);
                         break;
                     case "2":
-                        GlobalControlUtil.INSTANCE.showToast("接收到系统的抑制指令，发射被抑制",0);
+                        GlobalControlUtils.INSTANCE.showToast("接收到系统的抑制指令，发射被抑制",0);
                         break;
                     case "3":
-                        GlobalControlUtil.INSTANCE.showToast("当前设置为无线电静默状态，发射被抑制",0);
+                        GlobalControlUtils.INSTANCE.showToast("当前设置为无线电静默状态，发射被抑制",0);
                         break;
                     case "4":
-                        GlobalControlUtil.INSTANCE.showToast("功率未锁定",0);
+                        GlobalControlUtils.INSTANCE.showToast("功率未锁定",0);
                         break;
                     case "5":
-                        GlobalControlUtil.INSTANCE.showToast("未检测到IC模块信息",0);
+                        GlobalControlUtils.INSTANCE.showToast("未检测到IC模块信息",0);
                         break;
                     default:
-                        GlobalControlUtil.INSTANCE.showToast("发射失败，原因码是：" + reason,0);
+                        GlobalControlUtils.INSTANCE.showToast("发射失败，原因码是：" + reason,0);
                         break;
                 }
             }
@@ -268,10 +271,10 @@ public class ProtocolUtil {
             int cardFre = Integer.parseInt(values[24]);
             int cardLevel = Integer.parseInt(values[25]);
             int batteryLevel = Integer.parseInt(values[2]);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceBatteryLevel().postValue(batteryLevel);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceBatteryLevel().postValue(batteryLevel);
             Log.e(TAG, "BDZDX 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel+" 电量-"+batteryLevel );
 
             int s21[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -298,7 +301,7 @@ public class ProtocolUtil {
             s21[20] = Integer.parseInt(values[23]);
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
             Log.e(TAG, "BDZDX 解析信号状况: "+Arrays.toString(s21) );
         }catch (Exception  e){
             Log.e(TAG, "BDTCI: 解析错误" + e.toString());
@@ -342,7 +345,7 @@ public class ProtocolUtil {
 
     // 通信申请
     // type - 发送模式：1、汉字 2、代码 3、混合 4、压缩汉字 5、压缩代码
-    public static String CCTCQ(int type , String cardNumber , String hexMsg){
+    public static String CCTCQ( String cardNumber, int type, String hexMsg){
         String command = "CCTCQ," + cardNumber + ",2,1," + type + "," + hexMsg + ",0";
         return packaging(command);
     }
@@ -384,15 +387,15 @@ public class ProtocolUtil {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if(!ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().getValue()){
+                if(!ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().getValue()){
                     cancelCountdown();
                 } else {
-                    int countDown = ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().getValue();
+                    int countDown = ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().getValue();
                     if(countDown<=0){
                         cancelCountdown();
                     } else {
                         countDown--;
-                        ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().postValue(countDown);
+                        ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().postValue(countDown);
                     }
                 }
             }
@@ -410,9 +413,9 @@ public class ProtocolUtil {
 // -----------------------------------------------------------------------
     // 打包，加上 $ 和 * 和 校验和，输出 hex_str
     public static String packaging(String tmp){
-        String hexCommand = DataUtil.string2Hex(tmp);
-        String hh = DataUtil.getCheckCode0007(hexCommand).toUpperCase();  // 检验和
-        return "24"+hexCommand+"2A"+DataUtil.string2Hex(hh)+"0D0A";
+        String hexCommand = DataUtils.string2Hex(tmp);
+        String hh = DataUtils.getCheckCode0007(hexCommand).toUpperCase();  // 检验和
+        return "24"+hexCommand+"2A"+ DataUtils.string2Hex(hh)+"0D0A";
     }
 
 

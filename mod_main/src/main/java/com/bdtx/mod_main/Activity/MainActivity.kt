@@ -12,10 +12,8 @@ import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
-import com.bdtx.mod_util.Util.*
+import com.bdtx.mod_util.Utils.*
 import com.tbruyelle.rxpermissions3.RxPermissions
-import com.tencent.mmkv.MMKV
-import java.util.function.Consumer
 
 // 用不上 ViewModel
 class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
@@ -62,7 +60,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
             message.ioType = Constant.TYPE_SEND
             message.number = "666666"
             message.state = Constant.STATE_SENDING
-            message.time = DataUtil.getTimeSecond()
+            message.time = DataUtils.getTimeSeconds()
             DaoUtil.getInstance().addMessage(message)
 
             var message2 = Message()
@@ -71,7 +69,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
             message2.ioType = Constant.TYPE_RECEIVE
             message2.number = "666666"
             message2.state = Constant.STATE_SUCCESS
-            message2.time = DataUtil.getTimeSecond()
+            message2.time = DataUtils.getTimeSeconds()
             DaoUtil.getInstance().addMessage(message2)
         }
 
@@ -96,9 +94,9 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                 // 点击事件
                 viewBinding.connectBluetoothGroup.setOnClickListener {
                     if(isConnect==true){
-                        GlobalControlUtil.showAlertDialog("断开蓝牙？","当前已连接蓝牙，是否需要断开蓝牙",
+                        GlobalControlUtils.showAlertDialog("断开蓝牙？","当前已连接蓝牙，是否需要断开蓝牙",
                             onYesClick = {
-                                BluetoothTransferUtil.getInstance().disconnectDevice();
+                                BluetoothTransferUtils.getInstance().disconnectDevice();
                             }
                         )
                     }
@@ -107,7 +105,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                             if(granted){
                                 ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
                             }else{
-                                GlobalControlUtil.showToast("请先授予权限！",0)
+                                GlobalControlUtils.showToast("请先授予权限！",0)
                             }
                         }
 

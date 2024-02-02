@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util;
+package com.bdtx.mod_util.Utils;
 
 import static java.lang.Thread.sleep;
 
@@ -19,8 +19,8 @@ import android.util.Log;
 
 
 import com.bdtx.mod_data.Global.Constant;
-import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
+import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 import com.tencent.mmkv.MMKV;
 
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BluetoothTransferUtil {
+public class BluetoothTransferUtils {
 
     private static String TAG = "BluetoothTransferUtil";
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -58,16 +58,16 @@ public class BluetoothTransferUtil {
 
 
 // 单例 --------------------------------------------------
-    private static BluetoothTransferUtil bluetoothTransferUtil;
-    public static BluetoothTransferUtil getInstance() {
+    private static BluetoothTransferUtils bluetoothTransferUtil;
+    public static BluetoothTransferUtils getInstance() {
         if (bluetoothTransferUtil == null) {
-            bluetoothTransferUtil = new BluetoothTransferUtil();
+            bluetoothTransferUtil = new BluetoothTransferUtils();
         }
         return bluetoothTransferUtil;
     }
 
-    public BluetoothTransferUtil(){
-        APP = ApplicationUtil.INSTANCE.getApplication();
+    public BluetoothTransferUtils(){
+        APP = ApplicationUtils.INSTANCE.getApplication();
 //        registerBroadcast();
     }
 
@@ -167,7 +167,7 @@ public class BluetoothTransferUtil {
                 if (onBluetoothWork != null) {
                     onBluetoothWork.onConnectSucceed();
                 }
-                ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(true);
+                ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(true);
                 Log.e(TAG, "平台号码: "+ MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER));
             }else {
                 Log.e(TAG, "onServicesDiscovered：发现服务失败");
@@ -312,9 +312,10 @@ public class BluetoothTransferUtil {
     }
 
     // 下发北斗消息
-    public void sendMessage(String targetCardNumber, int type, String content){
-        write(ProtocolUtil.CCTCQ(type,targetCardNumber,content));
-        ProtocolUtil.getInstance().startCountdown();
+    public void sendMessage(String targetCardNumber, int type, String content_str){
+        write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
+        // 开始倒计时
+
     }
 
     public void write(byte[] data_bytes) {
@@ -322,12 +323,12 @@ public class BluetoothTransferUtil {
         writeCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         writeCharacteristic.setValue(data_bytes);
         bluetoothGatt.writeCharacteristic(writeCharacteristic);
-        Log.e(TAG, "Bluetooth 下发数据: " + DataUtil.bytes2string(data_bytes) );
+        Log.e(TAG, "Bluetooth 下发数据: " + DataUtils.bytes2string(data_bytes) );
     }
 
     public void write(String data_hex) {
         if (writeCharacteristic == null || bluetoothGatt == null) return;
-        byte[] data_bytes = DataUtil.hex2bytes(data_hex);
+        byte[] data_bytes = DataUtils.hex2bytes(data_hex);
         queue.offer(data_bytes);
         sendNext();
     }
@@ -392,17 +393,17 @@ public class BluetoothTransferUtil {
         // 设置停止位，当最后两位为 \r\n 时就传出去
         if (readBuffer.length >= 2 && readBuffer[readBuffer.length - 2] == (byte)'\r' && readBuffer[readBuffer.length - 1] == (byte)'\n') {
 
-            String data_str = DataUtil.bytes2string(readBuffer);
-            String data_hex = DataUtil.bytes2Hex(readBuffer);
+            String data_str = DataUtils.bytes2string(readBuffer);
+            String data_hex = DataUtils.bytes2Hex(readBuffer);
             Log.i(TAG, "收到蓝牙数据: " + data_str);
 
             String[] data_hex_array = data_hex.split("0d0a");  // 分割后处理
             for (String s : data_hex_array) {
-                String s_str = DataUtil.hex2String(s);
+                String s_str = DataUtils.hex2String(s);
                 Pattern pattern = Pattern.compile("FKI|ICP|TCI|PWI|GGA|GLL|PRX|RNX|ZDX");
                 Matcher matcher = pattern.matcher(s_str);
                 if (matcher.find()) {
-                    ProtocolUtil.parseData(s_str);
+                    BDProtocolUtils.parseData(s_str);
                 }
             }
             baos.reset();  // 重置
@@ -430,8 +431,8 @@ public class BluetoothTransferUtil {
             if (onBluetoothWork != null) {
                 onBluetoothWork.onDisconnect();
             }
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
-            ApplicationUtil.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 初始化参数
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 初始化参数
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -443,19 +444,19 @@ public class BluetoothTransferUtil {
             public void run() {
                 try {
                     Log.e(TAG, "设备初始化" );
-                    write(ProtocolUtil.CCPWD());  // 登录
+                    write(BDProtocolUtils.CCPWD());  // 登录
                     sleep(300);
-                    write(ProtocolUtil.CCICR(0,"00"));  // 查询ic信息
+                    write(BDProtocolUtils.CCICR(0,"00"));  // 查询ic信息
                     sleep(300);
-                    write(ProtocolUtil.CCRMO("PWI",2,5));  // 北三信号间隔 5
+                    write(BDProtocolUtils.CCRMO("PWI",2,5));  // 北三信号间隔 5
                     sleep(300);
-                    write(ProtocolUtil.CCZDC(5));  // 修改盒子信息输出频度
+                    write(BDProtocolUtils.CCZDC(5));  // 修改盒子信息输出频度
                     sleep(300);
-                    write(ProtocolUtil.CCPRS());  // 关闭盒子自带上报
+                    write(BDProtocolUtils.CCPRS());  // 关闭盒子自带上报
                     sleep(300);
-                    write(ProtocolUtil.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
                     sleep(300);
-                    write(ProtocolUtil.CCRMO("MCH",1,0));  // 星宇关掉mch输出
+                    write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
                     sleep(300);
                 }catch (Exception e){
                     e.printStackTrace();

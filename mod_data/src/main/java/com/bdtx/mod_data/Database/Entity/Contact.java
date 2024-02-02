@@ -18,7 +18,7 @@ public class Contact {
     public String number;
     public String remark;  // 备注
     public String lastContent;  // 最后一条通信内容
-    public Long updateTimer;  // 更新时间（秒时间戳）
+    public Long updateTime;  // 更新时间（秒时间戳）
     public int unreadCount;  // 未读消息
     public String draft;  // 草稿
     public double longitude = 0.0;  // 经度
@@ -32,15 +32,14 @@ public class Contact {
     /** Used for active entity operations. */
     @Generated(hash = 2046468181)
     private transient ContactDao myDao;
-
-    @Generated(hash = 1373280988)
+    @Generated(hash = 1333380994)
     public Contact(String number, String remark, String lastContent,
-            Long updateTimer, int unreadCount, String draft, double longitude,
+            Long updateTime, int unreadCount, String draft, double longitude,
             double latitude, int altitude) {
         this.number = number;
         this.remark = remark;
         this.lastContent = lastContent;
-        this.updateTimer = updateTimer;
+        this.updateTime = updateTime;
         this.unreadCount = unreadCount;
         this.draft = draft;
         this.longitude = longitude;
@@ -68,16 +67,16 @@ public class Contact {
     public void setLastContent(String lastContent) {
         this.lastContent = lastContent;
     }
-    public long getUpdateTimer() {
-        return this.updateTimer;
+    public Long getUpdateTime() {
+        return this.updateTime;
     }
-    public void setUpdateTimer(long updateTimer) {
-        this.updateTimer = updateTimer;
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
     }
-    public Integer getUnreadCount() {
+    public int getUnreadCount() {
         return this.unreadCount;
     }
-    public void setUnreadCount(Integer unreadCount) {
+    public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
     }
     public String getDraft() {
@@ -103,12 +102,6 @@ public class Contact {
     }
     public void setAltitude(int altitude) {
         this.altitude = altitude;
-    }
-    public void setUnreadCount(int unreadCount) {
-        this.unreadCount = unreadCount;
-    }
-    public void setUpdateTimer(Long updateTimer) {
-        this.updateTimer = updateTimer;
     }
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -175,6 +168,5 @@ public class Contact {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getContactDao() : null;
     }
-
 
 }

@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util
+package com.bdtx.mod_util.Utils
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 import java.io.FileInputStream
 import java.net.NetworkInterface
 
@@ -73,7 +73,7 @@ object DeviceInfoUtils {
         if (androidId.isNotEmpty()) {
             return
         }
-        LogUtil.d("init device androidId")
+        LogUtils.d("init device androidId")
         val tmpAndroidId = Settings.Secure.getString(
             appContext.contentResolver,
             Settings.Secure.ANDROID_ID
@@ -89,7 +89,7 @@ object DeviceInfoUtils {
             return
         }
         try {
-            LogUtil.d("init device mac, wifiMac and ssid")
+            LogUtils.d("init device mac, wifiMac and ssid")
             val wm = appContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             initMacAddress(wm)
             if (!wm.connectionInfo.bssid.isNullOrEmpty()) {
@@ -99,7 +99,7 @@ object DeviceInfoUtils {
                 wifiSSID = wm.connectionInfo.ssid
             }
         } catch (e: Exception) {
-            LogUtil.d("init mac failure", throwable = e)
+            LogUtils.d("init mac failure", throwable = e)
         }
     }
 
@@ -137,7 +137,7 @@ object DeviceInfoUtils {
                 }
             }
         } catch (e: Exception) {
-            LogUtil.d("read mac failure", throwable = e)
+            LogUtils.d("read mac failure", throwable = e)
         }
     }
 
@@ -156,7 +156,7 @@ object DeviceInfoUtils {
             return
         }
         try {
-            LogUtil.d("init device imei and imsi")
+            LogUtils.d("init device imei and imsi")
             val tm = appContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             var tmpImei = ""
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -173,7 +173,7 @@ object DeviceInfoUtils {
                 imsi = tmpImsi.lowercase()
             }
         } catch (e: Exception) {
-            LogUtil.d(message = "initImei exception, msg=${e.message}")
+            LogUtils.d(message = "initImei exception, msg=${e.message}")
         }
     }
 
@@ -202,12 +202,12 @@ object DeviceInfoUtils {
                 res = String(buffer, Charsets.UTF_8)
             }
         } catch (e: Exception) {
-            LogUtil.d("read file exception", throwable = e)
+            LogUtils.d("read file exception", throwable = e)
         } finally {
             try {
                 fin?.close()
             } catch (e: Exception) {
-                LogUtil.d("close FileInputStream failure")
+                LogUtils.d("close FileInputStream failure")
             }
         }
         return res

@@ -14,10 +14,9 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityCompressionRateBinding;
-import com.bdtx.mod_util.Util.GlobalControlUtil;
-import com.bdtx.mod_util.Util.MMKVUtil;
+import com.bdtx.mod_util.Utils.GlobalControlUtils;
+import com.bdtx.mod_util.Utils.MMKVUtils;
 import com.pancoit.compression.ZDCompression;
-import com.tencent.mmkv.MMKV;
 
 @Route(path = Constant.COMPRESSION_RATE_ACTIVITY)
 public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCompressionRateBinding> {
@@ -108,8 +107,8 @@ public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCom
         viewBinding.sendGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MMKVUtil.INSTANCE.put(Constant.VOICE_COMPRESSION_RATE,change_rate);
-                GlobalControlUtil.INSTANCE.showToast("保存成功",0);
+                MMKVUtils.INSTANCE.put(Constant.VOICE_COMPRESSION_RATE,change_rate);
+                GlobalControlUtils.INSTANCE.showToast("保存成功",0);
                 finish();
             }
         });

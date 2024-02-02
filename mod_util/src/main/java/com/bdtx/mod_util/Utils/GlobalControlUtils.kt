@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util
+package com.bdtx.mod_util.Utils
 
 import android.app.Application
 import android.util.Log
@@ -8,10 +8,10 @@ import androidx.fragment.app.FragmentActivity
 import com.bdtx.mod_util.View.LoadingDialog
 
 // 全局控件工具
-object GlobalControlUtil {
+object GlobalControlUtils {
 
     val TAG = "GlobalControlUtil"
-    val APP : Application? by lazy { ApplicationUtil.getApplication() }
+    val APP : Application? by lazy { ApplicationUtils.getApplication() }
 //    val APP : Application = ApplicationUtil.getApplication()
 
     // 控件 ------------------------------------------
@@ -22,7 +22,7 @@ object GlobalControlUtil {
 
     // 全局唯一 Toast 方法：0 - 短 ， 1 - 长
     fun showToast(msg: String, length: Int) {
-        ActivityManagementUtil.getInstance().top()?.let {
+        ActivityManagementUtils.getInstance().top()?.let {
             it.runOnUiThread(Runnable {
                 my_toast?.let {
                     my_toast!!.cancel()
@@ -38,7 +38,7 @@ object GlobalControlUtil {
 
     // 显示加载中
     fun showLoadingDialog(title : String){
-        ActivityManagementUtil.getInstance().top()?.let {
+        ActivityManagementUtils.getInstance().top()?.let {
             loading_dialog = LoadingDialog(title)
             loading_dialog!!.show((it as FragmentActivity).supportFragmentManager,"")
         }
@@ -52,7 +52,7 @@ object GlobalControlUtil {
 
     // 显示警告框
     fun showAlertDialog(title: String, message: String, onYesClick: (() -> Unit)? = null, onNoClick:(() -> Unit)? = null){
-        ActivityManagementUtil.getInstance().top()?.let {
+        ActivityManagementUtils.getInstance().top()?.let {
             val alertDialog = android.app.AlertDialog.Builder(it)
                 .setTitle(title)
                 .setMessage(message)

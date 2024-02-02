@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util;
+package com.bdtx.mod_util.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -9,7 +9,7 @@ import java.util.Locale;
  * 高位在前地位在后
  */
 // 数据处理工具
-public class DataUtil {
+public class DataUtils {
 
     public static final String GB18030 = "GB18030";
     /**
@@ -28,6 +28,15 @@ public class DataUtil {
             hex += hexVaule;
         }
         return hex;
+    }
+
+    public static String byte2hex(byte b) {
+        int value = b & 0xff;
+        String hexVaule = Integer.toHexString(value);
+        if (hexVaule.length() < 2) {
+            hexVaule = "0" + hexVaule;
+        }
+        return hexVaule;
     }
     /**
      * 16进制字符串转int
@@ -297,7 +306,7 @@ public class DataUtil {
         SimpleDateFormat sd = new SimpleDateFormat("yyMMddhhmmss");
         String jmiy = sd.format(d);//加密因子
         byte[] key = password.getBytes();//原密码字节
-        byte[] A = DataUtil.hex2bytes(jmiy);//加密因子字节
+        byte[] A = DataUtils.hex2bytes(jmiy);//加密因子字节
         byte[] Xkey = new byte[6];
         //利用加密因子对key[]逐字节一一进行异或运算
         for (int i = 0; i < 6; i++) {
@@ -322,7 +331,7 @@ public class DataUtil {
             SecretData[i * 2] = Xkey[i];
             SecretData[i * 2 + 1] = XA[5 - i];
         }
-        return DataUtil.bytes2Hex(SecretData);
+        return DataUtils.bytes2Hex(SecretData);
     }
 
     /**
@@ -338,9 +347,9 @@ public class DataUtil {
             char chrTmp ;
             chrTmp = strProtocol.charAt(i);
             if (chrTmp == ' ') continue;
-            byte chTmp1 = (byte) (DataUtil.char2HexByte(chrTmp) << 4);
+            byte chTmp1 = (byte) (DataUtils.char2HexByte(chrTmp) << 4);
             chrTmp = strProtocol.charAt(i + 1);
-            byte chTmp2 = (byte) (chTmp1 + (DataUtil.char2HexByte(chrTmp) & 15));
+            byte chTmp2 = (byte) (chTmp1 + (DataUtils.char2HexByte(chrTmp) & 15));
             chrCheckCode = i == 0 ? chTmp2 : (byte) (chrCheckCode ^ chTmp2);
         }
         String strHexCheckCode = String.format("%x", Byte.valueOf(chrCheckCode));
@@ -361,12 +370,12 @@ public class DataUtil {
      */
     public static String parsingDate(String hex){
         // yyyy-MM-dd HH:mm:ss
-        int yy = DataUtil.hex2Int(hex.substring(0,2));
-        int MM = DataUtil.hex2Int(hex.substring(2,4));
-        int dd = DataUtil.hex2Int(hex.substring(4,6));
-        int HH = DataUtil.hex2Int(hex.substring(6,8));
-        int mm = DataUtil.hex2Int(hex.substring(8,10));
-        int ss = DataUtil.hex2Int(hex.substring(10,12));
+        int yy = DataUtils.hex2Int(hex.substring(0,2));
+        int MM = DataUtils.hex2Int(hex.substring(2,4));
+        int dd = DataUtils.hex2Int(hex.substring(4,6));
+        int HH = DataUtils.hex2Int(hex.substring(6,8));
+        int mm = DataUtils.hex2Int(hex.substring(8,10));
+        int ss = DataUtils.hex2Int(hex.substring(10,12));
         String itmer = String.valueOf(2000+yy) + "-" + MM + "-" + dd + " " + HH +":"+mm+":"+ss;
         return itmer;
     }
@@ -376,10 +385,10 @@ public class DataUtil {
      * @return
      */
     public static double parsingLnt(String hex){
-        int d = DataUtil.hex2Int(hex.substring(0,2));
-        int m = DataUtil.hex2Int(hex.substring(2,4));
-        int s = DataUtil.hex2Int(hex.substring(4,6));
-        int ds = DataUtil.hex2Int(hex.substring(6,8));
+        int d = DataUtils.hex2Int(hex.substring(0,2));
+        int m = DataUtils.hex2Int(hex.substring(2,4));
+        int s = DataUtils.hex2Int(hex.substring(4,6));
+        int ds = DataUtils.hex2Int(hex.substring(6,8));
         String ss = String.format("%d.%d",s,ds);
         double lnt = d + (m/60.0)+(Double.valueOf(ss)/3600.0);
         return lnt;
@@ -443,8 +452,11 @@ public class DataUtil {
     }
 
     // 获取秒时间戳
-    public static long getTimeSecond() {
+    public static long getTimeSeconds() {
         return System.currentTimeMillis() / 1000;
+    }
+    public static long getTimeMillis() {
+        return System.currentTimeMillis();
     }
 
     public static long stringToTimeStamp(String dateStr, boolean isPreciseTime) {

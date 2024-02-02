@@ -9,7 +9,7 @@
         android:id="@+id/connect_bluetooth_group"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@mipmap/button_bg"
+        android:background="@drawable/half_oval_down_ripple"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -108,7 +108,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/message_page" />
+                        android:src="@drawable/message_page_ripple" />
 
                     <!--                未读消息数量-->
                     <TextView
@@ -133,13 +133,13 @@
                     android:layout_height="80dp"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="40dp"
-                    android:src="@mipmap/status_page" />
+                    android:src="@drawable/status_page_ripple" />
 
                 <ImageView
                     android:id="@+id/map_page"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@mipmap/map_page" />
+                    android:src="@drawable/map_page_ripple" />
 
 
             </LinearLayout>
@@ -155,7 +155,7 @@
                     android:id="@+id/healthy_page"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@mipmap/healthy_page" />
+                    android:src="@drawable/healthy_page_ripple" />
 
                 <ImageView
                     android:id="@+id/sos_page"
@@ -163,13 +163,13 @@
                     android:layout_height="80dp"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="40dp"
-                    android:src="@mipmap/sos_page" />
+                    android:src="@drawable/sos_page_ripple" />
 
                 <ImageView
                     android:id="@+id/setting_page"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@mipmap/setting_page" />
+                    android:src="@drawable/setting_page_ripple" />
 
             </LinearLayout>
 

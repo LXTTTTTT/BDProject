@@ -10,6 +10,7 @@ import com.bdtx.mod_data.Database.Dao.MessageDao;
 import com.bdtx.mod_data.Database.Entity.Contact;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.Global.Constant;
+import com.bdtx.mod_data.Global.Variable;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -87,7 +88,7 @@ public class DaoUtil {
             contact.number = Constant.platform_identifier;
             contact.remark = "指挥中心";
             contact.lastContent = "这里是指挥中心";
-            contact.updateTimer = System.currentTimeMillis() / 1000;
+            contact.updateTime = System.currentTimeMillis() / 1000;
             contact.unreadCount = 0;
             getInstance().getDaoSession().insertOrReplace(contact);
         }
@@ -102,26 +103,30 @@ public class DaoUtil {
     }
 
     // 添加联系人
-    public void addContact(String number){
+    public void addContact(String number, String lastContent){
         List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(number)).list();
         if(contacts.size()<1){
             Contact contact = new Contact();
             contact.number = number;
-            contact.updateTimer = System.currentTimeMillis() / 1000;
-            contact.unreadCount = 0;
+            contact.updateTime = System.currentTimeMillis() / 1000;
+            contact.lastContent = lastContent;
             getDaoSession().insertOrReplace(contact);
             Log.e(TAG, "添加联系人："+number);
+        }else {
+            Contact contact = contacts.get(0);
+            contact.lastContent = lastContent;
+            getDaoSession().insertOrReplace(contact);
         }
     }
 
+
     // 添加消息
     public void addMessage(Message message){
-        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(message.number)).list();
-        if(contacts.size()<1){
-            addContact(message.number);
-        }
+        addContact(message.getNumber(),message.getContent());  // 添加联系人
+        if(message.getIoType()==Constant.TYPE_SEND){Variable.lastSendMsg = message;Variable.checkSendState();} // 状态更新
         getDaoSession().insertOrReplace(message);
-        Log.e(TAG, "添加消息："+message.content);
+        // 发送广播
+        Log.e(TAG, "添加消息："+message.getContent());
     }
 
 

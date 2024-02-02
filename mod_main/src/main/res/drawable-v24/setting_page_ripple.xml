@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/white">
+<!--    为图片添加点击水波纹效果-->
+    <item android:drawable="@drawable/setting_page" />
+</ripple>

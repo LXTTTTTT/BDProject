@@ -15,8 +15,8 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_main.Adapter.BluetoothListAdapter;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityConnectBluetoothBinding;
-import com.bdtx.mod_util.Util.BluetoothTransferUtil;
-import com.bdtx.mod_util.Util.GlobalControlUtil;
+import com.bdtx.mod_util.Utils.BluetoothTransferUtils;
+import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,20 +36,20 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
         init_bluetooth_list();
-        BluetoothTransferUtil.getInstance().setOnBluetoothWork(new BluetoothTransferUtil.onBluetoothWork() {
+        BluetoothTransferUtils.getInstance().setOnBluetoothWork(new BluetoothTransferUtils.onBluetoothWork() {
             @Override public void onScanningResult(List<BluetoothDevice> devices, BluetoothDevice new_device) {}
             @Override public void onConnectSucceed() {
-                GlobalControlUtil.INSTANCE.hideLoadingDialog();
-                GlobalControlUtil.INSTANCE.showToast("连接成功",0);
+                GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                GlobalControlUtils.INSTANCE.showToast("连接成功",0);
                 finish();
             }
             @Override public void onConnectError() {
-                GlobalControlUtil.INSTANCE.hideLoadingDialog();
-                GlobalControlUtil.INSTANCE.showToast("连接错误",0);
+                GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                GlobalControlUtils.INSTANCE.showToast("连接错误",0);
             }
             @Override public void onDisconnect() {
-                GlobalControlUtil.INSTANCE.hideLoadingDialog();
-                GlobalControlUtil.INSTANCE.showToast("断开连接",0);
+                GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                GlobalControlUtils.INSTANCE.showToast("断开连接",0);
             }
             @Override public void sendDataCallback(int var1) {}
             @Override public void onReceiveData(String data_hex) {}
@@ -91,8 +91,8 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
         bluetoothListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
             @Override
             public Unit invoke(View view, Integer integer) {
-                BluetoothTransferUtil.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
-                GlobalControlUtil.INSTANCE.showLoadingDialog("正在连接");
+                BluetoothTransferUtils.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
+                GlobalControlUtils.INSTANCE.showLoadingDialog("正在连接");
 //                finish();
                 return null;
             }

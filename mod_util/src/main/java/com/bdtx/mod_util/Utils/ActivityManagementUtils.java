@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util;
+package com.bdtx.mod_util.Utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,13 +9,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ActivityManagementUtil {
+public class ActivityManagementUtils {
 
 // 单例 --------------------------------------------------
-    private static ActivityManagementUtil activityManagementUtil;
-    public static ActivityManagementUtil getInstance() {
+    private static ActivityManagementUtils activityManagementUtil;
+    public static ActivityManagementUtils getInstance() {
         if (activityManagementUtil == null) {
-            activityManagementUtil = new ActivityManagementUtil();
+            activityManagementUtil = new ActivityManagementUtils();
         }
         return activityManagementUtil;
     }

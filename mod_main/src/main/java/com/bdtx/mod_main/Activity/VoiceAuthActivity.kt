@@ -9,8 +9,8 @@ import com.bdtx.mod_data.EventBus.AuthMsg
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.Base.BaseViewBindingActivity
 import com.bdtx.mod_main.databinding.ActivityVoiceAuthBinding
-import com.bdtx.mod_util.Util.DataUtil
-import com.bdtx.mod_util.Util.ZDCompressionUtil
+import com.bdtx.mod_util.Utils.DataUtils
+import com.bdtx.mod_util.Utils.ZDCompressionUtils
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import com.pancoit.compression.ZDCompression
@@ -27,7 +27,7 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         EventBus.getDefault().register(this)  // 使用 eventbus
         // 是否显示信息
-        val show = ZDCompressionUtil.getInstance().isVoiceOnline
+        val show = ZDCompressionUtils.getInstance().isVoiceOnline
         loge("当前 $show 激活")
         if(!show){
             try {
@@ -44,8 +44,8 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
                 viewBinding.usedTimes.text = "" + use
                 viewBinding.leaveTimes.text = "" + leave
 
-                val a: Long = DataUtil.stringToTimeStamp(end.substring(0, 16),true)
-                val c: Long = DataUtil.stringToTimeStamp(start.substring(0, 16),true)
+                val a: Long = DataUtils.stringToTimeStamp(end.substring(0, 16),true)
+                val c: Long = DataUtils.stringToTimeStamp(start.substring(0, 16),true)
                 val b = System.currentTimeMillis()
                 if (b - a > 0) {
                     viewBinding.tips.text = "*压缩库已过期！"
@@ -63,7 +63,7 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
                 viewBinding.view1.visibility = View.VISIBLE
                 viewBinding.view2.visibility = View.GONE
                 viewBinding.startAuth.setOnClickListener {
-                    ZDCompressionUtil.getInstance().showAuthDialog(this@VoiceAuthActivity)
+                    ZDCompressionUtils.getInstance().showAuthDialog(this@VoiceAuthActivity)
                 }
             }catch (e:Exception){
                 e.printStackTrace()
@@ -85,7 +85,7 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     fun onEvent(eventMsg: AuthMsg){
         loge("收到认证结果消息：${eventMsg.authResult}")
         if(eventMsg.authResult==AuthMsg.AUTH_SUCCESS){
-            ZDCompressionUtil.getInstance().hideAuthDialog()
+            ZDCompressionUtils.getInstance().hideAuthDialog()
             finish()
         }
     }
@@ -95,11 +95,11 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
-            if (requestCode == ZDCompressionUtil.SCAN_ACTIVITY_CODE) {
+            if (requestCode == ZDCompressionUtils.SCAN_ACTIVITY_CODE) {
                 val scanResult: IntentResult = IntentIntegrator.parseActivityResult(resultCode, data)
                 if (scanResult.getContents() != null) {
                     val result: String = scanResult.getContents()
-                    ZDCompressionUtil.getInstance().setDialogKey(result);
+                    ZDCompressionUtils.getInstance().setDialogKey(result);
                 }
             }
         }

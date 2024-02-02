@@ -1,6 +1,6 @@
 package com.bdtx.main.Task
 
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 import java.util.concurrent.atomic.AtomicInteger
 
 object TaskStat {
@@ -15,7 +15,7 @@ object TaskStat {
             if (!sOpenLaunchStat) {
                 return
             }
-            LogUtil.i("currentSituation   $currentSituation")
+            LogUtils.i("currentSituation   $currentSituation")
             sCurrentSituation = currentSituation
             setLaunchStat()
         }

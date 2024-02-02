@@ -3,7 +3,6 @@ package com.bdtx.mod_main.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -12,9 +11,8 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityPlatformSettingBinding;
-import com.bdtx.mod_util.Util.GlobalControlUtil;
-import com.bdtx.mod_util.Util.MMKVUtil;
-import com.tencent.mmkv.MMKV;
+import com.bdtx.mod_util.Utils.GlobalControlUtils;
+import com.bdtx.mod_util.Utils.MMKVUtils;
 
 @Route(path = Constant.PLATFORM_SETTING_ACTIVITY)
 public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPlatformSettingBinding> {
@@ -58,15 +56,15 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
                 }
 
                 if(viewBinding.editText.getText().toString().length() >= 6){
-                    MMKVUtil.INSTANCE.put(Constant.SYSTEM_NUMBER,change_platform);
-                    GlobalControlUtil.INSTANCE.showToast("保存成功",0);
+                    MMKVUtils.INSTANCE.put(Constant.SYSTEM_NUMBER,change_platform);
+                    GlobalControlUtils.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else if(viewBinding.editText.getText().toString().equals("")){
-                    MMKVUtil.INSTANCE.put(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
-                    GlobalControlUtil.INSTANCE.showToast("保存成功",0);
+                    MMKVUtils.INSTANCE.put(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
+                    GlobalControlUtils.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else {
-                    GlobalControlUtil.INSTANCE.showToast("平台号码至少为6位",0);
+                    GlobalControlUtils.INSTANCE.showToast("平台号码至少为6位",0);
                 }
             }
         });

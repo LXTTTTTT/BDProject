@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Util.Log
+package com.bdtx.mod_util.Utils.Log
 
 import android.app.Application
 import android.content.Context
@@ -6,10 +6,10 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
-import com.bdtx.mod_util.Util.DeviceInfoUtils
+import com.bdtx.mod_util.Utils.DeviceInfoUtils
 
 
-object LogUtil {
+object LogUtils {
     private const val TAG = "LogUtil"
     var application: Application? = null
 
@@ -19,8 +19,8 @@ object LogUtil {
     private var mLogPath: String? = null
 
     fun init(application: Application, logPath: String, namePrefix: String = "SRM", isDebug: Boolean = false) {
-        LogUtil.application = application
-        LogUtil.isDebug = isDebug
+        LogUtils.application = application
+        LogUtils.isDebug = isDebug
         mLogPath = logPath
         // persist env info
         val metrics = DisplayMetrics()
