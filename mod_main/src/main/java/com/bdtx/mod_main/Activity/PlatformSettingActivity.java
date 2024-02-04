@@ -17,7 +17,7 @@ import com.bdtx.mod_util.Utils.MMKVUtils;
 @Route(path = Constant.PLATFORM_SETTING_ACTIVITY)
 public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPlatformSettingBinding> {
 
-    int change_platform = Constant.default_platform_number;  // 要改的平台号码
+    int change_platform = Constant.DEFAULT_PLATFORM_NUMBER;  // 要改的平台号码
 
     @Override public void beforeSetLayout() {}
 
@@ -26,7 +26,7 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
         change_platform = Variable.getSystemNumber();
         Log.e("当前平台号码是：", ""+change_platform);
         // 初始化平台通道设置
-        if(change_platform == Constant.default_platform_number){
+        if(change_platform == Constant.DEFAULT_PLATFORM_NUMBER){
             viewBinding.autoChecked.setVisibility(View.VISIBLE);
             viewBinding.checked1.setVisibility(View.INVISIBLE);
             viewBinding.editText.setText("");
@@ -43,7 +43,7 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
                 viewBinding.autoChecked.setVisibility(View.VISIBLE);
                 viewBinding.checked1.setVisibility(View.INVISIBLE);
                 viewBinding.editText.setText("");
-                change_platform = Constant.default_platform_number;
+                change_platform = Constant.DEFAULT_PLATFORM_NUMBER;
             }
         });
 
@@ -60,7 +60,7 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
                     GlobalControlUtils.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else if(viewBinding.editText.getText().toString().equals("")){
-                    MMKVUtils.INSTANCE.put(Constant.SYSTEM_NUMBER,Constant.default_platform_number);
+                    MMKVUtils.INSTANCE.put(Constant.SYSTEM_NUMBER,Constant.DEFAULT_PLATFORM_NUMBER);
                     GlobalControlUtils.INSTANCE.showToast("保存成功",0);
                     finish();
                 }else {

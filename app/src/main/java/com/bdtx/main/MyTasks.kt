@@ -5,7 +5,7 @@ import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
-import com.bdtx.mod_data.Database.DaoUtil
+import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_util.Utils.ApplicationUtils
 import com.bdtx.mod_util.Utils.Log.LogUtils
 import com.bdtx.mod_util.Utils.SystemInfoUtils
@@ -100,7 +100,7 @@ class InitGreenDaoTask() : Task() {
     }
 
     override fun run() {
-        DaoUtil.getInstance().init(ApplicationUtils.getApplication())
+        DaoUtils.getInstance().init(ApplicationUtils.getApplication())
         Log.e(TAG, "初始化GreenDao" )
     }
 }

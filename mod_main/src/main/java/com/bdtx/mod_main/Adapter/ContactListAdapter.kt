@@ -36,7 +36,7 @@ class ContactListAdapter : BaseRecyclerViewAdapter<Contact,AdapterContactItemBin
             // 最后一条消息
             if(!item.lastContent.isNullOrEmpty()){lastContent.text = item.lastContent}
             // 是否指挥中心
-            if(item.number.equals(Constant.platform_identifier)){
+            if(item.number.equals(Constant.PLATFORM_IDENTIFIER)){
                 icon.setImageResource(R.mipmap.platform_icon)
             }else{
                 icon.setImageResource(R.mipmap.contact_icon)

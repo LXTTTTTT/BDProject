@@ -431,7 +431,7 @@ public class BluetoothTransferUtils {
             if (onBluetoothWork != null) {
                 onBluetoothWork.onDisconnect();
             }
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
+//            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
             ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 初始化参数
         }catch (Exception e){
             e.printStackTrace();

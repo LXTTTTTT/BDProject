@@ -433,12 +433,9 @@ public class DataUtils {
     }
 
 // -----------------------------------------
-    public static String getDateShortSerial() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
-    return sdf.format(new Date());
-    }
 
-    public static String FORMAT_DATE_YMDHMS = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMAT_DATE_YMDHMS = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMAT_DATE_SERIAL = "yyMMddHHmmss";
     private static final String FORMAT_DATE_YMD = "yyyy-MM-dd";
     private static final String FORMAT_DATE_YMDHM = "yyyy-MM-dd HH:mm";
 
@@ -457,6 +454,15 @@ public class DataUtils {
     }
     public static long getTimeMillis() {
         return System.currentTimeMillis();
+    }
+
+    // yyyy-MM-dd HH:mm:ss
+    public static String getTimeString(){
+        return timeStampToString(getTimeSeconds());
+    }
+
+    public static String getTimeSerial() {
+        return timeStampToString(getTimeSeconds(),FORMAT_DATE_SERIAL);
     }
 
     public static long stringToTimeStamp(String dateStr, boolean isPreciseTime) {

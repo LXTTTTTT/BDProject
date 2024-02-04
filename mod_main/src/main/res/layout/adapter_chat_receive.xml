@@ -17,7 +17,7 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/chat_receive_bg"
+            android:background="@drawable/corner_fill_white_1"
             android:maxWidth="400dp"
             android:padding="5dp"
             android:textSize="16dp"
@@ -31,7 +31,7 @@
             android:id="@+id/state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/fail_icon"
+            android:src="@drawable/fail_icon"
             android:layout_marginRight="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/content"
             app:layout_constraintEnd_toStartOf="@+id/content"
@@ -41,13 +41,14 @@
         <ImageView
             android:visibility="visible"
             android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
             android:layout_marginTop="2dp"
             android:src="@mipmap/location_icon"
             app:layout_constraintStart_toStartOf="@+id/content"
             app:layout_constraintTop_toBottomOf="@+id/content"/>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -62,11 +63,11 @@
 
         <TextView
             android:id="@+id/vioce_text"
-            android:layout_width="115dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="70dp"
-            android:background="@mipmap/chat_receive_bg"
+            android:background="@drawable/corner_fill_white_1"
             android:maxWidth="200dp"
             android:padding="5dp"
             android:textColor="@color/white" />
@@ -83,13 +84,13 @@
 
 
         <ImageView
-            android:id="@+id/audio_play"
-            android:layout_width="13dp"
-            android:layout_height="20dp"
+            android:id="@+id/voice_img"
+            android:layout_width="10dp"
+            android:layout_height="15dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="90dp"
-            android:background="@mipmap/voice_right_play" />
+            android:background="@drawable/anim_voice_left_play" />
 
         <ImageView
             android:id="@+id/voice_state"
@@ -98,7 +99,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/vioce_text"
-            android:src="@mipmap/fail_icon"
+            android:src="@drawable/fail_icon"
             android:visibility="gone" />
 
     </RelativeLayout>

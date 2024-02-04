@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bdtx.mod_main.R
 import com.bdtx.mod_util.Utils.ApplicationUtils
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 // 基类
@@ -31,14 +32,12 @@ abstract class BaseActivity : AppCompatActivity(){
         beforeSetLayout()
         supportActionBar?.let {it.hide()}  // 隐藏标题栏
         setActivityLayout()  // 绑定布局
+        try { title_textview = findViewById<TextView>(R.id.title) } catch (e: Exception) { loge("这个页面没有 title bar") }  // 必须放在初始化布局之后，初始化数据之前
         setOrientationPortrait()  // 锁定垂直布局
         initView(savedInstanceState);  // 初始化页面
         initData();  // 初始化数据
-        try {
-            title_textview = findViewById<TextView>(R.id.title)
-        } catch (e: Exception) {
-            loge("这个页面没有 title bar")
-        }
+
+        if(enableEventBus()){EventBus.getDefault().register(this)}
     }
 
 
@@ -46,6 +45,7 @@ abstract class BaseActivity : AppCompatActivity(){
     abstract fun beforeSetLayout()
     abstract fun initView(savedInstanceState: Bundle?)
     abstract fun initData()
+    open fun enableEventBus():Boolean=false
 
     // 绑定布局
     open fun setActivityLayout(){
@@ -66,7 +66,8 @@ abstract class BaseActivity : AppCompatActivity(){
 
     // 设置页面标题
     fun setTitle(title : String){
-        title_textview?.let { it.text = title }
+        loge("设置页面标题：$title")
+        title_textview?.let { it.text = title;loge("执行") }
     }
 
     // 设置页面垂直
@@ -75,6 +76,7 @@ abstract class BaseActivity : AppCompatActivity(){
     }
 
     override fun onDestroy() {
+        if(enableEventBus()){EventBus.getDefault().unregister(this)}
         super.onDestroy()
     }
 

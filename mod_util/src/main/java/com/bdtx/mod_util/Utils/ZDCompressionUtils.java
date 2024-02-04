@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bdtx.mod_data.EventBus.AuthMsg;
+import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_util.View.AuthInfoDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -78,7 +79,7 @@ public class ZDCompressionUtils {
                 if(str.equals("00000")){
                     GlobalControlUtils.INSTANCE.showToast("初始化成功",0);
                     hideAuthDialog();
-                    EventBus.getDefault().post(new AuthMsg(AuthMsg.AUTH_SUCCESS));
+                    EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS)));
                     saveVoiceKey(voice_key);
                 }else {
                     GlobalControlUtils.INSTANCE.showToast("初始化失败！",Toast.LENGTH_SHORT);
@@ -145,7 +146,7 @@ public class ZDCompressionUtils {
             if(code==20000){
                 GlobalControlUtils.INSTANCE.showToast("初始化成功",0);
                 hideAuthDialog();
-                EventBus.getDefault().post(new AuthMsg(AuthMsg.AUTH_SUCCESS));
+                EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS)));
                 // 成功了，保存 key
                 saveVoiceKey(voice_key);
             }

@@ -2,12 +2,10 @@ package com.bdtx.mod_data.ViewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bdtx.mod_data.Database.DaoUtil
+import androidx.lifecycle.viewModelScope
+import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_data.Database.Entity.Contact
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 // 全局使用 ViewModel
@@ -41,7 +39,7 @@ class MainVM : BaseViewModel() {
     fun getUnreadMessageCount() : LiveData<Int?> {
         launchUIWithResult(
             responseBlock = {
-                DaoUtil.getContacts()
+                DaoUtils.getContacts()
             },
             successBlock = {
                 // 计算未读消息数量
@@ -59,25 +57,14 @@ class MainVM : BaseViewModel() {
         return unreadMessageCount
     }
 
-    // 倒计时
-    fun countDownCoroutines(
-        total: Int,
-        scope: CoroutineScope,
-        onTick: (Int) -> Unit,
-        onStart: (() -> Unit)? = null,
-        onFinish: (() -> Unit)? = null,
-    ): Job {
-        return flow {
-            for (i in total downTo 0) {
-                emit(i)
-                delay(1000)
-            }
-        }
-            .flowOn(Dispatchers.Main)
-            .onStart { onStart?.invoke() }
-            .onCompletion { onFinish?.invoke() }  // like java finally
-            .onEach { onTick.invoke(it) }  // 每次倒计时时执行
-            .launchIn(scope)
+    private var countDownJob: Job? = null
+    fun startCountDown(){
+        val frequency = deviceCardFrequency.value!!.plus(2)  // 总倒计时：频度+2秒
+        countDownJob = countDownCoroutines(frequency, viewModelScope,onTick = { countDownSeconds ->
+            waitTime.postValue(countDownSeconds)
+        }, onStart = {}, onFinish = {countDownJob?.cancel()} )
     }
+
+
 
 }

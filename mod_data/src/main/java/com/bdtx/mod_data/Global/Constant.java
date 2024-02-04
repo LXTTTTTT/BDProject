@@ -22,10 +22,11 @@ public class Constant {
 
 // 通用常量 ---------------------------------------------------------
 
-    public static final String platform_identifier = "110110110";  // 平台标识
-    public static final int default_platform_number = 15950044;  // 默认平台号码
+    public static final String PLATFORM_IDENTIFIER = "110110110";  // 平台标识
+    public static final int DEFAULT_PLATFORM_NUMBER = 15950044;  // 默认平台号码
 
     public static final String CONTACT_ID = "contact_id";  // 联系人唯一标识（卡号）
+    public static final String NEW_CHAT = "new_chat";  // 新消息页面标识
 
     public static int MESSAGE_TEXT = 1;  // 文本消息
     public static int MESSAGE_VOICE = 2;  // 语音消息
@@ -50,5 +51,15 @@ public class Constant {
     public static final String VO_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBV";  // 离线语音key
     public static final String PIC_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBP";  // 离线图片key
 
-
+// 音频常量 ---------------------------------------------------------
+    public static int sampleRateInHz = 8000;
+    // 声道   CHANNEL_IN_STEREO为双声道，CHANNEL_CONFIGURATION_MONO为单声道
+    public final static int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    public final static int channelCount = channelConfig == AudioFormat.CHANNEL_IN_STEREO ? 2:1;
+    //比特率
+    public final static int BIT_RATE = 64;
+    //编码格式
+    public final static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+    //读取数据的最大字节数
+    public final static int KEY_MAX_INPUT_SIZE =20 * 1024;
 }

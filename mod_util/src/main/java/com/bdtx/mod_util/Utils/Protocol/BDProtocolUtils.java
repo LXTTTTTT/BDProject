@@ -2,6 +2,8 @@ package com.bdtx.mod_util.Utils.Protocol;
 
 import android.util.Log;
 
+import com.bdtx.mod_data.Global.Constant;
+import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
@@ -193,7 +195,6 @@ public class BDProtocolUtils {
                 }
             }
             Log.e(TAG, "BDPWI 当前信号状况: "+Arrays.toString(s21) );
-
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
             ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
@@ -208,6 +209,7 @@ public class BDProtocolUtils {
 
     // 通信申请后的反馈信息
     // [$BDFKI, TXA, Y, Y, 0, 0000]
+    // [$BDFKI, 080432, TCQ, Y, 0, 0]  北三
     public static void BDFKI(String[] values){
         try {
             boolean message_result = false;
@@ -218,31 +220,29 @@ public class BDProtocolUtils {
             result = values[3];  // 反馈结果 ： Y / N
             reason = values[4];  // 失败原因
             if(result.equals("Y")){
+                if(Variable.lastSendMsg!=null){Variable.lastSendMsg.setState(Constant.STATE_SUCCESS);}  // 修改状态
                 GlobalControlUtils.INSTANCE.showToast("发送成功",0);
             }else {
+                if(Variable.lastSendMsg!=null){Variable.lastSendMsg.setState(Constant.STATE_FAILURE);}
+                String reason_str = "";
                 switch ( reason ){
                     case "1":
-                        GlobalControlUtils.INSTANCE.showToast("频度未到，发射被抑制",0);
+                        reason_str = "频度未到，发射被抑制";
                         break;
                     case "2":
-                        GlobalControlUtils.INSTANCE.showToast("接收到系统的抑制指令，发射被抑制",0);
-                        break;
+                        reason_str = "接收到系统的抑制指令，发射被抑制";break;
                     case "3":
-                        GlobalControlUtils.INSTANCE.showToast("当前设置为无线电静默状态，发射被抑制",0);
-                        break;
+                        reason_str = "当前设置为无线电静默状态，发射被抑制";break;
                     case "4":
-                        GlobalControlUtils.INSTANCE.showToast("功率未锁定",0);
-                        break;
+                        reason_str = "功率未锁定";break;
                     case "5":
-                        GlobalControlUtils.INSTANCE.showToast("未检测到IC模块信息",0);
-                        break;
+                        reason_str = "未检测到IC模块信息";break;
                     default:
-                        GlobalControlUtils.INSTANCE.showToast("发射失败，原因码是：" + reason,0);
+                        reason_str = "发射失败，原因码是："+reason;
                         break;
                 }
+                GlobalControlUtils.INSTANCE.showToast(reason_str,0);
             }
-            final boolean result_b = result.equals("Y");
-            Log.e(TAG, "通信成功: "+result_b );
         }catch (Exception e){
             Log.e(TAG, "BDFKI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -254,9 +254,39 @@ public class BDProtocolUtils {
 
 
     // 收到了 TCI 通信信息
+    // [$BDTCI, 04207733, 4207733, 2, 023242, 2, 0, 90000000000065BEF749B2E2CAD4]
+    public static String lastMsgFrom = "";
+    public static String lastMsgTime = "";
     public static void BDTCI(String[] values){
         try {
-
+            int from = Integer.parseInt(values[1]);  // 带了个0，先转化为int
+            int frequency_point = Integer.parseInt(values[3]);
+            String content = values[7];
+            String time = values[4];
+            String decode_type = values[5];
+            Log.i(TAG, "BDTCI: "+from+"/"+frequency_point+"/"+time+"/"+decode_type+"/"+content);
+            if(lastMsgFrom.equals(values[1]) && lastMsgTime.equals(time)){Log.i(TAG, "重复消息，舍弃");return;}
+            lastMsgFrom=values[1];lastMsgTime=time;  // 解决消息重复问题（同一秒内收到同一个号码的第二条消息）
+            // 处理内容数据
+            String header = content.substring(0,2);
+            switch (header){
+                case "90":
+                    TDWTUtils.resolve90(from+"",content);
+                    break;
+                case "91":
+                    TDWTUtils.resolve91(from+"",content);
+                    break;
+                case "92":
+                    TDWTUtils.resolve92(from+"",content);
+                    break;
+                case "93":
+                    TDWTUtils.resolve93(from+"",content);
+                    break;
+                case "A7":
+                    TDWTUtils.resolveA7(from+"",content);
+                    break;
+                default:GlobalControlUtils.INSTANCE.showToast("收到其它消息："+content,0);
+            }
         }catch (Exception  e){
             Log.e(TAG, "BDTCI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -302,9 +332,9 @@ public class BDProtocolUtils {
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
             ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
-            Log.e(TAG, "BDZDX 解析信号状况: "+Arrays.toString(s21) );
+            Log.e(TAG, "BDZDX 解析: "+Arrays.toString(s21) );
         }catch (Exception  e){
-            Log.e(TAG, "BDTCI: 解析错误" + e.toString());
+            Log.e(TAG, "BDZDX: 解析错误" + e.toString());
             e.printStackTrace();
             return;
         }

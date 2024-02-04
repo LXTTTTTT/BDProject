@@ -1,20 +1,35 @@
 package com.bdtx.mod_main.Activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bdtx.mod_data.Database.Entity.Message;
+import com.bdtx.mod_data.EventBus.BaseMsg;
+import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.ViewModel.CommunicationVM;
 import com.bdtx.mod_data.ViewModel.MainVM;
@@ -24,8 +39,13 @@ import com.bdtx.mod_main.Base.BaseMVVMActivity;
 import com.bdtx.mod_main.R;
 import com.bdtx.mod_main.databinding.ActivityChatBinding;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
+import com.bdtx.mod_util.Utils.AudioTrackUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.SendMessageUtils;
+import com.bdtx.mod_util.View.RecordDialog;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +66,23 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
     private List<String> swiftMessages = new ArrayList<>();
     private GlobalControlUtils globalControl = GlobalControlUtils.INSTANCE;
     private SendMessageUtils sendMessageUtils = SendMessageUtils.INSTANCE;
-    private MainVM mainVM;
+    private RecordDialog recordDialog;  // 录音dialog
+    private MainVM mainVM;  // 全局变量
 
+    private Handler handler = new Handler(){
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    if(chatListAdapter.getItemCount()>1){viewBinding.chatList.smoothScrollToPosition(chatListAdapter.getItemCount() - 1);}
+                    break;
+            }
+        }
+    };
     @Override public void beforeSetLayout() {}
+    @Override public boolean enableEventBus() {return true;}
 
-    public static void start(Context context,String card_id){
+    public static void start(Context context, String card_id){
         Intent intent = new Intent(context,ChatActivity.class);
         intent.putExtra(Constant.CONTACT_ID,card_id);
         context.startActivity(intent);
@@ -62,6 +94,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         target_number = getIntent().getStringExtra(Constant.CONTACT_ID);
         loge("进入聊天："+target_number);
         if(target_number.equals("")){globalControl.showToast("页面出错了",0);finish();}
+        if(target_number.equals(Constant.NEW_CHAT)){viewBinding.targetNumber.setVisibility(View.VISIBLE);}
         // 初始化动画效果
         alphaAnimation();
         scaleAnimation();
@@ -81,13 +114,14 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
 
     public void init_chat_list(){
         chatListAdapter = new ChatListAdapter();
-        chatListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
+        chatListAdapter.setOnMessageClick(new ChatListAdapter.OnMessageClick() {
             @Override
-            public Unit invoke(View view, Integer position) {
-                loge("点击了 "+position);
-                return null;
+            public void onResendClick(@NonNull Message message) {
+                // 重发消息
+                loge("重发消息："+message.content);
             }
         });
+
         viewBinding.chatList.setLayoutManager(new LinearLayoutManager(my_context,LinearLayoutManager.VERTICAL,false));
         viewBinding.chatList.setAdapter(chatListAdapter);
     }
@@ -104,8 +138,10 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         swiftListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
             @Override
             public Unit invoke(View view, Integer position) {
-                globalControl.showToast("点击 "+swiftMessages.get(position),0);
-                viewBinding.swiftList.startAnimation(translateAniHide);
+                if(isAnimating){return null;}
+//                globalControl.showToast("点击 "+swiftMessages.get(position),0);
+                viewBinding.content.setText(swiftMessages.get(position));
+                viewBinding.swiftList.setVisibility(View.GONE);
                 return null;
             }
         });
@@ -117,7 +153,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
 
     public void init_control(){
         // 设置标题
-        if(target_number.equals(Constant.platform_identifier)){setTitle("指挥中心");}else {setTitle(target_number);}
+        if(target_number.equals(Constant.PLATFORM_IDENTIFIER)){setTitle("指挥中心");}
+        else if(target_number.equals(Constant.NEW_CHAT)){setTitle("新消息");}
+        else{setTitle(target_number);}
         // 发送文本按键
         viewBinding.send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +175,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
             public void onClick(View view) {
                 viewBinding.textGroup.setVisibility(View.GONE);
                 viewBinding.voiceGroup.setVisibility(View.VISIBLE);
+                viewBinding.swiftList.setVisibility(View.GONE);  // 隐藏快捷消息
             }
         });
 
@@ -163,6 +202,72 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
             }
         });
 
+        // 解决键盘弹起时遮挡 recyclerview 问题
+        viewBinding.content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){handler.sendEmptyMessageDelayed(0,250);}
+            }
+        });
+
+        // 目标卡号修改监听（刷新卡号）
+        viewBinding.targetNumber.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                handler.removeCallbacksAndMessages(null);  // 取消上一次
+                if(editable.toString().length()<6){return;}  // 卡号太短
+                // 0.5秒后修改目标卡号并获取对应的消息记录
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        target_number = editable.toString();
+                        viewModel.getMessage(target_number);
+                    }
+                },500);
+            }
+        });
+
+        // 初始化录音窗口
+        recordDialog=new RecordDialog(my_context, (dialog, audioFilePath, seconds) -> {
+            // 录音时间小于2就不处理
+            if(2>seconds){
+                Toast.makeText(my_context,"录音时间太短!",Toast.LENGTH_SHORT).show();
+            }
+            // 录音时长大于2，发送消息
+            else{
+//                sendVocie(audioFilePath,1,seconds);  // 发送语音消息
+            }
+            // 这个是针对录音时间达到最大长度时隐藏录音界面
+            if(dialog.isShowing()){
+                dialog.dismiss();  // 关闭窗口
+            }
+        });
+        // 录音
+        viewBinding.voiceButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                // 刚按下时那一瞬间，显示 dialog
+                if (action == MotionEvent.ACTION_DOWN) {
+                    viewBinding.voiceButton.setSelected(true);
+                    if(!recordDialog.isShowing()){
+                        recordDialog.show();
+                    }
+                }
+                // 过了刚按下时的那一瞬间，这里只把 ACTION_DOWN 和 ACTION_UP 传进去
+                if (recordDialog.isShowing()) {
+                    recordDialog.dialogTouch(motionEvent);
+                }
+                // 点击事件被dialog遮挡了，手动换背景
+                if (action == MotionEvent.ACTION_UP) {
+                    viewBinding.voiceButton.setSelected(false);
+                }
+                return true;
+            }
+        });
+
     }
 
     // 数据变化监听
@@ -173,6 +278,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
             @Override
             public void onChanged(List<Message> messages) {
                 chatListAdapter.setData(messages);
+                handler.sendEmptyMessageDelayed(0,100);  // 滚动到底部
             }
         });
 
@@ -212,8 +318,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         viewBinding.send.setBackgroundResource(R.drawable.corner_fill_blue_1_ripple);
         viewBinding.send.setText("发送");
         // 发送语音按键
-        viewBinding.voiceButton.setSelected(true);
+        viewBinding.voiceButton.setEnabled(true);
         viewBinding.voiceButton.setText("按住说话");
+        viewBinding.voiceButton.setBackgroundResource(R.drawable.selector_button_bg);
     }
 
     private void disableSendGroup(String tips){
@@ -222,8 +329,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         viewBinding.send.setBackgroundResource(R.drawable.corner_fill_gray_3);
         viewBinding.send.setText(tips);
         // 发送语音按键
-        viewBinding.voiceButton.setSelected(false);
+        viewBinding.voiceButton.setEnabled(false);
         viewBinding.voiceButton.setText(tips);
+        viewBinding.voiceButton.setBackgroundResource(R.drawable.corner_fill_gray_3);
     }
 
     private AlphaAnimation alphaAniShow, alphaAniHide;
@@ -288,6 +396,17 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         //隐藏
         alphaAniHide = new AlphaAnimation(1, 0);
         alphaAniHide.setDuration(1000);
+    }
+
+    // 广播事件
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onBroadcast(BaseMsg message){
+        if(message.getType()==BaseMsg.Companion.getMSG_UPDATE_MESSAGE()){
+            UpdateMessageMsg msg = (UpdateMessageMsg) message.getMessage();
+            if(msg.number.equals(target_number)){
+                viewModel.getMessage(target_number);
+            }
+        }
     }
 
 

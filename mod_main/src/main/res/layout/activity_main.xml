@@ -185,10 +185,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/icon_group"
         android:layout_marginTop="40dp"
-        android:text="10-24 23:59"
         android:gravity="center"
-        android:textSize="20sp"
-        android:textColor="@color/white"/>
+        android:text="10-24 23:59"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
 
 </RelativeLayout>

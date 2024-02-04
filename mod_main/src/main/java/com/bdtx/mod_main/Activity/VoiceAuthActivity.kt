@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bdtx.mod_data.EventBus.AuthMsg
+import com.bdtx.mod_data.EventBus.BaseMsg
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.Base.BaseViewBindingActivity
 import com.bdtx.mod_main.databinding.ActivityVoiceAuthBinding
@@ -23,9 +24,8 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
 
 
     override fun beforeSetLayout() {}
-
+    override fun enableEventBus(): Boolean { return true }  // 使用 eventbus
     override fun initView(savedInstanceState: Bundle?) {
-        EventBus.getDefault().register(this)  // 使用 eventbus
         // 是否显示信息
         val show = ZDCompressionUtils.getInstance().isVoiceOnline
         loge("当前 $show 激活")
@@ -82,12 +82,18 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
 
     // 认证结果处理
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(eventMsg: AuthMsg){
-        loge("收到认证结果消息：${eventMsg.authResult}")
-        if(eventMsg.authResult==AuthMsg.AUTH_SUCCESS){
-            ZDCompressionUtils.getInstance().hideAuthDialog()
-            finish()
+    fun onEvent(eventMsg: BaseMsg<Any>){
+        loge("收到广播，类型：${eventMsg.type}")
+        val message = eventMsg.message
+        when(message){
+            message is AuthMsg -> {
+                if((message as AuthMsg).authResult==AuthMsg.AUTH_SUCCESS){
+                    ZDCompressionUtils.getInstance().hideAuthDialog()
+                    finish()
+                }
+            }
         }
+
     }
 
 

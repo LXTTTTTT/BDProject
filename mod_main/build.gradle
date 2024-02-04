@@ -61,27 +61,17 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
     // 额外导入 ---------------------------------------------------
-    compileOnly rootProject.depsLibs.mmkv  // MMKV（强化版SharedPreferences）
-    // 路由
     compileOnly rootProject.depsLibs.aroutreApi
 //    compileOnly (rootProject.depsLibs.aroutreApi){transitive(false)}
     kapt rootProject.depsLibs.arouterCompiler
 
     implementation 'androidx.wear:wear:1.2.0'  // 弧形列表（androidx.core:core-ktx 要改成1.6.0）
-    compileOnly rootProject.depsLibs.greendao  // greenDAO 数据库
     // kotlin viewModel 同时要导入activityKtx适配
-    compileOnly rootProject.depsLibs.viewModelKtx
-    compileOnly rootProject.depsLibs.liveDataKtx
     implementation rootProject.depsLibs.activityKtx
     // 高德地图
     implementation 'com.amap.api:3dmap:8.0.0'
-    // okhttp
-    implementation rootProject.depsLibs.okhttp3
-    implementation rootProject.depsLibs.okio
-    // rx
+    // rxPermission
     compileOnly rootProject.depsLibs.rxPermission
-    compileOnly rootProject.depsLibs.rxjava
-    compileOnly rootProject.depsLibs.rxandroid
     // 导入模块 ---------------------------------------------------
     compileOnly project(path: ':mod_util')
     compileOnly project(path: ':mod_data')

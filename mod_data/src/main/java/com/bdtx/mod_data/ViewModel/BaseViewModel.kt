@@ -2,10 +2,8 @@ package com.bdtx.mod_data.ViewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 
 open class BaseViewModel : ViewModel() {
@@ -39,5 +37,25 @@ open class BaseViewModel : ViewModel() {
         return null
     }
 
+    // 倒计时任务
+    fun countDownCoroutines(
+        total: Int,
+        scope: CoroutineScope,
+        onTick: (Int) -> Unit,
+        onStart: (() -> Unit)? = null,
+        onFinish: (() -> Unit)? = null,
+    ): Job {
+        return flow {
+            for (i in total downTo 0) {
+                emit(i)
+                delay(1000)
+            }
+        }
+            .flowOn(Dispatchers.Main)
+            .onStart { onStart?.invoke() }
+            .onCompletion { onFinish?.invoke() }  // like java finally
+            .onEach { onTick.invoke(it) }  // 每次倒计时时执行
+            .launchIn(scope)
+    }
 
 }

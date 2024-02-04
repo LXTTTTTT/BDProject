@@ -9,16 +9,19 @@ import com.bdtx.mod_data.Database.Dao.DaoSession;
 import com.bdtx.mod_data.Database.Dao.MessageDao;
 import com.bdtx.mod_data.Database.Entity.Contact;
 import com.bdtx.mod_data.Database.Entity.Message;
+import com.bdtx.mod_data.EventBus.BaseMsg;
+import com.bdtx.mod_data.EventBus.UpdateContactMsg;
+import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.Calendar;
 import java.util.List;
 
 // 数据库使用工具
-public class DaoUtil {
+public class DaoUtils {
 
     public static String TAG = "DaoUtil";
     private Context mContext;
@@ -36,17 +39,17 @@ public class DaoUtil {
     private static DaoSession mDaoSession;
 
 
-    private DaoUtil() {
+    private DaoUtils() {
     }
 
 // 单例 ------------------------------------
     //多线程中要被共享的使用volatile关键字修饰  GreenDao管理类
-    private volatile static DaoUtil instance;
-    public static DaoUtil getInstance() {
+    private volatile static DaoUtils instance;
+    public static DaoUtils getInstance() {
         if (instance == null) {
-            synchronized (DaoUtil.class) {
+            synchronized (DaoUtils.class) {
                 if (instance == null) {
-                    instance = new DaoUtil();
+                    instance = new DaoUtils();
                 }
             }
         }
@@ -82,10 +85,10 @@ public class DaoUtil {
 
     // 首次初始化指挥中心
     public static void addPlatformContact(){
-        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(Constant.platform_identifier)).list();
+        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(Constant.PLATFORM_IDENTIFIER)).list();
         if (contacts.size() == 0){
             Contact contact = new Contact();
-            contact.number = Constant.platform_identifier;
+            contact.number = Constant.PLATFORM_IDENTIFIER;
             contact.remark = "指挥中心";
             contact.lastContent = "这里是指挥中心";
             contact.updateTime = System.currentTimeMillis() / 1000;
@@ -117,15 +120,18 @@ public class DaoUtil {
             contact.lastContent = lastContent;
             getDaoSession().insertOrReplace(contact);
         }
+        // 发送广播
+        EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_CONTACT(), null));
     }
 
 
     // 添加消息
     public void addMessage(Message message){
         addContact(message.getNumber(),message.getContent());  // 添加联系人
-        if(message.getIoType()==Constant.TYPE_SEND){Variable.lastSendMsg = message;Variable.checkSendState();} // 状态更新
+        if(message.getIoType()==Constant.TYPE_SEND){Variable.lastSendMsg = message;Variable.checkSendState();}  // 发送状态检测
         getDaoSession().insertOrReplace(message);
         // 发送广播
+        EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_MESSAGE(), new UpdateMessageMsg(message.getNumber())));
         Log.e(TAG, "添加消息："+message.getContent());
     }
 

@@ -13,13 +13,11 @@
         <activity
             android:name=".Activity.MessageActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.ChatActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.StateActivity"
             android:launchMode="singleTop"

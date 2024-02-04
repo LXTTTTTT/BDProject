@@ -1,108 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingRight="70dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="0dp">
 
-<!--    文本消息-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/text_group"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@color/transparent"
-        >
-
-
-        <TextView
-            android:id="@+id/content"
-            android:textSize="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/corner_fill_green_3"
-            android:maxWidth="200dp"
-            android:padding="5dp"
-            android:text="聊天内容聊天内容聊天内容聊天内容"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="70dp" />
-
-        <ImageView
-            android:id="@+id/state"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@mipmap/fail_icon"
-            android:layout_marginRight="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/content"
-            app:layout_constraintEnd_toStartOf="@+id/content"
-            app:layout_constraintTop_toTopOf="@+id/content" />
-
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/location_icon"
-            android:layout_marginTop="2dp"
-            app:layout_constraintEnd_toEndOf="@+id/content"
-            app:layout_constraintTop_toBottomOf="@+id/content" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    语音消息-->
     <RelativeLayout
-        android:id="@+id/voice_group"
+        android:id="@+id/message_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/vioce_text"
-            android:layout_width="115dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="70dp"
-            android:background="@drawable/corner_fill_green_3"
-            android:maxWidth="400dp"
-            android:padding="5dp"
-            android:textSize="16dp"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/voice_length"
+        <LinearLayout
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:text="3"
-            android:textColor="@color/black"/>
+            android:gravity="right"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/corner_fill_green_3"
+                android:maxWidth="200dp"
+                android:padding="5dp"
+                android:text="聊天内容聊天内容聊天内容聊天内容"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
 
 
-        <ImageView
-            android:id="@+id/audio_play"
-            android:layout_width="13dp"
+            <!--    语音消息-->
+            <LinearLayout
+                android:id="@+id/voice"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/corner_fill_green_3_ripple"
+                android:gravity="right|center_vertical"
+                android:padding="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/voice_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="3"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/voice_img"
+                    android:layout_width="10dp"
+                    android:layout_height="15dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/anim_voice_right_play_black" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/state"
+            android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="90dp"
-            android:background="@mipmap/voice_left_play" />
-
-        <ImageView
-            android:id="@+id/voice_state"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@mipmap/fail_icon"
-            android:layout_toLeftOf="@+id/vioce_text"
             android:layout_marginRight="5dp"
-            android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:layout_toLeftOf="@+id/message">
+
+            <ImageView
+                android:id="@+id/fail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/fail_icon_ripple" />
+
+            <ProgressBar
+                android:id="@+id/sending"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:indeterminateDrawable="@drawable/sending_progressbar" />
+        </RelativeLayout>
+
 
     </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/location"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/message_group"
+        android:layout_alignRight="@+id/message_group"
+        android:paddingLeft="30dp"
+        android:paddingBottom="10dp"
+        android:src="@mipmap/location_icon"
+        android:visibility="visible" />
+
 
 </RelativeLayout>
 
