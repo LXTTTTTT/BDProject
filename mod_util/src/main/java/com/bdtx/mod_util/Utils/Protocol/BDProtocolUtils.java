@@ -22,17 +22,17 @@ public class BDProtocolUtils {
     public static BDProtocolUtils getInstance() {
         if(bdProtocolUtils == null){
             bdProtocolUtils = new BDProtocolUtils();
+            bdProtocolUtils.mainVM = ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class);
         }
         return bdProtocolUtils;
     }
-
-    private static String datas = "";  // 需要拼接的总数据
+    private MainVM mainVM;
 
 // USB 串口专用接收数据解析方法：每次传过来的都是碎片数据，需要拼接
 // $CCIC     A,1595   0044,0,1,33    3211*99
-    public static void receiveData_fragment(String str){
+    private String datas = "";  // 需要拼接的总数据
+    public void receiveData_fragment(String str){
 //        Log.e(TAG, "receiveData_fragment: "+str );
-
         // 拼接数据
         datas +=  str;
         // 找到 $ 符，如果没有的话，这条数据就丢弃，重置数据，如果有的话就从 $ 开始截取到后面的所有字符
@@ -59,21 +59,13 @@ public class BDProtocolUtils {
             intactData = datas.substring(0,endIndex+3);  // 截出 $---*66
             datas = datas.substring(endIndex+3);  // 多出来的是下一条指令，保留到下一次用
         }
-
         parseData(intactData);
-
     }
 
-// RS232 串口专用接收数据解析方法：每次传过来的都是整块的数据，直接解析
-// $CCICA,15950044,0,1,333211*99
-    public static void receiveData_monoblock(String str){
-        parseData(str);
-    }
-
-
-
+    // RS232 串口专用接收数据解析方法：每次传过来的都是整块的数据，直接解析
+    // $CCICA,15950044,0,1,333211*99
     // 解析数据
-    public static void parseData(String intactData){
+    public void parseData(String intactData){
 //        Log.i(TAG, "收到数据 parseData: "+ intactData);
         // 拆分数据
         int xorIndex = intactData.indexOf("*");
@@ -92,55 +84,52 @@ public class BDProtocolUtils {
             BDICP(values);
         } else if (data_str.contains("PWI")) {  // 波束信息
             BDPWI(values);
-        } else if (data_str.contains("TCI")){  // 北斗三代通信信息
-            BDTCI(values);
+        } else if (data_str.contains("TCI")||data_str.contains("TXR")){  // 北斗三代通信信息
+            BDMessage(values);
         } else if (data_str.contains("ZDX")){  // 盒子信息
             BDZDX(values);
         }
 
     // 其余类型的应该都是 RNSS 定位数据
         else {
-            parseRNSS(values,intactData);
+            parseRNSS(values);
         }
 
 
     }
 
     // 解析 RNSS 位置数据
-    public static void parseRNSS(String[] values , String raw_str){
+    public void parseRNSS(String[] values){
         try {
             // 拆分数据
             String head = values[0];
-
-            if (head.contains("GGA") && values.length > 9){
+            if (head.contains("GGA")){
                 if (values[6].equals("0")) return;  // 0 就是无效定位，不要
-                if(values[9] != null || !values[9].equals("")){
-                }else {
-                }
+                double longitude = DataUtils.analysisLonlat(values[4]);
+                double latitude = DataUtils.analysisLonlat(values[2]);
+                double altitude = Double.parseDouble(values[9]);
+                mainVM.getDeviceLatitude().postValue(latitude);
+                mainVM.getDeviceLongitude().postValue(longitude);
+                mainVM.getDeviceAltitude().postValue(altitude);
+                Log.e(TAG, "解析 GGA 位置: "+longitude+"/"+latitude+"/"+altitude );
             }else if (head.contains("GLL") && values.length > 6){
                 if (values[6].equals("V")) return;  // V - 无效  A - 有效
-            }else if (head.contains("GNS")){
-                // GNS消息，这里转发给接收机
-
-            }else if (head.contains("VTG")){
-
-                // VTG消息，这里转发给接收机
-
+                double longitude = DataUtils.analysisLonlat(values[3]);
+                double latitude = DataUtils.analysisLonlat(values[1]);
+                mainVM.getDeviceLongitude().postValue(longitude);
+                mainVM.getDeviceLatitude().postValue(latitude);
+                Log.e(TAG, "解析 GLL 位置: "+longitude+"/"+latitude );
             }else if (head.contains("ZDA")){
                 // ZDA消息，这里转发给接收机
-
             }
             else if (head.contains("RMC")){
 
-
-            }else if (head.contains("BAX")){
-                String power = values[1];  // 拿到电量
-                // 设置参数
             }else {
+                Log.e(TAG, "收到其他RN指令: "+ Arrays.toString(values));
                 return;
             }
         }catch (Exception e){
-            Log.e(TAG, "parseRNSS: 解析错误" + e.toString());
+            Log.e(TAG, "parseRNSS: 解析错误");
             e.printStackTrace();
             return;
         }
@@ -151,19 +140,19 @@ public class BDProtocolUtils {
 
     // 北三 --------------------------------------
     // ICP 卡号、频度等
-    public  static void BDICP(String[] value){
+    public void BDICP(String[] value){
         try {
             String cardId = value[1];
             int cardFre = Integer.parseInt(value[14]);
             int cardLevel = -1;
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
+            mainVM.getDeviceCardID().postValue(cardId);
+            mainVM.getDeviceCardFrequency().postValue(cardFre);
             if(Integer.parseInt(value[15]) == 0){
                 cardLevel = 5;  // 0就是5级卡
             }else {
                 cardLevel = Integer.parseInt(value[15]);
             }
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
+            mainVM.getDeviceCardLevel().postValue(cardLevel);
             Log.e(TAG, "BDICP 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel );
         }catch (Exception e){
             Log.e(TAG, "BDICP: 解析错误" + e.toString());
@@ -174,7 +163,7 @@ public class BDProtocolUtils {
     }
 
     // PWI 功率信息
-    public static void BDPWI(String[] values){
+    public void BDPWI(String[] values){
         // 尽量用 try 避免线程中断
         try {
             int rdss2Count1 = Integer.parseInt(values[2]);
@@ -197,7 +186,7 @@ public class BDProtocolUtils {
             Log.e(TAG, "BDPWI 当前信号状况: "+Arrays.toString(s21) );
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
+            mainVM.getSignal().postValue(topTen);
         }catch (Exception e){
             Log.e(TAG, "BDPWI: 解析错误" + e.toString());
             e.printStackTrace();
@@ -210,7 +199,7 @@ public class BDProtocolUtils {
     // 通信申请后的反馈信息
     // [$BDFKI, TXA, Y, Y, 0, 0000]
     // [$BDFKI, 080432, TCQ, Y, 0, 0]  北三
-    public static void BDFKI(String[] values){
+    public void BDFKI(String[] values){
         try {
             boolean message_result = false;
             String type;  // 反馈的指令类型 ：只用 TCQ
@@ -255,15 +244,31 @@ public class BDProtocolUtils {
 
     // 收到了 TCI 通信信息
     // [$BDTCI, 04207733, 4207733, 2, 023242, 2, 0, 90000000000065BEF749B2E2CAD4]
-    public static String lastMsgFrom = "";
-    public static String lastMsgTime = "";
-    public static void BDTCI(String[] values){
+    // $BDTXR,1,4207733,1,2337,90000000000065C1FAF4B2E2CAD4*3F
+    public String lastMsgFrom = "";
+    public String lastMsgTime = "";
+    public void BDMessage(String[] values){
         try {
-            int from = Integer.parseInt(values[1]);  // 带了个0，先转化为int
-            int frequency_point = Integer.parseInt(values[3]);
-            String content = values[7];
-            String time = values[4];
-            String decode_type = values[5];
+            int from = 0;  // 带了个0，先转化为int
+            int frequency_point = 0;
+            String content = "000000";
+            String time = "000000";
+            String decode_type = "0";
+            if(values[0].contains("TCI")){
+                from = Integer.parseInt(values[1]);  // 带了个0，先转化为int
+                frequency_point = Integer.parseInt(values[3]);
+                content = values[7];
+                time = values[4];
+                decode_type = values[5];
+            }else if(values[0].contains("TXR")){
+                from = Integer.parseInt(values[2]);
+                frequency_point = Integer.parseInt(values[3]);
+                content = values[5];
+                time = values[4];
+                decode_type = values[3];
+            }else {
+                Log.e(TAG, "其他北三内容协议");
+            }
             Log.i(TAG, "BDTCI: "+from+"/"+frequency_point+"/"+time+"/"+decode_type+"/"+content);
             if(lastMsgFrom.equals(values[1]) && lastMsgTime.equals(time)){Log.i(TAG, "重复消息，舍弃");return;}
             lastMsgFrom=values[1];lastMsgTime=time;  // 解决消息重复问题（同一秒内收到同一个号码的第二条消息）
@@ -295,16 +300,16 @@ public class BDProtocolUtils {
     }
 
     // 收到了 ZDX 盒子信息
-    public static void BDZDX(String[] values){
+    public void BDZDX(String[] values){
         try {
             String cardId = values[1];
             int cardFre = Integer.parseInt(values[24]);
             int cardLevel = Integer.parseInt(values[25]);
             int batteryLevel = Integer.parseInt(values[2]);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardID().postValue(cardId);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardFrequency().postValue(cardFre);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceCardLevel().postValue(cardLevel);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getDeviceBatteryLevel().postValue(batteryLevel);
+            mainVM.getDeviceCardID().postValue(cardId);
+            mainVM.getDeviceCardFrequency().postValue(cardFre);
+            mainVM.getDeviceCardLevel().postValue(cardLevel);
+            mainVM.getDeviceBatteryLevel().postValue(batteryLevel);
             Log.e(TAG, "BDZDX 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel+" 电量-"+batteryLevel );
 
             int s21[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -331,9 +336,9 @@ public class BDProtocolUtils {
             s21[20] = Integer.parseInt(values[23]);
             Arrays.sort(s21);  // 排序
             int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getSignal().postValue(topTen);
+            mainVM.getSignal().postValue(topTen);
             Log.e(TAG, "BDZDX 解析: "+Arrays.toString(s21) );
-        }catch (Exception  e){
+        }catch(Exception  e){
             Log.e(TAG, "BDZDX: 解析错误" + e.toString());
             e.printStackTrace();
             return;
@@ -400,47 +405,7 @@ public class BDProtocolUtils {
     }
 
 
-// 倒计时 -------------------------------------------------------
 
-    //计时器
-    private Timer timer;
-    // 默认倒计时方法：倒计时60秒
-    public void startCountdown(){
-        int count = 60;
-        startCountdown(count);
-    }
-
-    // 自定义倒计时方法：传入一个计时数值
-    public void startCountdown(int count){
-        cancelCountdown();
-        timer = new Timer();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                if(!ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().getValue()){
-                    cancelCountdown();
-                } else {
-                    int countDown = ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().getValue();
-                    if(countDown<=0){
-                        cancelCountdown();
-                    } else {
-                        countDown--;
-                        ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).getWaitTime().postValue(countDown);
-                    }
-                }
-            }
-        };
-        timer.schedule(task, 0, 1005);
-    }
-
-    public void cancelCountdown(){
-        if (timer != null){
-            timer.cancel();
-            timer = null;
-        }
-    }
-
-// -----------------------------------------------------------------------
     // 打包，加上 $ 和 * 和 校验和，输出 hex_str
     public static String packaging(String tmp){
         String hexCommand = DataUtils.string2Hex(tmp);

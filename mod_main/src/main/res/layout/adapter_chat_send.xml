@@ -96,7 +96,7 @@
         android:paddingLeft="30dp"
         android:paddingBottom="10dp"
         android:src="@mipmap/location_icon"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
 </RelativeLayout>

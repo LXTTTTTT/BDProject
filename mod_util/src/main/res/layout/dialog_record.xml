@@ -14,6 +14,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:orientation="vertical"
             android:background="@drawable/microphone_bg_1">
             <ImageView
                 android:layout_width="100dp"
@@ -21,6 +22,13 @@
                 android:layout_marginBottom="10dp"
                 android:id="@+id/voiceAnim"
                 android:layout_height="60dp"/>
+            <TextView
+                android:id="@+id/record_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textSize="17dp"
+                android:textColor="@color/white"/>
         </LinearLayout>
         <TextView
             android:layout_marginTop="40dp"
@@ -29,8 +37,7 @@
             android:gravity="center"
             android:text="松开发送，上滑取消"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            />
+            android:textSize="15dp" />
 
 <!--        撑场面-->
         <LinearLayout

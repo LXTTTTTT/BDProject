@@ -45,7 +45,7 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
     // 额外导入
-    api project(':app').files('libs/compression_online.aar')  // 中大压缩库
+    api project(':app').files('libs/compression_interior.aar')  // 中大压缩库
     api 'com.journeyapps:zxing-android-embedded:4.3.0'  // 扫码
     // okhttp
     api rootProject.depsLibs.okhttp3

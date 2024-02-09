@@ -14,7 +14,7 @@ class MessageTypeActivity : BaseViewBindingActivity<ActivityMessageTypeBinding>(
     override fun beforeSetLayout() {}
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        setTitle("报文类型设置");
     }
 
     override fun initData() {

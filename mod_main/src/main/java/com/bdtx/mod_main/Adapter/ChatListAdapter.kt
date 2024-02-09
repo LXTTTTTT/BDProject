@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewbinding.ViewBinding
+import com.bdtx.mod_data.Database.Entity.Location
 import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.databinding.AdapterChatReceiveBinding
@@ -56,6 +57,13 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
                         playVoice(item.voicePath,voiceImg)
                     }
                 }
+                // 位置
+                item.location?.let { location_entity ->
+                    location.visibility = View.VISIBLE
+                    location.setOnClickListener { location_view ->
+                        onMessageClick?.let { it.onLocationClick(location_entity) }
+                    }
+                }
                 // 状态
                 if(item.state==Constant.STATE_SUCCESS){
                     state.visibility = View.GONE
@@ -83,32 +91,25 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
             viewBinding.binding.apply {
                 // 文本消息
                 if(item.messageType==Constant.MESSAGE_TEXT){
-                    textGroup.visibility = View.VISIBLE  // 显示文本组
-                    voiceGroup.visibility = View.GONE  // 隐藏语音组
+                    content.visibility = View.VISIBLE  // 显示文本组
+                    voice.visibility = View.GONE  // 隐藏语音组
                     content.text = item.content  // 消息文本
-                    // 状态
-                    if(item.state==Constant.STATE_FAILURE){
-                        state.visibility = View.VISIBLE
-                        state.setOnClickListener{
-                            onMessageClick?.let { it.onResendClick(item) }  // 重发消息
-                        }
-                    }else{state.visibility = View.GONE}
                 }
                 // 语音消息
                 else{
-                    textGroup.visibility = View.GONE  // 隐藏文本组
-                    voiceGroup.visibility = View.VISIBLE  // 显示语音组
+                    content.visibility = View.GONE  // 隐藏文本组
+                    voice.visibility = View.VISIBLE  // 显示语音组
                     content.text = "语音消息"  // 消息文本
-                    // 状态
-                    if(item.state==Constant.STATE_FAILURE){
-                        state.visibility = View.VISIBLE
-                        state.setOnClickListener{
-                            onMessageClick?.let { it.onResendClick(item) }  // 重发消息
-                        }
-                    }else{state.visibility = View.GONE}
-                    voiceGroup.setOnClickListener {
+                    voice.setOnClickListener {
                         // 播放语音直接在 adapter 中处理
                         playVoice(item.voicePath,voiceImg)
+                    }
+                }
+                // 位置
+                item.location?.let { location_entity ->
+                    location.visibility = View.VISIBLE
+                    location.setOnClickListener { location_view ->
+                        onMessageClick?.let { it.onLocationClick(location_entity) }
                     }
                 }
             }
@@ -144,6 +145,7 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
     fun setOnMessageClick(listener: OnMessageClick) { onMessageClick = listener }
     interface OnMessageClick {
         fun onResendClick(message: Message)
+        fun onLocationClick(location: Location)
     }
 
 }

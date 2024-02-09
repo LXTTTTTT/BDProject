@@ -315,7 +315,7 @@ public class BluetoothTransferUtils {
     public void sendMessage(String targetCardNumber, int type, String content_str){
         write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
         // 开始倒计时
-
+        ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
     }
 
     public void write(byte[] data_bytes) {
@@ -400,10 +400,10 @@ public class BluetoothTransferUtils {
             String[] data_hex_array = data_hex.split("0d0a");  // 分割后处理
             for (String s : data_hex_array) {
                 String s_str = DataUtils.hex2String(s);
-                Pattern pattern = Pattern.compile("FKI|ICP|TCI|PWI|GGA|GLL|PRX|RNX|ZDX");
+                Pattern pattern = Pattern.compile("FKI|ICP|TCI|PWI|GGA|GLL|PRX|RNX|ZDX|TXR");
                 Matcher matcher = pattern.matcher(s_str);
                 if (matcher.find()) {
-                    BDProtocolUtils.parseData(s_str);
+                    BDProtocolUtils.getInstance().parseData(s_str);
                 }
             }
             baos.reset();  // 重置

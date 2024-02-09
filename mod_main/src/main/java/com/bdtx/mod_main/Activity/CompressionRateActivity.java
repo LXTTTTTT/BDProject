@@ -29,6 +29,7 @@ public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCom
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
+        setTitle("语音码率设置");
         select_img = viewBinding.autoChecked;
         select_text = viewBinding.textAuto;
         change_rate = Variable.getCompressRate();

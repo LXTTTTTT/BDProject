@@ -32,7 +32,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
     @Override public void beforeSetLayout() {}
 
     @Override public void initView(@Nullable Bundle savedInstanceState) {
-
+        setTitle("设置");
         settingListAdapter = new SettingListAdapter();
         settingListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
             @Override
@@ -120,7 +120,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
                 loge("childHeight: " + childHeight + "/parentHeight: " + parentHeight + "/yRelativeToCenterOffset: " + yRelativeToCenterOffset);
                 float progressToCenter = Math.min(Math.abs(0.5f - yRelativeToCenterOffset), MAX_ICON_PROGRESS);
                 // 使用余弦函数创建缩放曲线
-                progressToCenter = (float) Math.cos(progressToCenter * Math.PI * 0.50f);
+                progressToCenter = (float) Math.cos(progressToCenter * Math.PI * 0.70f);
                 // 缩放子项
                 child.setScaleX(progressToCenter);
                 child.setScaleY(progressToCenter);

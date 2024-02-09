@@ -484,4 +484,20 @@ public class DataUtils {
             return FORMAT_DATE_YMD;
         }
     }
+
+    // 高位补0
+    public static String padWithZeros(String input, int desiredLength) {
+        int inputLength = input.length();
+        if (inputLength >= desiredLength) {
+            return input; // 如果输入长度大于等于指定长度，直接返回输入字符串
+        }
+        int zerosToAdd = desiredLength - inputLength; // 需要补充的0的个数
+        StringBuilder paddedString = new StringBuilder();
+        // 在前面添加补充的0
+        for (int i = 0; i < zerosToAdd; i++) {
+            paddedString.append('0');
+        }
+        paddedString.append(input); // 添加原始字符串
+        return paddedString.toString();
+    }
 }

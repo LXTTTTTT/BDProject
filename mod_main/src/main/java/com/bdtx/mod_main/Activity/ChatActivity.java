@@ -2,6 +2,7 @@ package com.bdtx.mod_main.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bdtx.mod_data.Database.Entity.Location;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
@@ -116,6 +118,11 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         chatListAdapter = new ChatListAdapter();
         chatListAdapter.setOnMessageClick(new ChatListAdapter.OnMessageClick() {
             @Override
+            public void onLocationClick(@NonNull Location location) {
+                loge("消息位置："+location);
+            }
+
+            @Override
             public void onResendClick(@NonNull Message message) {
                 // 重发消息
                 loge("重发消息："+message.content);
@@ -163,7 +170,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                 String content = viewBinding.content.getText().toString();
                 if(content.isEmpty()) {globalControl.showToast("请输入内容消息",0);return;}
                 loge("发送消息");
-                sendMessageUtils.send_text(target_number,content);
+                sendMessageUtils.send_text(target_number,content,true);
                 viewBinding.content.setText("");  // 清空输入栏
                 // 不需要在这里刷新消息列表，发送完后会发广播
             }
@@ -230,18 +237,12 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         });
 
         // 初始化录音窗口
-        recordDialog=new RecordDialog(my_context, (dialog, audioFilePath, seconds) -> {
-            // 录音时间小于2就不处理
-            if(2>seconds){
-                Toast.makeText(my_context,"录音时间太短!",Toast.LENGTH_SHORT).show();
-            }
-            // 录音时长大于2，发送消息
-            else{
-//                sendVocie(audioFilePath,1,seconds);  // 发送语音消息
-            }
-            // 这个是针对录音时间达到最大长度时隐藏录音界面
-            if(dialog.isShowing()){
-                dialog.dismiss();  // 关闭窗口
+        recordDialog =new RecordDialog(my_context);
+        recordDialog.setOnCloseListener(new RecordDialog.OnCloseListener() {
+            @Override
+            public void onSend(String file, int seconds) {
+                loge("录音文件："+file+"/时长："+seconds);
+                sendMessageUtils.send_voice(target_number,file,seconds);
             }
         });
         // 录音

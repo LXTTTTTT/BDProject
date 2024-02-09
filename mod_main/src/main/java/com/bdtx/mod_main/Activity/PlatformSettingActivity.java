@@ -23,6 +23,7 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
+        setTitle("北斗通道设置");
         change_platform = Variable.getSystemNumber();
         Log.e("当前平台号码是：", ""+change_platform);
         // 初始化平台通道设置

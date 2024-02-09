@@ -132,7 +132,7 @@ public class DaoUtils {
         getDaoSession().insertOrReplace(message);
         // 发送广播
         EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_MESSAGE(), new UpdateMessageMsg(message.getNumber())));
-        Log.e(TAG, "添加消息："+message.getContent());
+        Log.e(TAG, "添加消息：id-"+message.getId()+"/"+message.getContent());
     }
 
 

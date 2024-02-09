@@ -1,108 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingLeft="70dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="0dp">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/text_group"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@color/transparent">
-
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/corner_fill_white_1"
-            android:maxWidth="400dp"
-            android:padding="5dp"
-            android:textSize="16dp"
-            android:textColor="@color/black_2"
-            android:text="聊天内容聊天"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="70dp"/>
-
-        <ImageView
-            android:id="@+id/state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/fail_icon"
-            android:layout_marginRight="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/content"
-            app:layout_constraintEnd_toStartOf="@+id/content"
-            app:layout_constraintTop_toTopOf="@+id/content"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:visibility="visible"
-            android:id="@+id/location"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:paddingRight="30dp"
-            android:paddingBottom="10dp"
-            android:layout_marginTop="2dp"
-            android:src="@mipmap/location_icon"
-            app:layout_constraintStart_toStartOf="@+id/content"
-            app:layout_constraintTop_toBottomOf="@+id/content"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--    语音消息-->
     <RelativeLayout
-        android:id="@+id/voice_group"
+        android:id="@+id/message_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/vioce_text"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="70dp"
-            android:background="@drawable/corner_fill_white_1"
-            android:maxWidth="200dp"
-            android:padding="5dp"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/voice_length"
+        <LinearLayout
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="120dp"
-            android:text="3"
-            android:textColor="@color/black" />
+            android:gravity="left"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/corner_fill_white_1"
+                android:maxWidth="200dp"
+                android:padding="5dp"
+                android:text="聊天内容聊天内容聊天内容聊天内容"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
 
 
-        <ImageView
-            android:id="@+id/voice_img"
-            android:layout_width="10dp"
-            android:layout_height="15dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="90dp"
-            android:background="@drawable/anim_voice_left_play" />
+            <!--    语音消息-->
+            <LinearLayout
+                android:id="@+id/voice"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/corner_fill_white_1"
+                android:gravity="left|center_vertical"
+                android:padding="5dp"
+                android:visibility="visible">
 
-        <ImageView
-            android:id="@+id/voice_state"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/vioce_text"
-            android:src="@drawable/fail_icon"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/voice_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="3"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/voice_img"
+                    android:layout_width="10dp"
+                    android:layout_height="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/anim_voice_left_play" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/location"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/message_group"
+        android:layout_alignParentLeft="@+id/message_group"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:src="@mipmap/location_icon"
+        android:visibility="gone" />
 
 </RelativeLayout>
 

@@ -1,26 +1,31 @@
 package com.bdtx.mod_data.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bdtx.mod_data.Database.DaoUtils
-import com.bdtx.mod_data.Database.Entity.Contact
+import com.bdtx.mod_data.Global.Variable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 // 全局使用 ViewModel
 class MainVM : BaseViewModel() {
 
+    val TAG = "MainVM"
     val isConnectDevice : MutableLiveData<Boolean?> = MutableLiveData()  // 是否连接蓝牙
     val deviceCardID : MutableLiveData<String?> = MutableLiveData()  // 卡号
     val deviceCardFrequency : MutableLiveData<Int?> = MutableLiveData()  // 频度
     val deviceCardLevel : MutableLiveData<Int?> = MutableLiveData()  // 通信等级
     val deviceBatteryLevel : MutableLiveData<Int?> = MutableLiveData()  // 电量
     val signal : MutableLiveData<IntArray?> = MutableLiveData()  // 信号
+    val deviceLongitude : MutableLiveData<Double?> = MutableLiveData()  // 设备经度
+    val deviceLatitude : MutableLiveData<Double?> = MutableLiveData()  // 设备纬度
+    val deviceAltitude : MutableLiveData<Double?> = MutableLiveData()  // 设备高度
 
     val waitTime : MutableLiveData<Int?> = MutableLiveData()  // 等待时间
+    val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 总未读消息数量
 
-    val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 未读消息数量
 
     init { initParameter() }
 
@@ -34,6 +39,9 @@ class MainVM : BaseViewModel() {
         signal.postValue(intArrayOf(0,0,0,0,0,0,0,0,0,0))
 //        unreadMessageCount.postValue(0)
         waitTime.postValue(0)
+        deviceLongitude.postValue(0.0)
+        deviceLatitude.postValue(0.0)
+        deviceAltitude.postValue(0.0)
     }
 
     fun getUnreadMessageCount() : LiveData<Int?> {
@@ -64,6 +72,7 @@ class MainVM : BaseViewModel() {
             waitTime.postValue(countDownSeconds)
         }, onStart = {}, onFinish = {countDownJob?.cancel()} )
     }
+
 
 
 

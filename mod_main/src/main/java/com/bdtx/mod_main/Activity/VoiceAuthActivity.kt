@@ -26,8 +26,9 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     override fun beforeSetLayout() {}
     override fun enableEventBus(): Boolean { return true }  // 使用 eventbus
     override fun initView(savedInstanceState: Bundle?) {
+        setTitle("语音压缩授权")
         // 是否显示信息
-        val show = ZDCompressionUtils.getInstance().isVoiceOnline
+        val show = ZDCompressionUtils.isVoiceOnline()
         loge("当前 $show 激活")
         if(!show){
             try {

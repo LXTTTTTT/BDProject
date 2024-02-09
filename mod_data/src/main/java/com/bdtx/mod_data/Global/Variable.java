@@ -50,12 +50,6 @@ public class Variable {
             }
         };
         countDownTimer.start();
-//        mainHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                countDownTimer.start();
-//            }
-//        });
 
     }
 

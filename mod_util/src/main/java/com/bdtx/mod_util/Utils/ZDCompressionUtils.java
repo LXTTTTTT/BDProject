@@ -34,14 +34,14 @@ public class ZDCompressionUtils {
         return zdCompressionUtil;
     }
 
-    public boolean isVoiceOnline(){
+    public static boolean isVoiceOnline(){
         String voKey= MMKVUtils.INSTANCE.getString(Constant.VO_ONLINE_ACTIVATION_KEY,"");
         return !"".equals(voKey);
     }
     public void saveVoiceKey(String str){
         MMKVUtils.INSTANCE.put(Constant.VO_ONLINE_ACTIVATION_KEY,str);
     }
-    public boolean isPicOnline(){
+    public static boolean isPicOnline(){
         String picKey= MMKVUtils.INSTANCE.getString(Constant.PIC_ONLINE_ACTIVATION_KEY,"");
         return !"".equals(picKey);
     }

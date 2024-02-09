@@ -27,7 +27,7 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
     override fun enableEventBus(): Boolean { return true }
 
     override fun initView(savedInstanceState: Bundle?) {
-        setTitle("消息")
+        setTitle("所有消息")
         init_contact_list()
         init_control()
     }
