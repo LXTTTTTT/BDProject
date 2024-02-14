@@ -49,7 +49,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
                         ARouter.getInstance().build(Constant.PLATFORM_SETTING_ACTIVITY).navigation();
                         break;
                     case 3:
-                        ARouter.getInstance().build(Constant.MESSAGE_TYPE_ACTIVITY).navigation();
+                        ARouter.getInstance().build(Constant.SWIFT_MESSAGE_ACTIVITY).navigation();
                         break;
                     case 4:
                         ARouter.getInstance().build(Constant.ABOUT_US_ACTIVITY).navigation();
@@ -87,7 +87,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
         d.add("北斗通道设置");
         List<Object> e = new ArrayList<>();
         e.add(R.mipmap.msg_type_setting);
-        e.add("北斗报文类型设置");
+        e.add("快捷消息设置");
         List<Object> f = new ArrayList<>();
         f.add(R.mipmap.about_us);
         f.add("关于我们");

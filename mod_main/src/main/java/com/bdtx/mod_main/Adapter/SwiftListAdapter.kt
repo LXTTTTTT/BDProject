@@ -29,7 +29,7 @@ class SwiftListAdapter : BaseRecyclerViewAdapter<String,AdapterSwiftItemBinding>
         item: String?,
         position: Int
     ) {
-        if (item == null) return
+        if (item.isNullOrEmpty()) return
         holder.binding.apply {
             swiftMessage.text = item
         }

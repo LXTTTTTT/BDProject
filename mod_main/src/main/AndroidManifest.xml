@@ -39,7 +39,7 @@
             android:name=".Activity.PlatformSettingActivity"
             android:exported="false"/>
         <activity
-            android:name=".Activity.MessageTypeActivity"
+            android:name=".Activity.SwiftMessageActivity"
             android:exported="false"/>
         <activity
             android:name=".Activity.AboutUsActivity"
@@ -49,6 +49,9 @@
             android:exported="false"/>
         <activity
             android:name=".Activity.BodyStatusActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Activity.CommunicationLinkActivity"
             android:exported="false"/>
         <meta-data
             android:name="com.amap.api.v2.apikey"

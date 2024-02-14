@@ -20,7 +20,7 @@
             android:id="@+id/icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/bluetooth_icon" />
+            android:src="@mipmap/bluetooth_device_icon" />
 
         <TextView
             android:id="@+id/device_name"

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black_2"
+    android:gravity="center_vertical">
+
+    <include
+        layout="@layout/layout_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"  />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/ble_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:background="@drawable/corner_fill_gray_9_ripple">
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/bluetooth_icon"
+                    android:layout_alignParentLeft="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image1"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textSize="20sp"
+                    android:text="低功耗蓝牙"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/clsb_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:background="@drawable/corner_fill_gray_9_ripple">
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/bluetooth_icon"
+                    android:layout_alignParentLeft="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image2"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textSize="20sp"
+                    android:text="经典蓝牙"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/usb_host_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:background="@drawable/corner_fill_gray_9_ripple">
+                <ImageView
+                    android:id="@+id/image3"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/usb_icon"
+                    android:layout_alignParentLeft="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image3"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textSize="20sp"
+                    android:text="USB host"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/usb_accessory_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:background="@drawable/corner_fill_gray_9_ripple">
+                <ImageView
+                    android:id="@+id/image4"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/usb_icon"
+                    android:layout_alignParentLeft="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image4"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textSize="20sp"
+                    android:text="USB accessory"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/serial_port_connection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:background="@drawable/corner_fill_gray_9_ripple">
+                <ImageView
+                    android:id="@+id/image5"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/serial_port_icon"
+                    android:layout_alignParentLeft="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image5"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textSize="20sp"
+                    android:text="串口"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:background="@drawable/half_oval_up_blue_1_ripple"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返回"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"/>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

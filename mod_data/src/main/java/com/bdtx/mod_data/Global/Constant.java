@@ -16,10 +16,11 @@ public class Constant {
     public static final String VOICE_AUTH_ACTIVITY = "/main/activity/setting/voice_auth";
     public static final String COMPRESSION_RATE_ACTIVITY = "/main/activity/setting/compression_rate";
     public static final String PLATFORM_SETTING_ACTIVITY = "/main/activity/setting/platform_setting";
-    public static final String MESSAGE_TYPE_ACTIVITY = "/main/activity/setting/message_type";
+    public static final String SWIFT_MESSAGE_ACTIVITY = "/main/activity/setting/swift_message";
     public static final String ABOUT_US_ACTIVITY = "/main/activity/setting/about_us";
-
     public static final String CONNECT_BLUETOOTH_ACTIVITY = "/main/activity/connect_bluetooth";
+    public static final String COMMUNICATION_LINK_ACTIVITY = "/main/activity/setting/communication_link";
+
 
 // 通用常量 ---------------------------------------------------------
 
@@ -74,6 +75,8 @@ public class Constant {
     public static final String PIC_ONLINE_ACTIVATION_KEY = "pic_online_activation_key";  // 图片在线激活key
     public static final String VO_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBV";  // 离线语音key
     public static final String PIC_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBP";  // 离线图片key
+    public static final String SWIFT_MESSAGE = "swift_message";  // 快捷消息
+    public static final String SWIFT_MESSAGE_SYMBOL = "/lxt/";
 
 // 音频常量 ---------------------------------------------------------
     public static int sampleRateInHz = 8000;

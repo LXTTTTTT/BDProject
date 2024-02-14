@@ -18,6 +18,9 @@ public class AboutUsActivity extends BaseViewBindingActivity<ActivityAboutUsBind
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
         setTitle("关于");
+        viewBinding.back.setOnClickListener((view)->{
+            finish();
+        });
     }
 
     @Override

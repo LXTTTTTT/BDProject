@@ -97,7 +97,11 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         }
 
         viewBinding.test3.setOnClickListener {
+            Variable.addSwiftMsg("测试1")
+        }
 
+        viewBinding.test4.setOnClickListener {
+            loge("获取快捷消息：${Variable.getSwiftMsg()}")
         }
     }
 
@@ -123,7 +127,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                     else{
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe{  granted->
                             if(granted){
-                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
                             }else{
                                 GlobalControlUtils.showToast("请先授予权限！",0)
                             }

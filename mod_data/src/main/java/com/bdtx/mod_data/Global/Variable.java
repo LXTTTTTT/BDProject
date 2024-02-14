@@ -4,6 +4,7 @@ package com.bdtx.mod_data.Global;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.bdtx.mod_data.Database.DaoUtils;
 import com.bdtx.mod_data.Database.Entity.Message;
@@ -13,14 +14,38 @@ import com.tencent.mmkv.MMKV;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Arrays;
+import java.util.List;
+
 // 项目使用的全局变量
 public class Variable {
+    private static String TAG = "Variable";
 
     public static int getSystemNumber(){return MMKV.defaultMMKV().decodeInt(Constant.SYSTEM_NUMBER,Constant.DEFAULT_PLATFORM_NUMBER);}
     public static int getCompressRate(){return MMKV.defaultMMKV().decodeInt(Constant.VOICE_COMPRESSION_RATE,666);}
     // MMKV无法在模块之间共享数据，直接保存或使用单例
 //    public static void setSystemNumber(int number){MMKV.defaultMMKV().encode(Constant.SYSTEM_NUMBER,number);}
 //    public static void setCompressRate(int rate){MMKV.defaultMMKV().encode(Constant.VOICE_COMPRESSION_RATE,rate);}
+
+    public static String getSwiftMsg(){return MMKV.defaultMMKV().decodeString(Constant.SWIFT_MESSAGE, "");}
+    public static void setSwiftMsg(String commands){MMKV.defaultMMKV().encode(Constant.SWIFT_MESSAGE, commands);}
+    public static void addSwiftMsg(String command){
+        String commands = command+Constant.SWIFT_MESSAGE_SYMBOL +getSwiftMsg();
+        setSwiftMsg(commands);
+    }
+    public static void removeSwiftMsg(int position){
+        String commands_str = getSwiftMsg();
+        String new_commands = "";
+        Log.e(TAG, "拿到快捷消息: "+commands_str);
+        if(commands_str==null||commands_str.equals("")){return;}
+        String[] commands_arr = commands_str.split(Constant.SWIFT_MESSAGE_SYMBOL);
+        List<String> commands_list = Arrays.asList(commands_arr);
+        for (int i = 0; i < commands_list.size(); i++) {
+            if(i==position){continue;}
+            new_commands += commands_list.get(i)+Constant.SWIFT_MESSAGE_SYMBOL;
+        }
+        setSwiftMsg(new_commands);
+    }
 
     public static Message lastSendMsg = null;
     public static CountDownTimer countDownTimer = null;

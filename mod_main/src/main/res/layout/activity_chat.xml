@@ -38,13 +38,14 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/swift_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
+            android:scrollbars="vertical"
             android:background="@color/black_2"/>
     </RelativeLayout>
 
@@ -120,7 +121,7 @@
                     android:id="@+id/send"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/corner_fill_blue_1_ripple"
+                    android:background="@drawable/fill_blue_1_ripple"
                     android:gravity="center"
                     android:text="发送"
                     android:textColor="@color/white"

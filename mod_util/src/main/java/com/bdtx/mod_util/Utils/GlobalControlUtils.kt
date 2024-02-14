@@ -1,9 +1,9 @@
 package com.bdtx.mod_util.Utils
 
+import android.app.AlertDialog
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.bdtx.mod_util.View.LoadingDialog
 
@@ -53,7 +53,8 @@ object GlobalControlUtils {
     // 显示警告框
     fun showAlertDialog(title: String, message: String, onYesClick: (() -> Unit)? = null, onNoClick:(() -> Unit)? = null){
         ActivityManagementUtils.getInstance().top()?.let {
-            val alertDialog = android.app.AlertDialog.Builder(it)
+            alertDialog?.let { it.dismiss();alertDialog=null }
+            alertDialog = AlertDialog.Builder(it)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("确定") { dialog, which ->
@@ -64,7 +65,7 @@ object GlobalControlUtils {
                 ) { dialog, which ->
                     onNoClick?.let { onNoClick() }
                 }.create()
-            alertDialog.show()
+            alertDialog?.show()
         }
     }
 }

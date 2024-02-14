@@ -1,30 +1,21 @@
 package com.bdtx.mod_main.Activity;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -33,6 +24,7 @@ import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
 import com.bdtx.mod_data.Global.Constant;
+import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.CommunicationVM;
 import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_main.Adapter.ChatListAdapter;
@@ -41,7 +33,6 @@ import com.bdtx.mod_main.Base.BaseMVVMActivity;
 import com.bdtx.mod_main.R;
 import com.bdtx.mod_main.databinding.ActivityChatBinding;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
-import com.bdtx.mod_util.Utils.AudioTrackUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.SendMessageUtils;
 import com.bdtx.mod_util.View.RecordDialog;
@@ -50,6 +41,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import kotlin.Unit;
@@ -135,11 +127,17 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
 
     public void init_swift_list(){
         // 初始化数据
-        swiftMessages.add("快捷1");
-        swiftMessages.add("快捷2");
-        swiftMessages.add("快捷3");
-        swiftMessages.add("快捷4");
-        swiftMessages.add("快捷5");
+        swiftMessages.add("我在这里，一切正常");
+        swiftMessages.add("麻烦各位队友报一下自己的位置");
+        swiftMessages.add("我已安全到达目的地");
+        swiftMessages.add("任务已完成");
+        String commands_str = Variable.getSwiftMsg();
+        Log.e(TAG, "拿到自定义快捷消息: "+commands_str);
+        if(!commands_str.equals("")){
+            String[] commands_arr = commands_str.split(Constant.SWIFT_MESSAGE_SYMBOL);
+            List<String> commands_list = Arrays.asList(commands_arr);
+            swiftMessages.addAll(commands_list);
+        }
 
         swiftListAdapter = new SwiftListAdapter();
         swiftListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
@@ -316,7 +314,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
     private void enableSendGroup(){
         // 发送文字按键
         viewBinding.send.setClickable(true);
-        viewBinding.send.setBackgroundResource(R.drawable.corner_fill_blue_1_ripple);
+        viewBinding.send.setBackgroundResource(R.drawable.fill_blue_1_ripple);
         viewBinding.send.setText("发送");
         // 发送语音按键
         viewBinding.voiceButton.setEnabled(true);
