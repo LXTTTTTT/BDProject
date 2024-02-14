@@ -26,7 +26,7 @@ public class StateActivity extends BaseMVVMActivity<ActivityStateBinding,MainVM>
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-
+        setTitle("设备状态");
     }
 
     @Override

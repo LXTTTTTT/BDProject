@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:clickable="false"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/microphoneBg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/microphone_bg_1">
+            <ImageView
+                android:layout_width="100dp"
+                android:background="@drawable/anim_microphone"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/voiceAnim"
+                android:layout_height="60dp"/>
+            <TextView
+                android:id="@+id/record_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textSize="17dp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+        <TextView
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:gravity="center"
+            android:text="松开发送，上滑取消"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+<!--        撑场面-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

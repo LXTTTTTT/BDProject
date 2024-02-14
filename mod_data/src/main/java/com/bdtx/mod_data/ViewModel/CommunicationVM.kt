@@ -3,13 +3,9 @@ package com.bdtx.mod_data.ViewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bdtx.mod_data.Database.DaoUtil
+import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_data.Database.Entity.Contact
 import com.bdtx.mod_data.Database.Entity.Message
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CommunicationVM : BaseViewModel() {
 
@@ -19,9 +15,13 @@ class CommunicationVM : BaseViewModel() {
 
     // 获取联系人列表数据
     fun getContact() : LiveData<MutableList<Contact>?> {
+        upDateContact()
+        return contactList
+    }
+    fun upDateContact(){
         launchUIWithResult(
             responseBlock = {
-                DaoUtil.getContacts()
+                DaoUtils.getContacts()
             },
             successBlock = {
                 it?.let { contacts ->
@@ -30,13 +30,17 @@ class CommunicationVM : BaseViewModel() {
                 }
             }
         )
-        return contactList
     }
 
     fun getMessage(number:String) : LiveData<MutableList<Message>?> {
+        upDateMessage(number)
+        return messageList
+    }
+
+    fun upDateMessage(number:String){
         launchUIWithResult(
             responseBlock = {
-                DaoUtil.getMessages(number)
+                DaoUtils.getMessages(number)
             },
             successBlock = {
                 it?.let { messages ->
@@ -45,10 +49,7 @@ class CommunicationVM : BaseViewModel() {
                 }
             }
         )
-        return messageList
     }
-
-
 
 
 }

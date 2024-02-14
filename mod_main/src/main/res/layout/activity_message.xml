@@ -10,21 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.wear.widget.WearableRecyclerView
-        android:id="@+id/contact_list"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title_bar"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+        android:layout_below="@+id/title_bar">
 
-    <ImageView
-        android:id="@+id/add_chat"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:src="@mipmap/add_message"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"/>
+        <androidx.wear.widget.WearableRecyclerView
+            android:id="@+id/contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp" />
+
+        <ImageView
+            android:id="@+id/add_chat"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/add_message_ripple" />
+    </RelativeLayout>
 
 </RelativeLayout>

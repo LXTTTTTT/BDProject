@@ -27,7 +27,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
         public final static Property Number = new Property(0, String.class, "number", true, "NUMBER");
         public final static Property Remark = new Property(1, String.class, "remark", false, "REMARK");
         public final static Property LastContent = new Property(2, String.class, "lastContent", false, "LAST_CONTENT");
-        public final static Property UpdateTimer = new Property(3, Long.class, "updateTimer", false, "UPDATE_TIMER");
+        public final static Property UpdateTime = new Property(3, Long.class, "updateTime", false, "UPDATE_TIME");
         public final static Property UnreadCount = new Property(4, int.class, "unreadCount", false, "UNREAD_COUNT");
         public final static Property Draft = new Property(5, String.class, "draft", false, "DRAFT");
         public final static Property Longitude = new Property(6, double.class, "longitude", false, "LONGITUDE");
@@ -54,7 +54,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
                 "\"NUMBER\" TEXT PRIMARY KEY NOT NULL ," + // 0: number
                 "\"REMARK\" TEXT," + // 1: remark
                 "\"LAST_CONTENT\" TEXT," + // 2: lastContent
-                "\"UPDATE_TIMER\" INTEGER," + // 3: updateTimer
+                "\"UPDATE_TIME\" INTEGER," + // 3: updateTime
                 "\"UNREAD_COUNT\" INTEGER NOT NULL ," + // 4: unreadCount
                 "\"DRAFT\" TEXT," + // 5: draft
                 "\"LONGITUDE\" REAL NOT NULL ," + // 6: longitude
@@ -87,9 +87,9 @@ public class ContactDao extends AbstractDao<Contact, String> {
             stmt.bindString(3, lastContent);
         }
  
-        Long updateTimer = entity.getUpdateTimer();
-        if (updateTimer != null) {
-            stmt.bindLong(4, updateTimer);
+        Long updateTime = entity.getUpdateTime();
+        if (updateTime != null) {
+            stmt.bindLong(4, updateTime);
         }
         stmt.bindLong(5, entity.getUnreadCount());
  
@@ -121,9 +121,9 @@ public class ContactDao extends AbstractDao<Contact, String> {
             stmt.bindString(3, lastContent);
         }
  
-        Long updateTimer = entity.getUpdateTimer();
-        if (updateTimer != null) {
-            stmt.bindLong(4, updateTimer);
+        Long updateTime = entity.getUpdateTime();
+        if (updateTime != null) {
+            stmt.bindLong(4, updateTime);
         }
         stmt.bindLong(5, entity.getUnreadCount());
  
@@ -153,7 +153,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // number
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // remark
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // lastContent
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // updateTimer
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // updateTime
             cursor.getInt(offset + 4), // unreadCount
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // draft
             cursor.getDouble(offset + 6), // longitude
@@ -168,7 +168,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
         entity.setNumber(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setRemark(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setLastContent(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setUpdateTimer(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setUpdateTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setUnreadCount(cursor.getInt(offset + 4));
         entity.setDraft(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setLongitude(cursor.getDouble(offset + 6));

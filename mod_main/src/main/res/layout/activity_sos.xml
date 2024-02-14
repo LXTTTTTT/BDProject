@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/black_2">
 
-    <include
-        layout="@layout/layout_title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"  />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,24 +29,14 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/sos_right" />
 
-        <ImageView
+
+        <RelativeLayout
             android:id="@+id/sos_button"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_centerInParent="true"
-            android:src="@mipmap/sos_icon" />
-
-        <RelativeLayout
-            android:id="@+id/sos_button_group"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_centerInParent="true"
+            android:background="@mipmap/sos_button"
             android:visibility="visible">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/sos_button" />
 
             <TextView
                 android:id="@+id/count_down"
@@ -99,15 +85,18 @@
             <RelativeLayout
                 android:layout_width="170dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cornor_fill_black_2"
+                android:background="@drawable/corner_fill_black_2_ripple"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
 
-                <TextView
+                <EditText
                     android:id="@+id/people_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:maxLength="2"
                     android:text="1"
                     android:textSize="25dp"
                     android:textColor="@color/gray_4"/>
@@ -119,7 +108,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/people_count"
-                    android:src="@mipmap/sos_add" />
+                    android:src="@drawable/sos_add_ripple" />
 
                 <ImageView
                     android:id="@+id/reduce"
@@ -128,7 +117,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/people_count"
-                    android:src="@mipmap/sos_reduce" />
+                    android:src="@drawable/sos_reduce_ripple" />
 
 
             </RelativeLayout>
@@ -170,9 +159,10 @@
 
 
             <RelativeLayout
+                android:id="@+id/status_button"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cornor_fill_black_2"
+                android:background="@drawable/corner_fill_black_2_ripple"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
 
@@ -181,9 +171,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="迷路"
-                    android:textSize="23dp"
-                    android:textColor="@color/gray_4"/>
+                    android:text="其他"
+                    android:textColor="@color/gray_4"
+                    android:textSize="23dp" />
 
 
             </RelativeLayout>
@@ -225,9 +215,10 @@
 
 
             <RelativeLayout
+                android:id="@+id/body_button"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cornor_fill_black_2"
+                android:background="@drawable/corner_fill_black_2_ripple"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
 
@@ -263,56 +254,26 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@mipmap/sos_lxr" />
+<!--                <ImageView-->
+<!--                    android:layout_width="25dp"-->
+<!--                    android:layout_height="25dp"-->
+<!--                    android:src="@mipmap/sos_lxr" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray_4"
                     android:layout_marginLeft="5dp"
-                    android:text="联系人"
+                    android:text="求救内容"
                     android:textSize="23dp" />
 
             </LinearLayout>
 
-
-            <RelativeLayout
+            <com.bdtx.mod_main.View.CustomSpinnerLinearLayout
+                android:id="@+id/sos_content"
                 android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/cornor_fill_black_2"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true">
+                android:layout_height="wrap_content"/>
 
-                <EditText
-                    android:id="@+id/phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:maxLength="12"
-                    android:textSize="20dp"
-                    android:textColor="@color/gray_4"/>
-
-                <ImageView
-                    android:id="@+id/choice_phone"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@mipmap/sos_down" />
-
-
-
-            </RelativeLayout>
 
 
         </LinearLayout>

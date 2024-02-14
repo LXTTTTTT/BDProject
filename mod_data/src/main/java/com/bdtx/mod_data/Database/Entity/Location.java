@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Location {
 
     @Id
-    public Long id;
+    public Long id;  // 时间戳（毫秒）
     public double longitude;
     public double latitude;
     public double altitude;
@@ -24,6 +24,7 @@ public class Location {
         this.time = time;
         this.contactNumber = contactNumber;
     }
+
     @Generated(hash = 375979639)
     public Location() {
     }
@@ -63,6 +64,18 @@ public class Location {
     }
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", altitude=" + altitude +
+                ", time=" + time +
+                ", contactNumber='" + contactNumber + '\'' +
+                '}';
     }
 
 }

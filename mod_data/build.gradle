@@ -41,14 +41,14 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
     // 额外导入
-    compileOnly rootProject.depsLibs.greendao  // greenDAO 数据库
+    api rootProject.depsLibs.greendao  // greenDAO 数据库
     // kotlin viewModel
-    compileOnly rootProject.depsLibs.viewModelKtx
-    compileOnly rootProject.depsLibs.liveDataKtx
+    api rootProject.depsLibs.viewModelKtx
+    api rootProject.depsLibs.liveDataKtx
 //    compileOnly rootProject.depsLibs.activity
 //    compileOnly rootProject.depsLibs.activityKtx
-    // 额外导入
-    compileOnly rootProject.depsLibs.mmkv  // MMKV
+    api rootProject.depsLibs.mmkv  // MMKV
+    api rootProject.depsLibs.eventbus  // eventbus
 }
 
 // 数据库配置参数

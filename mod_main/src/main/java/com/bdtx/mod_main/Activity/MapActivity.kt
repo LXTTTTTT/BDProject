@@ -15,7 +15,7 @@ import com.bdtx.mod_data.ViewModel.CommunicationVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.R
 import com.bdtx.mod_main.databinding.ActivityMapBinding
-import com.bdtx.mod_util.Util.DataUtil
+import com.bdtx.mod_util.Utils.DataUtils
 
 @Route(path = Constant.MAP_ACTIVITY)
 class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) {
@@ -54,7 +54,7 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
                         } else {
                             all_remark.add("")
                         }
-                        all_time.add(contact.updateTimer) // 加入更新时间
+                        all_time.add(contact.updateTime) // 加入更新时间
                         Log.e("有位置的名字是：", contact.number.toString() + "位置：" + contact.latitude + "/" + contact.longitude)
                     }
                 }
@@ -109,7 +109,7 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
             // 设置位置
             viewBinding.location.setText(all_location.get(index).longitude.toString() + " E " + all_location.get(index).latitude + " N")
             // 设置定位时间
-            viewBinding.time.setText(DataUtil.timeStampToString(all_time.get(index)))
+            viewBinding.time.setText(DataUtils.timeStampToString(all_time.get(index)))
 
             // 显示设备信息窗口
             if (viewBinding.terminalInfo.getVisibility() != View.VISIBLE) {

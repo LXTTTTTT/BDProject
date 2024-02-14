@@ -10,11 +10,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_list"
+    <EditText
+        android:id="@+id/target_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_7"
+        android:hint="请输入目标号码"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white_2"
+        android:inputType="number"
+        android:maxLength="11"
+        android:textSize="17dp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/swift_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:scrollbars="vertical"
+            android:background="@color/black_2"/>
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +56,7 @@
 
         <!--        发送文字层-->
         <LinearLayout
-            android:id="@+id/send_text_group"
+            android:id="@+id/text_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -39,47 +73,31 @@
                     android:id="@+id/voice"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@mipmap/voice_icon"
+                    android:background="@drawable/voice_icon_ripple"
                     android:layout_marginBottom="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="60dp"
                     android:layout_marginTop="5dp"/>
 
-                <RelativeLayout
+                <EditText
+                    android:id="@+id/content"
                     android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:background="#343434">
-
-                    <EditText
-                        android:id="@+id/content"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:background="@null"
-                        android:hint="请输入聊天内容"
-                        android:inputType="textPersonName"
-                        android:padding="5dp"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/white_2"
-                        android:textSize="14sp" />
-
-                    <Button
-                        android:id="@+id/voiceInputBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@color/white"
-                        android:text="按住说话"
-                        android:textColor="@color/gray_3"
-                        android:visibility="gone" />
-
-                </RelativeLayout>
-
-
+                    android:background="@color/gray_7"
+                    android:hint="请输入聊天内容"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="0dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_2"
+                    android:textSize="15sp" />
 
 
                 <ImageView
-                    android:id="@+id/swith_picture"
+                    android:id="@+id/picture"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="10dp"
@@ -87,11 +105,11 @@
                     android:visibility="gone"/>
 
                 <ImageView
-                    android:id="@+id/swith_msg"
+                    android:id="@+id/swift_message"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="70dp"
-                    android:src="@mipmap/shortcut_icon" />
+                    android:src="@drawable/swift_icon_ripple" />
 
             </LinearLayout>
 
@@ -99,18 +117,15 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
-
-
                 <TextView
                     android:id="@+id/send"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:background="@drawable/fill_blue_1_ripple"
                     android:gravity="center"
-                    android:background="@drawable/selector_button_bg_1"
-                    android:text="发送"/>
-
+                    android:text="发送"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
                 <ImageView
                     android:id="@+id/send_image"
                     android:layout_width="40dp"
@@ -118,8 +133,6 @@
                     android:layout_centerInParent="true"
                     android:src="@mipmap/send_button"
                     android:visibility="invisible" />
-
-
 
             </RelativeLayout>
 
@@ -129,7 +142,7 @@
 
         <!--        发送语音层-->
         <LinearLayout
-            android:id="@+id/send_voice_group"
+            android:id="@+id/voice_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -137,7 +150,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="47dp"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center">
 
@@ -145,8 +158,9 @@
                     android:id="@+id/voice_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/selector_button_bg_1"
-                    android:text="按住说话" />
+                    android:background="@drawable/selector_button_bg"
+                    android:text="按住说话"
+                    android:textColor="@color/white"/>
 
             </LinearLayout>
 
@@ -159,7 +173,7 @@
                     android:id="@+id/keyboard"
                     android:layout_width="43dp"
                     android:layout_height="43dp"
-                    android:src="@mipmap/keyboard_icon"
+                    android:src="@drawable/keyboard_icon_ripple"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"/>
             </LinearLayout>

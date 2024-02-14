@@ -48,6 +48,12 @@ android {
         dataBinding = true
         viewBinding = true
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {

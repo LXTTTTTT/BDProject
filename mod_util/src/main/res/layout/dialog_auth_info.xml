@@ -29,7 +29,7 @@
              android:layout_marginLeft="10dp"
              android:layout_marginRight="10dp"
              android:padding="10dp"
-             android:id="@+id/contentTV"
+             android:id="@+id/tips"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:textColor="@color/white"
@@ -40,26 +40,27 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:background="@color/black"
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/key_et"
+                android:id="@+id/key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:layout_toStartOf="@+id/code_scanning_img"
+                android:layout_toStartOf="@+id/scan"
                 android:background="@null"
                 android:hint="请输入激活码"
                 android:paddingStart="5dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:textSize="14sp"
-                tools:ignore="RtlSymmetry" />
+                android:textColor="@color/white"/>
 
             <ImageView
-                android:id="@+id/code_scanning_img"
+                android:id="@+id/scan"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
@@ -80,7 +81,7 @@
 
             android:orientation="horizontal">
             <Button
-                android:id="@+id/cancelBtn"
+                android:id="@+id/cancel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -95,7 +96,7 @@
                 android:layout_height="match_parent"
                 android:background="#E4E4E4" />
             <Button
-                android:id="@+id/okBtn"
+                android:id="@+id/yes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

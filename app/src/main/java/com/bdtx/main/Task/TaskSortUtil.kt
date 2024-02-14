@@ -1,7 +1,7 @@
 package com.bdtx.main.Task
 
 import androidx.collection.ArraySet
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 
 
 // 任务排序工具
@@ -44,7 +44,7 @@ object TaskSortUtil {
 
         val indexList: List<Int> = graph.topologicalSort()
         val newTasksAll = getResultTasks(originTasks, dependSet, indexList)
-        LogUtil.i("任务执行时间：" + (System.currentTimeMillis() - makeTime))
+        LogUtils.i("任务执行时间：" + (System.currentTimeMillis() - makeTime))
         printAllTaskName(newTasksAll, true)
         return newTasksAll
     }
@@ -90,7 +90,7 @@ object TaskSortUtil {
             return
         }
         for (task in newTasksAll) {
-            LogUtil.i("需执行任务：" + task.javaClass.simpleName)
+            LogUtils.i("需执行任务：" + task.javaClass.simpleName)
         }
     }
 

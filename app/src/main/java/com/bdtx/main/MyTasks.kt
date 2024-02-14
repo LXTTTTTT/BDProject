@@ -1,19 +1,21 @@
 package com.bdtx.main
 
 import android.app.Application
+import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
-import com.bdtx.mod_data.Database.DaoUtil
-import com.bdtx.mod_util.Util.ApplicationUtil
-import com.bdtx.mod_util.Util.Log.LogUtil
-import com.bdtx.mod_util.Util.SystemInfoUtil
+import com.bdtx.mod_data.Database.DaoUtils
+import com.bdtx.mod_util.Utils.ApplicationUtils
+import com.bdtx.mod_util.Utils.Log.LogUtils
+import com.bdtx.mod_util.Utils.SystemInfoUtils
+import com.bdtx.mod_util.Utils.ZDCompressionUtils
 import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
 
 // 初始化任务 ------------------------------------------------------
-
+val TAG = "MyTask"
 // 初始化全局APP工具
 class InitAppUtilTask(val application: Application) : Task() {
 
@@ -23,7 +25,8 @@ class InitAppUtilTask(val application: Application) : Task() {
     }
 
     override fun run() {
-        ApplicationUtil.init(application, BuildConfig.DEBUG)
+        ApplicationUtils.init(application, BuildConfig.DEBUG)
+        Log.e(TAG, "初始化APP工具" )
     }
 }
 
@@ -50,7 +53,7 @@ class InitMmkvTask() : Task() {
 
     // 执行任务
     override fun run() {
-        val rootDir: String = MMKV.initialize(ApplicationUtil.getApplication())
+        val rootDir: String = MMKV.initialize(ApplicationUtils.getApplication())
         MMKV.setLogLevel(
             if (BuildConfig.DEBUG) {
                 MMKVLogLevel.LevelDebug
@@ -58,7 +61,7 @@ class InitMmkvTask() : Task() {
                 MMKVLogLevel.LevelError
             }
         )
-        LogUtil.e("MMKV 初始化根目录: $rootDir", tag = "MMKV")
+        LogUtils.e("MMKV 初始化根目录: $rootDir", tag = "MMKV")
     }
 }
 
@@ -77,7 +80,8 @@ class InitSystemInfoTask() : Task() {
     }
 
     override fun run() {
-        SystemInfoUtil.init(ApplicationUtil.getApplication())
+        SystemInfoUtils.init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化系统信息" )
     }
 }
 
@@ -96,7 +100,8 @@ class InitGreenDaoTask() : Task() {
     }
 
     override fun run() {
-        DaoUtil.getInstance().init(ApplicationUtil.getApplication())
+        DaoUtils.getInstance().init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化GreenDao" )
     }
 }
 
@@ -124,7 +129,29 @@ class InitArouterTask() : Task() {
             // 开启调试模式(如果在 InstantRun 模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
             ARouter.openDebug()
         }
-        ARouter.init(ApplicationUtil.getApplication())
+        ARouter.init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化ARouter" )
+    }
+}
+
+// 初始化中大压缩库
+class InitZDCompression() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitMmkvTask::class.java)  // 压缩库要用到 mmkv
+        return tasks
+    }
+
+    override fun run() {
+        ZDCompressionUtils.getInstance().initZipSdk()
+        Log.e(TAG, "初始化压缩库" )
     }
 }
 

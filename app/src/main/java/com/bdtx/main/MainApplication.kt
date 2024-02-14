@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import com.bdtx.main.Task.TaskDispatcher
-import com.bdtx.mod_util.Util.ActivityManagementUtil
+import com.bdtx.mod_util.Utils.ActivityManagementUtils
 
 class MainApplication:Application() {
 
@@ -33,6 +33,7 @@ class MainApplication:Application() {
             .addTask(InitSystemInfoTask())
             .addTask(InitGreenDaoTask())
             .addTask(InitArouterTask())
+            .addTask(InitZDCompression())
             .start()
         TaskDispatcher.createInstance().await()
 
@@ -40,7 +41,7 @@ class MainApplication:Application() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                 Log.d(TAG, "onActivityCreated: 打开页面 $p0.localClassName")
-                ActivityManagementUtil.getInstance().push(p0)
+                ActivityManagementUtils.getInstance().push(p0)
             }
             override fun onActivityStarted(p0: Activity) {
                 aliveActivityCount++;if (aliveActivityCount == 1) { Log.e(TAG, "切换到前台") }
@@ -53,7 +54,7 @@ class MainApplication:Application() {
             override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {}
             override fun onActivityDestroyed(p0: Activity) {
                 Log.d(TAG, "onActivityCreated: 关闭页面 $p0.localClassName")
-                ActivityManagementUtil.getInstance().pop(p0)
+                ActivityManagementUtils.getInstance().pop(p0)
             }
         })
     }

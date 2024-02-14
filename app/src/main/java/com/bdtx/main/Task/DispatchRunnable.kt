@@ -3,7 +3,7 @@ package com.bdtx.main.Task
 import android.os.Looper
 import android.os.Process
 import androidx.core.os.TraceCompat
-import com.bdtx.mod_util.Util.Log.LogUtil
+import com.bdtx.mod_util.Utils.Log.LogUtils
 
 
 // 执行任务的地方
@@ -22,7 +22,7 @@ class DispatchRunnable : Runnable {
 
     override fun run() {
         TraceCompat.beginSection(mTask.javaClass.simpleName)
-        LogUtil.i("${mTask.javaClass.simpleName}开始执行 | Situation：${TaskStat.currentSituation}")
+        LogUtils.i("${mTask.javaClass.simpleName}开始执行 | Situation：${TaskStat.currentSituation}")
         Process.setThreadPriority(mTask.priority())
         var startTime = System.currentTimeMillis()
         mTask.isWaiting = true
@@ -45,7 +45,7 @@ class DispatchRunnable : Runnable {
                 it.satisfyChildren(mTask)
                 it.markTaskDone(mTask)
             }
-            LogUtil.i("${mTask.javaClass.simpleName} finish")
+            LogUtils.i("${mTask.javaClass.simpleName} finish")
         }
         TraceCompat.endSection()
     }
@@ -58,8 +58,8 @@ class DispatchRunnable : Runnable {
      */
     private fun printTaskLog(startTime: Long, waitTime: Long) {
         val runTime = System.currentTimeMillis() - startTime
-        if (LogUtil.isDebug) {
-            LogUtil.i(
+        if (LogUtils.isDebug) {
+            LogUtils.i(
             mTask.javaClass.simpleName + "| wait：" + waitTime + "| run："
                     + runTime + "| isMain：" + (Looper.getMainLooper() == Looper.myLooper())
                     + "| needWait：" + (mTask.needWait() || Looper.getMainLooper() == Looper.myLooper())

@@ -32,7 +32,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
     @Override public void beforeSetLayout() {}
 
     @Override public void initView(@Nullable Bundle savedInstanceState) {
-
+        setTitle("设置");
         settingListAdapter = new SettingListAdapter();
         settingListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
             @Override
@@ -49,7 +49,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
                         ARouter.getInstance().build(Constant.PLATFORM_SETTING_ACTIVITY).navigation();
                         break;
                     case 3:
-                        ARouter.getInstance().build(Constant.MESSAGE_TYPE_ACTIVITY).navigation();
+                        ARouter.getInstance().build(Constant.SWIFT_MESSAGE_ACTIVITY).navigation();
                         break;
                     case 4:
                         ARouter.getInstance().build(Constant.ABOUT_US_ACTIVITY).navigation();
@@ -87,7 +87,7 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
         d.add("北斗通道设置");
         List<Object> e = new ArrayList<>();
         e.add(R.mipmap.msg_type_setting);
-        e.add("北斗报文类型设置");
+        e.add("快捷消息设置");
         List<Object> f = new ArrayList<>();
         f.add(R.mipmap.about_us);
         f.add("关于我们");
@@ -101,37 +101,31 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
     }
 
     public class CustomScrollingLayoutCallback extends WearableLinearLayoutManager.LayoutCallback {
-        /** How much should we scale the icon at most. */
         private static final float MAX_ICON_PROGRESS = 0.65f;
-
-        private float progressToCenter;
         @Override
         public void onLayoutFinished(View child, RecyclerView parent) {
-         /*   // Figure out % progress from top to bottom
-            float centerOffset = ((float) child.getHeight() / 2.0f) / (float) parent.getHeight();
-            float yRelativeToCenterOffset = (child.getY() / parent.getHeight()) + centerOffset;
-
-            // Normalize for center
-            progressToCenter = Math.abs(0.5f - yRelativeToCenterOffset);
-            // Adjust to the maximum scale
-            progressToCenter = Math.min(progressToCenter, MAX_ICON_PROGRESS);
-
-            child.setScaleX(1 - progressToCenter);
-            child.setScaleY(1 - progressToCenter);*/
-
             try {
-                float centerOffset              = ((float) child.getHeight() / 2.0f) / (float) parent.getHeight();  // 写死就好
-                float yRelativeToCenterOffset   = (child.getY() / parent.getHeight()) + centerOffset;
-
-                // Normalize for center, adjusting to the maximum scale，中心规格化，调整到最大刻度
-                float progressToCenter          = Math.min(Math.abs(0.5f - yRelativeToCenterOffset), MAX_ICON_PROGRESS);  // 写死就好
-
-                // Follow a curved path, rather than triangular! 沿着弯曲的路径，而不是三角形
-                progressToCenter                = (float)(Math.cos(progressToCenter * Math.PI * 0.70f));  // 这个是列表变化时缩小的倍数，后面的数字越大缩得越小
-                child.setScaleX (progressToCenter);
-                child.setScaleY (progressToCenter);
+//                float centerOffset = ((float) child.getHeight() / 2.0f) / (float) parent.getHeight();  // 写死就好
+//                float yRelativeToCenterOffset = (child.getY() / parent.getHeight()) + centerOffset;
+//                // 中心规格化，调整到最大刻度
+//                float progressToCenter = Math.min(Math.abs(0.5f - yRelativeToCenterOffset), MAX_ICON_PROGRESS);  // 写死就好
+//                // 沿着弯曲的路径，而不是三角形
+//                progressToCenter = (float)(Math.cos(progressToCenter * Math.PI * 0.70f));  // 这个是列表变化时缩小的倍数，后面的数字越大缩得越小
+//                child.setScaleX (progressToCenter);
+//                child.setScaleY (progressToCenter);
+                float childHeight = (float) child.getHeight();
+                float parentHeight = (float) parent.getHeight();
+                float centerOffset = childHeight / 2.0f / parentHeight;
+                float yRelativeToCenterOffset = (child.getY() / parentHeight) + centerOffset;
+                loge("childHeight: " + childHeight + "/parentHeight: " + parentHeight + "/yRelativeToCenterOffset: " + yRelativeToCenterOffset);
+                float progressToCenter = Math.min(Math.abs(0.5f - yRelativeToCenterOffset), MAX_ICON_PROGRESS);
+                // 使用余弦函数创建缩放曲线
+                progressToCenter = (float) Math.cos(progressToCenter * Math.PI * 0.70f);
+                // 缩放子项
+                child.setScaleX(progressToCenter);
+                child.setScaleY(progressToCenter);
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }
