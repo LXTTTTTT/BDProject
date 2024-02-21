@@ -14,7 +14,7 @@ import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
 
-// 初始化任务 ------------------------------------------------------
+// 任务
 val TAG = "MyTask"
 // 初始化全局APP工具
 class InitAppUtilTask(val application: Application) : Task() {
@@ -42,7 +42,7 @@ class InitMmkvTask() : Task() {
     // 依赖某些任务，在某些任务完成后才能执行（初始化 ApplicationUtil 之后）
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // MMKV初始化需要用到主程序
         return tasks
     }
 
@@ -75,7 +75,7 @@ class InitSystemInfoTask() : Task() {
     //依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 需要用到主程序
         return tasks
     }
 
@@ -95,7 +95,7 @@ class InitGreenDaoTask() : Task() {
     //依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 需要用到主程序
         return tasks
     }
 
@@ -116,7 +116,7 @@ class InitArouterTask() : Task() {
     // 依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 好像全部都要用到主程序..
         return tasks
     }
 
@@ -145,7 +145,7 @@ class InitZDCompression() : Task() {
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
         tasks.add(InitAppUtilTask::class.java)
-        tasks.add(InitMmkvTask::class.java)  // 压缩库要用到 mmkv
+        tasks.add(InitMmkvTask::class.java)  // 压缩库工具要用到 mmkv
         return tasks
     }
 
@@ -155,7 +155,7 @@ class InitZDCompression() : Task() {
     }
 }
 
-// 其他任务 -------------------------------
+// 快捷创建其他任务 -------------------------------
 
 // 初始化A
 class InitTaskA() : Task() {

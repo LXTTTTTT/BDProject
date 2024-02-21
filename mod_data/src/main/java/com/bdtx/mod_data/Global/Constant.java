@@ -29,6 +29,8 @@ public class Constant {
 
     public static final String CONTACT_ID = "contact_id";  // 联系人唯一标识（卡号）
     public static final String NEW_CHAT = "new_chat";  // 新消息页面标识
+    public static final String MAP_LONGITUDE = "map_longitude";  // 地图页经度
+    public static final String MAP_LATITUDE = "map_latitude";  // 地图页纬度
     public static final String SOS_STATUS = "sos_status";  // sos紧急状态
     public static final String SOS_STATUS_OTHER = "其他";
     public static final String SOS_STATUS_LOST = "迷路";

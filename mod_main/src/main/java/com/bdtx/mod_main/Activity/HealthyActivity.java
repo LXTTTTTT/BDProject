@@ -55,7 +55,7 @@ public class HealthyActivity extends BaseMVVMActivity<ActivityHealthyBinding,Mai
             String bloodOxygen = viewBinding.bloodOxygen.getText().toString();
             String step = viewBinding.step.getText().toString();
             String content = "心率:"+heartRate+"bpm"+"\n 血氧:"+bloodOxygen+"\n 步数:"+step;
-            SendMessageUtils.INSTANCE.send_text(Variable.getSystemNumber()+"",content,true);
+            SendMessageUtils.INSTANCE.send_text(Constant.PLATFORM_IDENTIFIER,content,true);
         });
 
     }

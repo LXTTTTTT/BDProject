@@ -72,7 +72,7 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
     fun onEvent(eventMsg: BaseMsg<Any>){
         loge("收到广播，类型：${eventMsg.type}")
         if(eventMsg.type==BaseMsg.MSG_UPDATE_CONTACT){
-            viewModel.getContact()
+            viewModel.upDateContact()
         }
     }
 

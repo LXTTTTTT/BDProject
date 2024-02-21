@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bdtx.mod_data.Database.DaoUtils
-import com.bdtx.mod_data.Global.Variable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.*
 
 // 全局使用 ViewModel
 class MainVM : BaseViewModel() {
@@ -44,7 +44,18 @@ class MainVM : BaseViewModel() {
         deviceAltitude.postValue(0.0)
     }
 
+    // 当前信号是否良好
+    fun isSignalWell():Boolean{
+        if(isConnectDevice.value==false){return false}
+        val max_single = Arrays.stream(signal.value).max().orElse(0) // 拿到所有信号中的最大值
+        return max_single>40
+    }
+
     fun getUnreadMessageCount() : LiveData<Int?> {
+        upDateUnreadMessageCount()
+        return unreadMessageCount
+    }
+    fun upDateUnreadMessageCount(){
         launchUIWithResult(
             responseBlock = {
                 DaoUtils.getContacts()
@@ -62,15 +73,20 @@ class MainVM : BaseViewModel() {
                 }
             }
         )
-        return unreadMessageCount
     }
+
 
     private var countDownJob: Job? = null
     fun startCountDown(){
+        if(deviceCardFrequency.value==-1){return}
         val frequency = deviceCardFrequency.value!!.plus(2)  // 总倒计时：频度+2秒
-        countDownJob = countDownCoroutines(frequency, viewModelScope,onTick = { countDownSeconds ->
-            waitTime.postValue(countDownSeconds)
-        }, onStart = {}, onFinish = {countDownJob?.cancel()} )
+        countDownJob = countDownCoroutines(frequency, viewModelScope,
+            onTick = { countDownSeconds ->
+                waitTime.postValue(countDownSeconds)
+            },
+            onStart = {},
+            onFinish = {countDownJob?.cancel()}
+        )
     }
 
 

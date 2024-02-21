@@ -57,12 +57,13 @@ public class ZDCompressionUtils {
             ZDCompression.getInstance().initVoiceZip(ApplicationUtils.INSTANCE.getApplication(),voKey,onlineCompressionInterface);
         }
 
-        String picKey = MMKVUtils.INSTANCE.getString(Constant.PIC_ONLINE_ACTIVATION_KEY,"");
-        if("".equals(picKey)){
-            ZDCompression.getInstance().off_img_init(ApplicationUtils.INSTANCE.getApplication(),Constant.PIC_OFF_ACTIVATION_VALUE,offlineCompressionInterface);
-        }else{
-            ZDCompression.getInstance().initImgZip(ApplicationUtils.INSTANCE.getApplication(),picKey,onlineCompressionInterface);
-        }
+        // 图片用不上
+//        String picKey = MMKVUtils.INSTANCE.getString(Constant.PIC_ONLINE_ACTIVATION_KEY,"");
+//        if("".equals(picKey)){
+//            ZDCompression.getInstance().off_img_init(ApplicationUtils.INSTANCE.getApplication(),Constant.PIC_OFF_ACTIVATION_VALUE,offlineCompressionInterface);
+//        }else{
+//            ZDCompression.getInstance().initImgZip(ApplicationUtils.INSTANCE.getApplication(),picKey,onlineCompressionInterface);
+//        }
     }
 
 
@@ -74,17 +75,18 @@ public class ZDCompressionUtils {
             public void onOK(String str) {
                 GlobalControlUtils.INSTANCE.showLoadingDialog("正在激活中");
                 voice_key = str;
-//                ZDCompression.getInstance().initVoiceZip(ApplicationUtil.INSTANCE.getApplication(),str,onlineCompressionInterface);
-                // 模拟
-                if(str.equals("00000")){
-                    GlobalControlUtils.INSTANCE.showToast("初始化成功",0);
-                    hideAuthDialog();
-                    EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS)));
-                    saveVoiceKey(voice_key);
-                }else {
-                    GlobalControlUtils.INSTANCE.showToast("初始化失败！",Toast.LENGTH_SHORT);
-                }
-                GlobalControlUtils.INSTANCE.hideLoadingDialog();
+
+                ZDCompression.getInstance().initVoiceZip(ApplicationUtils.INSTANCE.getApplication(),str,onlineCompressionInterface);
+                // 测试，先模拟
+//                if(str.equals("00000")){
+//                    GlobalControlUtils.INSTANCE.showToast("初始化成功",0);
+//                    hideAuthDialog();
+//                    EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS)));
+//                    saveVoiceKey(voice_key);
+//                }else {
+//                    GlobalControlUtils.INSTANCE.showToast("初始化失败！",Toast.LENGTH_SHORT);
+//                }
+//                GlobalControlUtils.INSTANCE.hideLoadingDialog();
             }
 
             @Override
@@ -152,7 +154,19 @@ public class ZDCompressionUtils {
             }
             else {
                 voice_key = "";
-                GlobalControlUtils.INSTANCE.showToast("缩库初始化失败！:"+code,Toast.LENGTH_SHORT);
+                String reason = "";
+                if(code==20001){
+                    reason = "使用授权码key初始化压缩库失败";
+                }else if(code==20010){
+                    reason = "当前环境没有网络，在线激活失败";
+                }else if(code==20020){
+                    reason = "so文件初始化失败";
+                }else if(code==20021){
+                    reason = "装机数已用完";
+                } else {
+                    reason = "其他原因，错误码-"+code;
+                }
+                GlobalControlUtils.INSTANCE.showToast("缩库初始化失败:"+reason,Toast.LENGTH_SHORT);
             }
             GlobalControlUtils.INSTANCE.hideLoadingDialog();
         }

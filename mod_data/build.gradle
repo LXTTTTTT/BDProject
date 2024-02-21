@@ -49,6 +49,14 @@ dependencies {
 //    compileOnly rootProject.depsLibs.activityKtx
     api rootProject.depsLibs.mmkv  // MMKV
     api rootProject.depsLibs.eventbus  // eventbus
+    /**
+     * location:4.5.1+3dmap:6.8.0出现Android高版本定位不准问题。
+     * location:5.6.0+3dmap:8.1.0之后 需要加入隐私权限，并且安装包会变大10+MB。
+     * 最新版本location:6.2.0+3dmap:9.7.0 安装包会增加20+MB。
+     * 固选择location:5.5.1+3dmap:8.0.0
+     */
+    // 高德地图，不使用定位
+    api 'com.amap.api:3dmap:8.0.0'
 }
 
 // 数据库配置参数

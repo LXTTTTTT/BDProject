@@ -28,14 +28,14 @@
                 android:id="@+id/zoom_up"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@mipmap/zoom_up_icon" />
+                android:background="@drawable/zoom_up_ripple" />
 
             <!--地图缩小-->
             <ImageView
                 android:id="@+id/zoom_down"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@mipmap/zoom_down_icon"
+                android:background="@drawable/zoom_down_ripple"
                 android:layout_marginTop="5dp"/>
 
         </LinearLayout>
@@ -56,14 +56,14 @@
                 android:id="@+id/download"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@mipmap/download_icon" />
+                android:background="@drawable/download_ripple" />
 
             <!--地图缩小-->
             <ImageView
                 android:id="@+id/my_location"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@mipmap/my_location_icon"
+                android:background="@drawable/my_location_ripple"
                 android:layout_marginTop="5dp"/>
 
         </LinearLayout>
@@ -93,7 +93,7 @@
             android:id="@+id/group_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -101,14 +101,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设备号码："
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="17dp" />
 
             <TextView
                 android:id="@+id/addr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15950044(备注)"
-                android:textColor="@color/white" />
+                android:text="15950044"
+                android:textColor="@color/white"
+                android:textSize="17dp" />
 
         </LinearLayout>
 
@@ -125,14 +127,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="位置："
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="17dp" />
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="113.2323 E 23.1232 N"
-                android:textColor="@color/white" />
+                android:textColor="@color/blue_2"
+                android:textSize="17dp" />
 
         </LinearLayout>
 
@@ -147,15 +151,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="定位时间："
+                android:text="时间："
+                android:textSize="17dp"
                 android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="17dp"
                 android:text="2022-10-23 12:53:50"
-                android:textColor="@color/white" />
+                android:textColor="@color/green_3" />
 
         </LinearLayout>
 

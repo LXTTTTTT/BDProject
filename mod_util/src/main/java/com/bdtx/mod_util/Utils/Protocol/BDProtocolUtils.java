@@ -2,6 +2,10 @@ package com.bdtx.mod_util.Utils.Protocol;
 
 import android.util.Log;
 
+import com.bdtx.mod_data.Database.Dao.ContactDao;
+import com.bdtx.mod_data.Database.DaoUtils;
+import com.bdtx.mod_data.Database.Entity.Contact;
+import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
@@ -9,7 +13,10 @@ import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -80,10 +87,14 @@ public class BDProtocolUtils {
         Log.e(TAG, "在解析的数据 parseData: "+ Arrays.toString(values));
         if (data_str.contains("FKI")) {  // 反馈信息
             BDFKI(values);
-        }else if (data_str.contains("ICP")) {  // IC 信息
+        } else if (data_str.contains("ICP")) {  // IC信息
             BDICP(values);
+        } else if (data_str.contains("ICI")) {  // ICI IC信息
+            BDICI(values);
         } else if (data_str.contains("PWI")) {  // 波束信息
             BDPWI(values);
+        } else if (data_str.contains("SNR")) {  // SNR波束信息
+            BDSNR(values);
         } else if (data_str.contains("TCI")||data_str.contains("TXR")){  // 北斗三代通信信息
             BDMessage(values);
         } else if (data_str.contains("ZDX")){  // 盒子信息
@@ -144,9 +155,9 @@ public class BDProtocolUtils {
         try {
             String cardId = value[1];
             int cardFre = Integer.parseInt(value[14]);
-            int cardLevel = -1;
             mainVM.getDeviceCardID().postValue(cardId);
             mainVM.getDeviceCardFrequency().postValue(cardFre);
+            int cardLevel = -1;
             if(Integer.parseInt(value[15]) == 0){
                 cardLevel = 5;  // 0就是5级卡
             }else {
@@ -156,6 +167,30 @@ public class BDProtocolUtils {
             Log.e(TAG, "BDICP 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel );
         }catch (Exception e){
             Log.e(TAG, "BDICP: 解析错误" + e.toString());
+            e.printStackTrace();
+            return;
+        }
+
+    }
+
+    // ICI 卡号、频度等
+    // $BDICI,4207733,0,0,3,60,2,N,22*3A
+    public void BDICI(String[] value){
+        try {
+            String cardId = value[1];
+            int cardFre = Integer.parseInt(value[5]);
+            mainVM.getDeviceCardID().postValue(cardId);
+            mainVM.getDeviceCardFrequency().postValue(cardFre);
+            int cardLevel = -1;
+            if(Integer.parseInt(value[6]) == 0){
+                cardLevel = 5;  // 0就是5级卡
+            }else {
+                cardLevel = Integer.parseInt(value[6]);
+            }
+            mainVM.getDeviceCardLevel().postValue(cardLevel);
+            Log.e(TAG, "BDICI 解析设备信息: 卡号-"+cardId+" 频度-"+cardFre+" 等级-"+cardLevel );
+        }catch (Exception e){
+            Log.e(TAG, "BDICI: 解析错误" + e.toString());
             e.printStackTrace();
             return;
         }
@@ -192,8 +227,27 @@ public class BDProtocolUtils {
             e.printStackTrace();
             return;
         }
+    }
 
-
+    // $BDSNR,0,0,0,0,0,0,48,0,0,0,0,0,41,0,0,0,44,44,0,0,0*5C
+    // SNR 功率信息
+    public void BDSNR(String[] values){
+        // 尽量用 try 避免线程中断
+        try {
+            int s21[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+            for (int i = 0; i < values.length; i++) {
+                if(i==0){continue;}
+                s21[i-1] = Integer.parseInt(values[i]);
+            }
+            Arrays.sort(s21);  // 排序
+            int[] topTen = Arrays.copyOfRange(s21, s21.length - 10, s21.length);  // 取出 10 个最大信号
+            mainVM.getSignal().postValue(topTen);
+            Log.e(TAG, "BDSNR 解析: "+Arrays.toString(s21) );
+        }catch (Exception e){
+            Log.e(TAG, "BDSNR: 解析错误" + e.toString());
+            e.printStackTrace();
+            return;
+        }
     }
 
     // 通信申请后的反馈信息
@@ -272,6 +326,8 @@ public class BDProtocolUtils {
             Log.i(TAG, "BDTCI: "+from+"/"+frequency_point+"/"+time+"/"+decode_type+"/"+content);
             if(lastMsgFrom.equals(values[1]) && lastMsgTime.equals(time)){Log.i(TAG, "重复消息，舍弃");return;}
             lastMsgFrom=values[1];lastMsgTime=time;  // 解决消息重复问题（同一秒内收到同一个号码的第二条消息）
+            // 响铃
+            GlobalControlUtils.INSTANCE.ringBell();
             // 处理内容数据
             String header = content.substring(0,2);
             switch (header){

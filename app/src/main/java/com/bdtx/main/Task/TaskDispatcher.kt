@@ -84,10 +84,10 @@ class TaskDispatcher private constructor() {
             mAllTasks = TaskSortUtil.getSortResult(mAllTasks, mClsAllTasks).toMutableList()  // 任务排序
             mCountDownLatch = CountDownLatch(mNeedWaitCount.get())  // 创建倒计时计数器
             sendAndExecuteAsyncTasks()
-            LogUtils.i("task analyse cost ${(System.currentTimeMillis() - mStartTime)} begin main ")
+            LogUtils.i("预计消耗时间： ${(System.currentTimeMillis() - mStartTime)} 开始执行主任务 ")
             executeTaskMain()
         }
-        LogUtils.i("task analyse cost startTime cost ${(System.currentTimeMillis() - mStartTime)}")
+        LogUtils.i("预计消耗时间 ${(System.currentTimeMillis() - mStartTime)}")
     }
 
     fun cancel() {
@@ -101,10 +101,10 @@ class TaskDispatcher private constructor() {
         for (task in mMainThreadTasks) {
             val time = System.currentTimeMillis()
             LogUtils.i(
-                "real main ${task.javaClass.simpleName} cost ${(System.currentTimeMillis() - time)}"
+                "任务 ${task.javaClass.simpleName} 消耗 ${(System.currentTimeMillis() - time)}"
             )
         }
-        LogUtils.i("mainTask cost ${(System.currentTimeMillis() - mStartTime)}")
+        LogUtils.i("任务消耗 ${(System.currentTimeMillis() - mStartTime)}")
     }
 
     private fun sendAndExecuteAsyncTasks() {
@@ -165,7 +165,7 @@ class TaskDispatcher private constructor() {
                         satisfyChildren(task)
                         markTaskDone(task)
                         LogUtils.i("${task.javaClass.simpleName} finish")
-                        Log.i("testLog", "call")
+                        Log.i("测试", "---")
                     }
                 })
             }
@@ -223,12 +223,11 @@ class TaskDispatcher private constructor() {
 
         /**
          * 注意：每次获取的都是新对象
-         *
          * @return
          */
         fun createInstance(): TaskDispatcher {
             if (!sHasInit) {
-                throw RuntimeException("must call TaskDispatcher.init first")
+                throw RuntimeException("需要先执行初始化 TaskDispatcher.init")
             }
             return TaskDispatcher()
         }

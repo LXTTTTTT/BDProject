@@ -1,18 +1,13 @@
 package com.bdtx.mod_data.Database.Dao;
 
-import java.util.List;
-import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
-import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
-
-import com.bdtx.mod_data.Database.Entity.Location;
 
 import com.bdtx.mod_data.Database.Entity.Message;
 
@@ -33,15 +28,17 @@ public class MessageDao extends AbstractDao<Message, Long> {
         public final static Property Number = new Property(1, String.class, "number", false, "NUMBER");
         public final static Property Content = new Property(2, String.class, "content", false, "CONTENT");
         public final static Property Time = new Property(3, Long.class, "time", false, "TIME");
-        public final static Property MessageType = new Property(4, int.class, "messageType", false, "MESSAGE_TYPE");
-        public final static Property State = new Property(5, int.class, "state", false, "STATE");
-        public final static Property IoType = new Property(6, int.class, "ioType", false, "IO_TYPE");
-        public final static Property VoiceLength = new Property(7, int.class, "voiceLength", false, "VOICE_LENGTH");
-        public final static Property VoicePath = new Property(8, String.class, "voicePath", false, "VOICE_PATH");
-        public final static Property FromNumber = new Property(9, String.class, "fromNumber", false, "FROM_NUMBER");
+        public final static Property IsSOS = new Property(4, Boolean.class, "isSOS", false, "IS_SOS");
+        public final static Property MessageType = new Property(5, int.class, "messageType", false, "MESSAGE_TYPE");
+        public final static Property State = new Property(6, int.class, "state", false, "STATE");
+        public final static Property IoType = new Property(7, int.class, "ioType", false, "IO_TYPE");
+        public final static Property VoiceLength = new Property(8, int.class, "voiceLength", false, "VOICE_LENGTH");
+        public final static Property VoicePath = new Property(9, String.class, "voicePath", false, "VOICE_PATH");
+        public final static Property FromNumber = new Property(10, String.class, "fromNumber", false, "FROM_NUMBER");
+        public final static Property Longitude = new Property(11, double.class, "longitude", false, "LONGITUDE");
+        public final static Property Latitude = new Property(12, double.class, "latitude", false, "LATITUDE");
+        public final static Property Altitude = new Property(13, double.class, "altitude", false, "ALTITUDE");
     }
-
-    private DaoSession daoSession;
 
 
     public MessageDao(DaoConfig config) {
@@ -50,7 +47,6 @@ public class MessageDao extends AbstractDao<Message, Long> {
     
     public MessageDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -61,12 +57,16 @@ public class MessageDao extends AbstractDao<Message, Long> {
                 "\"NUMBER\" TEXT," + // 1: number
                 "\"CONTENT\" TEXT," + // 2: content
                 "\"TIME\" INTEGER," + // 3: time
-                "\"MESSAGE_TYPE\" INTEGER NOT NULL ," + // 4: messageType
-                "\"STATE\" INTEGER NOT NULL ," + // 5: state
-                "\"IO_TYPE\" INTEGER NOT NULL ," + // 6: ioType
-                "\"VOICE_LENGTH\" INTEGER NOT NULL ," + // 7: voiceLength
-                "\"VOICE_PATH\" TEXT," + // 8: voicePath
-                "\"FROM_NUMBER\" TEXT);"); // 9: fromNumber
+                "\"IS_SOS\" INTEGER," + // 4: isSOS
+                "\"MESSAGE_TYPE\" INTEGER NOT NULL ," + // 5: messageType
+                "\"STATE\" INTEGER NOT NULL ," + // 6: state
+                "\"IO_TYPE\" INTEGER NOT NULL ," + // 7: ioType
+                "\"VOICE_LENGTH\" INTEGER NOT NULL ," + // 8: voiceLength
+                "\"VOICE_PATH\" TEXT," + // 9: voicePath
+                "\"FROM_NUMBER\" TEXT," + // 10: fromNumber
+                "\"LONGITUDE\" REAL NOT NULL ," + // 11: longitude
+                "\"LATITUDE\" REAL NOT NULL ," + // 12: latitude
+                "\"ALTITUDE\" REAL NOT NULL );"); // 13: altitude
     }
 
     /** Drops the underlying database table. */
@@ -98,20 +98,28 @@ public class MessageDao extends AbstractDao<Message, Long> {
         if (time != null) {
             stmt.bindLong(4, time);
         }
-        stmt.bindLong(5, entity.getMessageType());
-        stmt.bindLong(6, entity.getState());
-        stmt.bindLong(7, entity.getIoType());
-        stmt.bindLong(8, entity.getVoiceLength());
+ 
+        Boolean isSOS = entity.getIsSOS();
+        if (isSOS != null) {
+            stmt.bindLong(5, isSOS ? 1L: 0L);
+        }
+        stmt.bindLong(6, entity.getMessageType());
+        stmt.bindLong(7, entity.getState());
+        stmt.bindLong(8, entity.getIoType());
+        stmt.bindLong(9, entity.getVoiceLength());
  
         String voicePath = entity.getVoicePath();
         if (voicePath != null) {
-            stmt.bindString(9, voicePath);
+            stmt.bindString(10, voicePath);
         }
  
         String fromNumber = entity.getFromNumber();
         if (fromNumber != null) {
-            stmt.bindString(10, fromNumber);
+            stmt.bindString(11, fromNumber);
         }
+        stmt.bindDouble(12, entity.getLongitude());
+        stmt.bindDouble(13, entity.getLatitude());
+        stmt.bindDouble(14, entity.getAltitude());
     }
 
     @Override
@@ -137,26 +145,28 @@ public class MessageDao extends AbstractDao<Message, Long> {
         if (time != null) {
             stmt.bindLong(4, time);
         }
-        stmt.bindLong(5, entity.getMessageType());
-        stmt.bindLong(6, entity.getState());
-        stmt.bindLong(7, entity.getIoType());
-        stmt.bindLong(8, entity.getVoiceLength());
+ 
+        Boolean isSOS = entity.getIsSOS();
+        if (isSOS != null) {
+            stmt.bindLong(5, isSOS ? 1L: 0L);
+        }
+        stmt.bindLong(6, entity.getMessageType());
+        stmt.bindLong(7, entity.getState());
+        stmt.bindLong(8, entity.getIoType());
+        stmt.bindLong(9, entity.getVoiceLength());
  
         String voicePath = entity.getVoicePath();
         if (voicePath != null) {
-            stmt.bindString(9, voicePath);
+            stmt.bindString(10, voicePath);
         }
  
         String fromNumber = entity.getFromNumber();
         if (fromNumber != null) {
-            stmt.bindString(10, fromNumber);
+            stmt.bindString(11, fromNumber);
         }
-    }
-
-    @Override
-    protected final void attachEntity(Message entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        stmt.bindDouble(12, entity.getLongitude());
+        stmt.bindDouble(13, entity.getLatitude());
+        stmt.bindDouble(14, entity.getAltitude());
     }
 
     @Override
@@ -171,12 +181,16 @@ public class MessageDao extends AbstractDao<Message, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // number
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // content
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // time
-            cursor.getInt(offset + 4), // messageType
-            cursor.getInt(offset + 5), // state
-            cursor.getInt(offset + 6), // ioType
-            cursor.getInt(offset + 7), // voiceLength
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // voicePath
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // fromNumber
+            cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0, // isSOS
+            cursor.getInt(offset + 5), // messageType
+            cursor.getInt(offset + 6), // state
+            cursor.getInt(offset + 7), // ioType
+            cursor.getInt(offset + 8), // voiceLength
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // voicePath
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // fromNumber
+            cursor.getDouble(offset + 11), // longitude
+            cursor.getDouble(offset + 12), // latitude
+            cursor.getDouble(offset + 13) // altitude
         );
         return entity;
     }
@@ -187,12 +201,16 @@ public class MessageDao extends AbstractDao<Message, Long> {
         entity.setNumber(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setContent(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setMessageType(cursor.getInt(offset + 4));
-        entity.setState(cursor.getInt(offset + 5));
-        entity.setIoType(cursor.getInt(offset + 6));
-        entity.setVoiceLength(cursor.getInt(offset + 7));
-        entity.setVoicePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setFromNumber(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setIsSOS(cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0);
+        entity.setMessageType(cursor.getInt(offset + 5));
+        entity.setState(cursor.getInt(offset + 6));
+        entity.setIoType(cursor.getInt(offset + 7));
+        entity.setVoiceLength(cursor.getInt(offset + 8));
+        entity.setVoicePath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setFromNumber(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setLongitude(cursor.getDouble(offset + 11));
+        entity.setLatitude(cursor.getDouble(offset + 12));
+        entity.setAltitude(cursor.getDouble(offset + 13));
      }
     
     @Override
@@ -220,95 +238,4 @@ public class MessageDao extends AbstractDao<Message, Long> {
         return true;
     }
     
-    private String selectDeep;
-
-    protected String getSelectDeep() {
-        if (selectDeep == null) {
-            StringBuilder builder = new StringBuilder("SELECT ");
-            SqlUtils.appendColumns(builder, "T", getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T0", daoSession.getLocationDao().getAllColumns());
-            builder.append(" FROM MESSAGE T");
-            builder.append(" LEFT JOIN LOCATION T0 ON T.\"_id\"=T0.\"_id\"");
-            builder.append(' ');
-            selectDeep = builder.toString();
-        }
-        return selectDeep;
-    }
-    
-    protected Message loadCurrentDeep(Cursor cursor, boolean lock) {
-        Message entity = loadCurrent(cursor, 0, lock);
-        int offset = getAllColumns().length;
-
-        Location location = loadCurrentOther(daoSession.getLocationDao(), cursor, offset);
-        entity.setLocation(location);
-
-        return entity;    
-    }
-
-    public Message loadDeep(Long key) {
-        assertSinglePk();
-        if (key == null) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder(getSelectDeep());
-        builder.append("WHERE ");
-        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
-        String sql = builder.toString();
-        
-        String[] keyArray = new String[] { key.toString() };
-        Cursor cursor = db.rawQuery(sql, keyArray);
-        
-        try {
-            boolean available = cursor.moveToFirst();
-            if (!available) {
-                return null;
-            } else if (!cursor.isLast()) {
-                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
-            }
-            return loadCurrentDeep(cursor, true);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
-    public List<Message> loadAllDeepFromCursor(Cursor cursor) {
-        int count = cursor.getCount();
-        List<Message> list = new ArrayList<Message>(count);
-        
-        if (cursor.moveToFirst()) {
-            if (identityScope != null) {
-                identityScope.lock();
-                identityScope.reserveRoom(count);
-            }
-            try {
-                do {
-                    list.add(loadCurrentDeep(cursor, false));
-                } while (cursor.moveToNext());
-            } finally {
-                if (identityScope != null) {
-                    identityScope.unlock();
-                }
-            }
-        }
-        return list;
-    }
-    
-    protected List<Message> loadDeepAllAndCloseCursor(Cursor cursor) {
-        try {
-            return loadAllDeepFromCursor(cursor);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-
-    /** A raw-style query where you can pass any WHERE clause and arguments. */
-    public List<Message> queryDeep(String where, String... selectionArg) {
-        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
-        return loadDeepAllAndCloseCursor(cursor);
-    }
- 
 }

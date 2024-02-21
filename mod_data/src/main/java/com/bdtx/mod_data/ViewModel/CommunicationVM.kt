@@ -46,6 +46,8 @@ class CommunicationVM : BaseViewModel() {
                 it?.let { messages ->
                     Log.e(TAG, "成功查询到: ${messages.size} messages" )
                     messageList.value = messages
+                    // 清除未读消息数量
+                    DaoUtils.getInstance().clearContactUnread(number)
                 }
             }
         )

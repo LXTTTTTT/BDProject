@@ -1,13 +1,16 @@
 package com.bdtx.mod_util.Utils
 
+import android.graphics.Color
 import android.util.Log
+import android.view.View
 import com.bdtx.mod_data.Database.DaoUtils
-import com.bdtx.mod_data.Database.Entity.Location
 import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_util.Utils.Protocol.TDWTUtils
+import com.pancoit.compression.ZDCompression
+import java.util.*
 
 object SendMessageUtils {
 
@@ -16,7 +19,7 @@ object SendMessageUtils {
     val TAG = "SendMessageUtils"
 
     fun send_text(target_number: String,content: String,have_location:Boolean){
-        if(!checkSend()){return}
+        if(!checkSend(TYPE_TEXT)){return}
         // 新建消息
         val message = Message().apply {
             setNumber(target_number)
@@ -26,15 +29,9 @@ object SendMessageUtils {
             setIoType(Constant.TYPE_SEND)
             setState(Constant.STATE_SENDING)
             if(have_location){
-                val location = Location().apply {
-                    this.id = DataUtils.getTimeMillis()
-                    this.longitude = getMainVM().deviceLongitude.value!!
-                    this.latitude = getMainVM().deviceLatitude.value!!
-                    this.altitude = getMainVM().deviceAltitude.value!!
-                    this.time = id/1000
-                    Log.e(TAG, "send_text LOCATION: ${this.toString()}" )
-                }
-                setLocation(location)
+                longitude = getMainVM().deviceLongitude.value!!
+                latitude = getMainVM().deviceLatitude.value!!
+                altitude = getMainVM().deviceAltitude.value!!
             }
         }
         DaoUtils.getInstance().addMessage(message)
@@ -47,7 +44,7 @@ object SendMessageUtils {
     }
 
     fun send_voice(target_number: String,path: String,seconds:Int){
-        if(!checkSend()){return}
+        if(!checkSend(TYPE_VOICE)){return}
         // 新建消息
         var message = Message().apply {
             setNumber(target_number)
@@ -66,7 +63,23 @@ object SendMessageUtils {
     }
 
     fun send_sos(status: String,body: String,count: Int,content: String){
+        if(!checkSend(TYPE_TEXT)){return}
         val target = Variable.getSystemNumber().toString()
+        val message_content = "$content \n紧急情况：$status \n身体情况：$body \n人数：$count"
+        // 新建消息
+        var message = Message().apply {
+            setNumber(Constant.PLATFORM_IDENTIFIER)
+            setContent(message_content)
+            setTime(DataUtils.getTimeSeconds())
+            setMessageType(Constant.MESSAGE_TEXT)
+            setIoType(Constant.TYPE_SEND)
+            setState(Constant.STATE_SENDING)
+            isSOS = true
+            longitude = getMainVM().deviceLongitude.value!!
+            latitude = getMainVM().deviceLatitude.value!!
+            altitude = getMainVM().deviceAltitude.value!!
+        }
+        DaoUtils.getInstance().addMessage(message)
         val status_code = getStatusCode(status)
         val body_code = getStatusCode(body)
         val count_code = DataUtils.padWithZeros(Integer.toHexString(count),2)
@@ -99,8 +112,43 @@ object SendMessageUtils {
     }
 
     // 发送条件检测
-    fun checkSend():Boolean{
+    val TYPE_TEXT = 0; val TYPE_VOICE = 1
+    fun checkSend(type:Int):Boolean{
+        if(getMainVM().isConnectDevice.value == false){
+            GlobalControlUtils.showToast("未连接北斗设备!",0)
+            return false
+        }
+        if(getMainVM().waitTime.value!! > 0){
+            GlobalControlUtils.showToast("发送频度未到!",0)
+            return false
+        }
+        if(!getMainVM().isSignalWell()){
+            GlobalControlUtils.showToast("当前卫星信号不佳!",0)
+            return false
+        }
+        if(type == TYPE_VOICE){
+            // 测试，先
+            // 语音发送等级要求
+            if(getMainVM().deviceCardLevel.value!!<3){
+                GlobalControlUtils.showToast("请用三级以上北斗卡发送语音消息!",0)
+                return false
+            }
 
+            // 压缩库剩余次数检测（未激活的情况下）
+            if(!ZDCompressionUtils.isVoiceOnline()){
+                try {
+                    val array = ZDCompression.getInstance().vOffInfo.split(",".toRegex()).toTypedArray()
+                    val leave = Integer.valueOf(array[0])
+                    Log.e(TAG, "剩余语音压缩试用次数: $leave" )
+                    if(leave<1){
+                        GlobalControlUtils.showToast("剩余语音压缩试用次数不足，请联系商务人员!",0)
+                        return false
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
         return true
     }
 

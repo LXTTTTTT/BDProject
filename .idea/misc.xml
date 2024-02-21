@@ -34,22 +34,28 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/status_page_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/swift_icon_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/voice_icon_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/zoom_down_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable-v24/zoom_up_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/anim_voice_left_play.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/arc_clip_shape.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/arc_shape.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_blue_1_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_green_3.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_green_3_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_red_1.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/corner_fill_white_1.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/download_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/half_circle.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/message_page_ripple.xml" value="0.181" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/drawable/my_location_ripple.xml" value="0.181" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_about_us.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_chat.xml" value="0.2928637627432808" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_communication_link.xml" value="0.17806484295845998" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_compression_rate.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_connect_bluetooth.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_main2.xml" value="0.358695652173913" />
-        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_map.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_map.xml" value="0.33" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_message.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_message_type.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_platform_setting.xml" value="0.2928637627432808" />
@@ -59,7 +65,7 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_test.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/activity_voice_auth.xml" value="0.2928637627432808" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_bluetooth_item.xml" value="0.358695652173913" />
-        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_chat_receive.xml" value="0.33" />
+        <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_chat_receive.xml" value="0.25" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_chat_send.xml" value="0.25" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_contact_item.xml" value="0.25" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_main/src/main/res/layout/adapter_setting_item.xml" value="0.358695652173913" />
@@ -76,7 +82,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

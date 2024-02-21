@@ -79,9 +79,9 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
             });
         }else {
             Toast.makeText(this, "请打开蓝牙", Toast.LENGTH_SHORT).show();
-            Intent in = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
-            startActivityForResult(in,1);
+//            Intent in = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//            in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
+//            startActivityForResult(in,1);
         }
     }
 

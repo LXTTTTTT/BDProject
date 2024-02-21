@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bdtx.mod_data.Database.Entity.Location;
+import com.bdtx.mod_data.Database.DaoUtils;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
@@ -110,14 +110,15 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         chatListAdapter = new ChatListAdapter();
         chatListAdapter.setOnMessageClick(new ChatListAdapter.OnMessageClick() {
             @Override
-            public void onLocationClick(@NonNull Location location) {
-                loge("消息位置："+location);
+            public void onLocationClick(double longitude, double latitude) {
+                loge("消息位置："+longitude+"/"+latitude);
+                MapActivity.start(ChatActivity.this,longitude,latitude);
             }
 
             @Override
             public void onResendClick(@NonNull Message message) {
                 // 重发消息
-                loge("重发消息："+message.content);
+                loge("重发消息类型："+message.getMessageType());
             }
         });
 
@@ -228,7 +229,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                     @Override
                     public void run() {
                         target_number = editable.toString();
-                        viewModel.getMessage(target_number);
+                        viewModel.upDateMessage(target_number);
                     }
                 },500);
             }
@@ -403,7 +404,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         if(message.getType()==BaseMsg.Companion.getMSG_UPDATE_MESSAGE()){
             UpdateMessageMsg msg = (UpdateMessageMsg) message.getMessage();
             if(msg.number.equals(target_number)){
-                viewModel.getMessage(target_number);
+                viewModel.upDateMessage(target_number);
             }
         }
     }

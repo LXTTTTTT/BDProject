@@ -400,7 +400,7 @@ public class BluetoothTransferUtils {
             String[] data_hex_array = data_hex.split("0d0a");  // 分割后处理
             for (String s : data_hex_array) {
                 String s_str = DataUtils.hex2String(s);
-                Pattern pattern = Pattern.compile("FKI|ICP|TCI|PWI|GGA|GLL|PRX|RNX|ZDX|TXR");
+                Pattern pattern = Pattern.compile("FKI|ICP|ICI|TCI|PWI|SNR|GGA|GLL|PRX|RNX|ZDX|TXR");
                 Matcher matcher = pattern.matcher(s_str);
                 if (matcher.find()) {
                     BDProtocolUtils.getInstance().parseData(s_str);

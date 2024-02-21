@@ -14,7 +14,7 @@ class MainApplication:Application() {
 // 变量 ------------------------------------------
     var aliveActivityCount = 0  // 已开启页面统计
 
-// 单例（这里用不上） ------------------------------------------
+// 单例（这个项目用不上） ------------------------------------------
     companion object{
         private lateinit var mainApplication: MainApplication
         fun getInstance(): MainApplication {

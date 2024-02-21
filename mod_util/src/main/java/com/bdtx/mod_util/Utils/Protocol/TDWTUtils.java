@@ -1,12 +1,10 @@
 package com.bdtx.mod_util.Utils.Protocol;
 
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.bdtx.mod_data.Database.DaoUtils;
-import com.bdtx.mod_data.Database.Entity.Location;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
@@ -52,7 +50,10 @@ public class TDWTUtils {
 
     public static String encapsulated91(Message message){
         String content_str = message.getContent();
-        Location location = message.getLocation();
+        Location location = new Location();
+        location.longitude = message.getLongitude();
+        location.latitude = message.getLatitude();
+        location.altitude = message.getAltitude();
         StringBuilder hex;
         // 消息类型0x91
         byte requestHeaderByte = (byte) 0x91;
@@ -79,7 +80,9 @@ public class TDWTUtils {
         byte requestHeaderByte = (byte) 0x92;
         hex = new StringBuilder(DataUtils.byte2hex(requestHeaderByte));
         // 接收者电话号码
-        hex.append("FFFFFFFFFF");
+//        hex.append("FFFFFFFFFF");
+        String phone_hex = DataUtils.long2Hex(110110110);
+        hex.append(phone_hex.substring(phone_hex.length()-10));
         // 时间戳
         long time_long = DataUtils.getTimeSeconds();
         String time_hex = DataUtils.long2Hex(time_long);
@@ -90,15 +93,21 @@ public class TDWTUtils {
         return hex.toString().toUpperCase();
     }
 
+    // 93 000690259E 65D55F27 06C3DED0 01615240 0028 BAC3B5C4CAD5B5BD
     public static String encapsulated93(Message message){
         String content_str = message.getContent();
-        Location location = message.getLocation();
+        Location location = new Location();
+        location.longitude = message.getLongitude();
+        location.latitude = message.getLatitude();
+        location.altitude = message.getAltitude();
         StringBuilder hex;
         // 消息类型0x93
         byte requestHeaderByte = (byte) 0x93;
         hex = new StringBuilder(DataUtils.byte2hex(requestHeaderByte));
         // 接收者电话号码
-        hex.append("FFFFFFFFFF");
+//        hex.append("FFFFFFFFFF");
+        String phone_hex = DataUtils.long2Hex(110110110);
+        hex.append(phone_hex.substring(phone_hex.length()-10));
         Log.e(TAG, "93协议: "+hex);
         // 时间戳
         long time_long = DataUtils.getTimeSeconds();
@@ -119,7 +128,9 @@ public class TDWTUtils {
         byte requestHeaderByte = (byte) 0xA7;
         hex = new StringBuilder(DataUtils.byte2hex(requestHeaderByte));
         // 接收者电话号码
-        hex.append("FFFFFFFFFF");
+//        hex.append("FFFFFFFFFF");
+        String phone_hex = DataUtils.long2Hex(110110110);
+        hex.append(phone_hex.substring(phone_hex.length()-10));
         // 内容
         try {
             byte[] audio_bytes;
@@ -144,7 +155,9 @@ public class TDWTUtils {
         byte requestHeaderByte = (byte) 0x13;
         hex = new StringBuilder(DataUtils.byte2hex(requestHeaderByte));
         hex.append("00");  // 保留字段
-        hex.append("FFFFFFFFFF");  // 接收者电话号码
+//        hex.append("FFFFFFFFFF");  // 接收者电话号码
+        String phone_hex = DataUtils.long2Hex(110110110);
+        hex.append(phone_hex.substring(phone_hex.length()-10));
         Location location = new Location();
         location.longitude = getMainVM().getDeviceLongitude().getValue();
         location.latitude = getMainVM().getDeviceLatitude().getValue();
@@ -183,7 +196,7 @@ public class TDWTUtils {
             // card_level 5
             {ZDCompression.bitRate_2400, ZDCompression.bitRate_1200, ZDCompression.bitRate_700, ZDCompression.bitRate_450}
     };
-    // 5 10
+    // 5 10 ， 2 3
     public static int calculateEncoderCodeRate(int card_level, int seconds) {
         int encoderCodeRate = ZDCompression.bitRate_450;
         if (card_level >= 2 && card_level <= 5) {
@@ -201,17 +214,17 @@ public class TDWTUtils {
 
     public static String getLocation(Location location){
         StringBuilder location_str = new StringBuilder();
-        if(location==null || location.getLongitude()==0.0){
+        if(location==null || location.longitude==0.0d){
             Log.e(TAG, "location 为 null");
             location_str.append("FFFFFFFFFFFFFFFFFFFF");
         }else{
-            double longitude_double = location.getLongitude();
+            double longitude_double = location.longitude;
             String longitude_str = DataUtils.toLength(DataUtils.int2Hex((int)(longitude_double*1000000)),8);
             location_str.append(longitude_str);
-            double latitude_double = location.getLatitude();
+            double latitude_double = location.latitude;
             String latitude_str = DataUtils.toLength(DataUtils.int2Hex((int)(latitude_double*1000000)),8);
             location_str.append(latitude_str);
-            double altitude_double = location.getAltitude();
+            double altitude_double = location.altitude;
             String altitude_str = DataUtils.toLength(DataUtils.int2Hex((int)(altitude_double)),4);
             location_str.append(altitude_str);
         }
@@ -240,14 +253,12 @@ public class TDWTUtils {
             String content = DataUtils.hex2String(data.substring(28));// 内容
             // 位置
             Location location = new Location();
-            location.id = DataUtils.getTimeMillis();
             location.longitude = DataUtils.hex2Long(location_hex.substring(0,8)) / 1000000.0;
             location.latitude = DataUtils.hex2Long(location_hex.substring(8,16)) / 1000000.0;
             location.altitude = DataUtils.hex2Long(location_hex.substring(16,20));
-            location.time = location.id / 1000;
             Log.e(TAG, "收到91消息: "+ content);
             addTextMessage(from,content,location);
-        }catch (Exception e){e.printStackTrace();}
+        }catch(Exception e){e.printStackTrace();}
     }
 
     public static void resolve92(String from,String data_str){
@@ -268,11 +279,9 @@ public class TDWTUtils {
             String content = DataUtils.hex2String(data.substring(28));// 内容
             // 位置
             Location location = new Location();
-            location.id = DataUtils.getTimeMillis();
             location.longitude = DataUtils.hex2Long(location_hex.substring(0,8)) / 1000000.0;
             location.latitude = DataUtils.hex2Long(location_hex.substring(8,16)) / 1000000.0;
             location.altitude = DataUtils.hex2Long(location_hex.substring(16,20));
-            location.time = location.id / 1000;
             Log.e(TAG, "收到93消息: "+ content);
             addTextMessage(from,content,location);
         }catch (Exception e){e.printStackTrace();}
@@ -305,8 +314,6 @@ public class TDWTUtils {
         }catch (Exception e){e.printStackTrace();}
     }
 
-
-
     public static void addTextMessage(String from, String content, @Nullable Location location){
         // 创建消息记录
         Message message = new Message();
@@ -315,7 +322,11 @@ public class TDWTUtils {
         message.setContent(content);
         message.setIoType(Constant.TYPE_RECEIVE);
         message.setMessageType(Constant.MESSAGE_TEXT);
-        if(location!=null){message.setLocation(location);}
+        if(location!=null){
+            message.setLongitude(location.longitude);
+            message.setLatitude(location.latitude);
+            message.setAltitude(location.altitude);
+        }
         DaoUtils.getInstance().addMessage(message);  // 插入数据库
     }
 
@@ -330,6 +341,12 @@ public class TDWTUtils {
         message.setVoicePath(path);
         message.setVoiceLength(seconds);
         DaoUtils.getInstance().addMessage(message);  // 插入数据库
+    }
+
+    private static class Location {
+        double longitude;
+        double latitude;
+        double altitude;
     }
 
 }
