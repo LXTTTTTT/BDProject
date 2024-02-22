@@ -48,7 +48,7 @@ class MainVM : BaseViewModel() {
     fun isSignalWell():Boolean{
         if(isConnectDevice.value==false){return false}
         val max_single = Arrays.stream(signal.value).max().orElse(0) // 拿到所有信号中的最大值
-        return max_single>40
+        return max_single>40  // 大于40可发消息
     }
 
     fun getUnreadMessageCount() : LiveData<Int?> {

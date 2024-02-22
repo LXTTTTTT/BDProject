@@ -135,7 +135,7 @@ object SendMessageUtils {
             }
 
             // 压缩库剩余次数检测（未激活的情况下）
-            if(!ZDCompressionUtils.isVoiceOnline()){
+            if(!Variable.isVoiceOnline()){
                 try {
                     val array = ZDCompression.getInstance().vOffInfo.split(",".toRegex()).toTypedArray()
                     val leave = Integer.valueOf(array[0])

@@ -459,6 +459,11 @@ public class DataUtils {
         return timeStampToString(getTimeSeconds());
     }
 
+    // yyyy-MM-dd
+    public static String getDateString(){
+        return timeStampToString(getTimeSeconds(),FORMAT_DATE_YMD);
+    }
+
     public static String getTimeSerial() {
         return timeStampToString(getTimeSeconds(),FORMAT_DATE_SERIAL);
     }

@@ -1,17 +1,21 @@
 package com.bdtx.mod_util.Utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bdtx.mod_data.EventBus.AuthMsg;
 import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.Global.Constant;
+import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_util.View.AuthInfoDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.pancoit.compression.CompressionInterface;
 import com.pancoit.compression.ZDCompression;
+import com.tencent.mmkv.MMKV;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,11 +23,10 @@ import org.greenrobot.eventbus.EventBus;
 // 授权信息管理类
 public class ZDCompressionUtils {
 
-    private final String TAG = "ZDCompressionUtil";
+    private static final String TAG = "ZDCompressionUtil";
     public AuthInfoDialog authInfoDialog;  // 激活弹窗
     public static final int SCAN_ACTIVITY_CODE = 201;
     public String voice_key = "";
-    public String picture_key = "";
 
 // 单例 --------------------------------------------------------
     private static ZDCompressionUtils zdCompressionUtil;
@@ -34,29 +37,14 @@ public class ZDCompressionUtils {
         return zdCompressionUtil;
     }
 
-    public static boolean isVoiceOnline(){
-        String voKey= MMKVUtils.INSTANCE.getString(Constant.VO_ONLINE_ACTIVATION_KEY,"");
-        return !"".equals(voKey);
-    }
-    public void saveVoiceKey(String str){
-        MMKVUtils.INSTANCE.put(Constant.VO_ONLINE_ACTIVATION_KEY,str);
-    }
-    public static boolean isPicOnline(){
-        String picKey= MMKVUtils.INSTANCE.getString(Constant.PIC_ONLINE_ACTIVATION_KEY,"");
-        return !"".equals(picKey);
-    }
-    public void savePicKey(String str){
-        MMKVUtils.INSTANCE.put(Constant.PIC_ONLINE_ACTIVATION_KEY,str);
-    }
-
     public void initZipSdk(){
-        String voKey = MMKVUtils.INSTANCE.getString(Constant.VO_ONLINE_ACTIVATION_KEY,"");
+        String voKey = Variable.getKey();
+        Log.e(TAG, "初始化key: "+voKey );
         if("".equals(voKey)){
             ZDCompression.getInstance().off_voice_init(ApplicationUtils.INSTANCE.getApplication(),Constant.VO_OFF_ACTIVATION_VALUE,offlineCompressionInterface);
         }else{
             ZDCompression.getInstance().initVoiceZip(ApplicationUtils.INSTANCE.getApplication(),voKey,onlineCompressionInterface);
         }
-
         // 图片用不上
 //        String picKey = MMKVUtils.INSTANCE.getString(Constant.PIC_ONLINE_ACTIVATION_KEY,"");
 //        if("".equals(picKey)){
@@ -148,9 +136,7 @@ public class ZDCompressionUtils {
             if(code==20000){
                 GlobalControlUtils.INSTANCE.showToast("初始化成功",0);
                 hideAuthDialog();
-                EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS)));
-                // 成功了，保存 key
-                saveVoiceKey(voice_key);
+                EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_AUTH(), new AuthMsg(AuthMsg.AUTH_SUCCESS,voice_key)));
             }
             else {
                 voice_key = "";

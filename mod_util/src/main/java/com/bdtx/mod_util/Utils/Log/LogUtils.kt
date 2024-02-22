@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.WindowManager
 import com.bdtx.mod_util.Utils.DeviceInfoUtils
 
-
+// 不用这个
 object LogUtils {
     private const val TAG = "LogUtil"
     var application: Application? = null

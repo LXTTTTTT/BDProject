@@ -6,6 +6,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
 import com.bdtx.mod_data.Database.DaoUtils
+import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_util.Utils.ApplicationUtils
 import com.bdtx.mod_util.Utils.Log.LogUtils
 import com.bdtx.mod_util.Utils.SystemInfoUtils
@@ -130,7 +131,7 @@ class InitArouterTask() : Task() {
             ARouter.openDebug()
         }
         ARouter.init(ApplicationUtils.getApplication())
-        Log.e(TAG, "初始化ARouter" )
+        Log.e(TAG, "初始化ARouter" ); Variable.isARouterInit = true
     }
 }
 

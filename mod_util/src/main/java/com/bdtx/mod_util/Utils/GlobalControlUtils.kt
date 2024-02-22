@@ -19,10 +19,10 @@ object GlobalControlUtils {
 
     // 控件 ------------------------------------------
     var my_toast : Toast? = null
-    var loading_dialog : LoadingDialog? = null
+    var loading_dialog : LoadingDialog? = null  // 加载框
     var alertDialog : AlertDialog? = null  // 警告框
     // 其他 -----------------------------------------
-    val audioManager:AudioManager? = APP.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    val audioManager:AudioManager? = APP.getSystemService(Context.AUDIO_SERVICE) as AudioManager  // 系统音频管理器
 
 
     // 全局唯一 Toast 方法：0 - 短 ， 1 - 长

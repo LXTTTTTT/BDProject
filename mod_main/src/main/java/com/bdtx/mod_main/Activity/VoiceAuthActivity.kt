@@ -8,6 +8,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.bdtx.mod_data.EventBus.AuthMsg
 import com.bdtx.mod_data.EventBus.BaseMsg
 import com.bdtx.mod_data.Global.Constant
+import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_main.Base.BaseViewBindingActivity
 import com.bdtx.mod_main.databinding.ActivityVoiceAuthBinding
 import com.bdtx.mod_util.Utils.DataUtils
@@ -28,7 +29,7 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         setTitle("语音压缩授权")
         // 是否显示信息
-        val show = ZDCompressionUtils.isVoiceOnline()
+        val show = Variable.isVoiceOnline()
         loge("当前 $show 激活")
         if(!show){
             try {
@@ -73,6 +74,9 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
             viewBinding.authText.text = "已授权"
             viewBinding.view1.visibility = View.GONE
             viewBinding.view2.visibility = View.VISIBLE
+            viewBinding.startAuth.setOnClickListener {
+                finish()
+            }
         }
 
     }
@@ -85,16 +89,17 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(eventMsg: BaseMsg<Any>){
         loge("收到广播，类型：${eventMsg.type}")
-        val message = eventMsg.message
-        when(message){
-            message is AuthMsg -> {
-                if((message as AuthMsg).authResult==AuthMsg.AUTH_SUCCESS){
+        if(eventMsg.type==BaseMsg.MSG_AUTH){
+            val message = eventMsg.message
+            message?.let {
+                if((it as AuthMsg).authResult==AuthMsg.AUTH_SUCCESS){
                     ZDCompressionUtils.getInstance().hideAuthDialog()
+                    Variable.setKey(it.key)  // 保存key
                     finish()
+                    loge("激活成功，关闭页面")
                 }
             }
         }
-
     }
 
 

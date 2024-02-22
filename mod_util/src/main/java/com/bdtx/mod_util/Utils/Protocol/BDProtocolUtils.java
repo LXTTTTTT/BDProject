@@ -2,23 +2,16 @@ package com.bdtx.mod_util.Utils.Protocol;
 
 import android.util.Log;
 
-import com.bdtx.mod_data.Database.Dao.ContactDao;
-import com.bdtx.mod_data.Database.DaoUtils;
-import com.bdtx.mod_data.Database.Entity.Contact;
-import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
+import com.bdtx.mod_util.Utils.FileUtils;
+import com.bdtx.mod_util.Utils.FileUtils3;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 // 协议工具：解析/封装
 public class BDProtocolUtils {
@@ -83,6 +76,7 @@ public class BDProtocolUtils {
         if(!data_str.contains(",")){
             return;
         }
+        FileUtils3.recordBDLog(FileUtils.getLogFile(),"parse_BD:"+data_str);  // 记录日志文件
         String[] values = data_str.split(",", -1);  // , 分割，例：["$CCICR","0","00"]
         Log.e(TAG, "在解析的数据 parseData: "+ Arrays.toString(values));
         if (data_str.contains("FKI")) {  // 反馈信息

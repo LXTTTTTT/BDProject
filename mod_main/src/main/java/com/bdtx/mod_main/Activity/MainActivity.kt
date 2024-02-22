@@ -48,11 +48,14 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
     fun init_control(){
         viewBinding.messagePage.setOnClickListener {
+            // 需要等到 ARouter 初始化完成后才能调用不然会崩溃，应该要加个闪屏页来等待任务初始化
+            if(!Variable.isARouterInit) return@setOnClickListener
             ARouter.getInstance().build(Constant.MESSAGE_ACTIVITY).navigation()
         }
 
         viewBinding.statePage.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
+                if(!Variable.isARouterInit) return
 //                startActivity(Intent(my_context,StateActivity::class.java))
                 ARouter.getInstance().build(Constant.STATE_ACTIVITY).navigation()
             }
@@ -60,27 +63,73 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
         viewBinding.mapPage.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
+                if(!Variable.isARouterInit) return
                 ARouter.getInstance().build(Constant.MAP_ACTIVITY).navigation()
             }
         })
 
         viewBinding.healthyPage.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
+                if(!Variable.isARouterInit) return
                 ARouter.getInstance().build(Constant.HEALTHY_ACTIVITY).navigation()
             }
         })
 
         viewBinding.sosPage.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
+                if(!Variable.isARouterInit) return
                 ARouter.getInstance().build(Constant.SOS_ACTIVITY).navigation()
             }
         })
 
         viewBinding.settingPage.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
+                if(!Variable.isARouterInit) return
                 ARouter.getInstance().build(Constant.SETTING_ACTIVITY).navigation()
             }
         })
+
+        // 连接设备
+        viewBinding.connectBluetoothGroup.setOnClickListener {
+            if(!Variable.isARouterInit) return@setOnClickListener
+            if(viewModel.isConnectDevice.value==true){
+                GlobalControlUtils.showAlertDialog("断开蓝牙？","当前已连接蓝牙，是否需要断开蓝牙",
+                    onYesClick = {
+                        BluetoothTransferUtils.getInstance().disconnectDevice();
+                    }
+                )
+            }
+            else{
+                // 这个手表是android9不需要bluetoothscan等权限
+                rxPermissions
+                    .request(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)  // 定位权限检测
+                    .subscribe{  granted->
+                        if(granted){
+                            var isBluetoothEnable = BluetoothAdapter.getDefaultAdapter().isEnabled
+                            var isLocationEnabled = isLocationEnabled()
+                            // 蓝牙开启检测
+                            if(!isBluetoothEnable){
+                                val enableBluetooth = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                                startActivity(enableBluetooth)
+                            }
+                            // 定位开启检测
+                            if(!isLocationEnabled){
+                                val enableLocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                startActivity(enableLocation)
+                            }
+                            if(isBluetoothEnable && isLocationEnabled){
+//                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
+                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                            }else{
+                                GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
+                            }
+                        }else{
+                            GlobalControlUtils.showToast("请先授予权限！",0)
+                        }
+                    }
+
+            }
+        }
 
     // 测试组 ---------------------------------------------
         viewBinding.test1.setOnClickListener {
@@ -116,55 +165,22 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         viewBinding.test4.setOnClickListener {
             loge("获取快捷消息：${Variable.getSwiftMsg()}")
         }
+
+        viewBinding.test5.setOnClickListener {
+            loge("key：${Variable.getKey()}")
+        }
+
     }
 
     fun init_view_model(){
         // 全局数据变化监听
         viewModel.isConnectDevice.observe(this,object : Observer<Boolean?>{
             override fun onChanged(isConnect: Boolean?) {
-                // 文字变化
+                // 连接设备文字变化
                 if(isConnect==true){
                     viewBinding.connectBluetooth.text = "断开连接"
                 }else{
                     viewBinding.connectBluetooth.text = "点击连接北斗"
-                }
-                // 点击事件
-                viewBinding.connectBluetoothGroup.setOnClickListener {
-                    if(isConnect==true){
-                        GlobalControlUtils.showAlertDialog("断开蓝牙？","当前已连接蓝牙，是否需要断开蓝牙",
-                            onYesClick = {
-                                BluetoothTransferUtils.getInstance().disconnectDevice();
-                            }
-                        )
-                    }
-                    else{
-                        // 这个手表是android9不需要bluetoothscan等权限
-                        rxPermissions
-                            .request(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)
-                            .subscribe{  granted->
-                                if(granted){
-                                    var isBluetoothEnable = BluetoothAdapter.getDefaultAdapter().isEnabled
-                                    var isLocationEnabled = isLocationEnabled()
-                                    if(!isBluetoothEnable){
-                                        val enableBluetooth = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                                        startActivity(enableBluetooth)
-                                    }
-                                    if(!isLocationEnabled){
-                                        val enableLocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                        startActivity(enableLocation)
-                                    }
-                                    if(isBluetoothEnable && isLocationEnabled){
-//                                        ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
-                                        ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
-                                    }else{
-                                        GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
-                                    }
-                                }else{
-                                    GlobalControlUtils.showToast("请先授予权限！",0)
-                                }
-                        }
-
-                    }
                 }
             }
         })
@@ -191,7 +207,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         }
     }
 
-    // 双击后台
+    // 双击进入后台
     private var lastClickTime: Long = 0L
     override fun onBackPressed() {
         if (System.currentTimeMillis() - lastClickTime > 2000) {
@@ -202,9 +218,11 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         }
     }
 
+    // 主页时间更新
+    var timer:Timer? = null
     fun start_timer(){
-        val timer = Timer()
-        timer.schedule(object : TimerTask(){
+        timer = Timer()
+        timer!!.schedule(object : TimerTask(){
             override fun run() {
                 viewBinding.nowTime.text = DataUtils.getTimeString()
             }
@@ -219,6 +237,12 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
             return isGpsEnabled
         }
         return false
+    }
+
+    override fun onDestroy() {
+        timer?.let { it.cancel(); timer=null }
+        BluetoothTransferUtils.getInstance().disconnectDevice();
+        super.onDestroy()
     }
 
 }

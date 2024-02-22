@@ -12,6 +12,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bdtx.mod_main.R
 import com.bdtx.mod_util.Utils.ApplicationUtils
+import com.bdtx.mod_util.View.SlideBackView.SlideBack
+import com.bdtx.mod_util.View.SlideBackView.registerSlideBack
+import com.bdtx.mod_util.View.SlideBackView.unregisterSlideBack
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -19,7 +22,6 @@ import java.util.*
 abstract class BaseActivity : AppCompatActivity(){
 
     val TAG : String? = this::class.java.simpleName
-//    var APP : Application = ApplicationUtil.getApplication()
     val APP : Application by lazy { ApplicationUtils.getApplication() }
     lateinit var activity_window : Window
     lateinit var my_context : Context
@@ -36,7 +38,12 @@ abstract class BaseActivity : AppCompatActivity(){
         setOrientationPortrait()  // 锁定垂直布局
         initView(savedInstanceState);  // 初始化页面
         initData();  // 初始化数据
-
+        // 侧滑返回
+//        registerSlideBack (true,{
+//            finish()
+//        },{
+//            this.iconViewHeight = dp2px(90)
+//        })
         if(enableEventBus()){EventBus.getDefault().register(this)}
     }
 
@@ -70,13 +77,14 @@ abstract class BaseActivity : AppCompatActivity(){
         title_textview?.let { it.text = title;loge("执行") }
     }
 
-    // 设置页面垂直
+    // 锁定页面垂直
     fun setOrientationPortrait() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
     override fun onDestroy() {
         if(enableEventBus()){EventBus.getDefault().unregister(this)}
+//        unregisterSlideBack()
         super.onDestroy()
     }
 

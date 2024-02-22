@@ -29,6 +29,21 @@ android {
         }
     }
 
+    signingConfigs {
+        debug {
+            storeFile file('../app/platform.keystore')
+            keyAlias = 'androiddebugkey'
+            storePassword 'android'
+            keyPassword 'android'
+        }
+        release {
+            storeFile file('../app/platform.keystore')
+            keyAlias = 'androiddebugkey'
+            storePassword 'android'
+            keyPassword 'android'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

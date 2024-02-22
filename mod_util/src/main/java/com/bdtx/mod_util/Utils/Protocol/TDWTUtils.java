@@ -135,7 +135,7 @@ public class TDWTUtils {
         try {
             byte[] audio_bytes;
             int rate = Variable.getCompressRate()==666 ? getEncoderCodeRate(message.getVoiceLength()):Variable.getCompressRate();
-            if(ZDCompressionUtils.isVoiceOnline()){
+            if(Variable.isVoiceOnline()){
                 audio_bytes = ZDCompression.getInstance().zip(message.getVoicePath(),rate);
             } else {
                 audio_bytes= ZDCompression.getInstance().off_voice_zip(message.getVoicePath(),rate);
@@ -233,6 +233,8 @@ public class TDWTUtils {
 
 
 // 解析 ---------------------------------------------------------
+    // 平台下发：A0000690259E65D6BA75CAD5B5BDC1CBC2F0
+
     // 90 0000000000 65b0855e ccecbfd5
     public static void resolve90(String from,String data_str){
         try{
