@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import com.bdtx.main.Task.TaskDispatcher
 import com.bdtx.mod_util.Utils.ActivityManagementUtils
+import com.bdtx.mod_util.Utils.SystemLocationUtils
 
 class MainApplication:Application() {
 
@@ -34,6 +35,7 @@ class MainApplication:Application() {
             .addTask(InitGreenDaoTask())
             .addTask(InitArouterTask())
             .addTask(InitZDCompression())
+            .addTask(InitCatchException())
             .start()
         TaskDispatcher.createInstance().await()
 
@@ -57,6 +59,9 @@ class MainApplication:Application() {
                 ActivityManagementUtils.getInstance().pop(p0)
             }
         })
+
+        // 注册系统定位变化监听
+        SystemLocationUtils.init(this)
     }
 
 

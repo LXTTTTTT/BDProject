@@ -1,12 +1,10 @@
 package com.bdtx.mod_data.ViewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bdtx.mod_data.Database.DaoUtils
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import java.util.*
 
 // 全局使用 ViewModel
@@ -22,15 +20,21 @@ class MainVM : BaseViewModel() {
     val deviceLongitude : MutableLiveData<Double?> = MutableLiveData()  // 设备经度
     val deviceLatitude : MutableLiveData<Double?> = MutableLiveData()  // 设备纬度
     val deviceAltitude : MutableLiveData<Double?> = MutableLiveData()  // 设备高度
+    val systemLongitude : MutableLiveData<Double?> = MutableLiveData()  // 系统经度
+    val systemLatitude : MutableLiveData<Double?> = MutableLiveData()  // 系统纬度
+    val systemAltitude : MutableLiveData<Double?> = MutableLiveData()  // 系统高度
 
     val waitTime : MutableLiveData<Int?> = MutableLiveData()  // 等待时间
     val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 总未读消息数量
 
 
-    init { initParameter() }
+    init {
+        initDeviceParameter()
+        initSystemParameter()
+    }
 
     // 初始化默认参数
-    fun initParameter(){
+    fun initDeviceParameter(){
         isConnectDevice.postValue(false)
         deviceCardID.postValue("-")
         deviceCardFrequency.postValue(-1)
@@ -42,6 +46,12 @@ class MainVM : BaseViewModel() {
         deviceLongitude.postValue(0.0)
         deviceLatitude.postValue(0.0)
         deviceAltitude.postValue(0.0)
+    }
+
+    fun initSystemParameter(){
+        systemLongitude.postValue(0.0)
+        systemLatitude.postValue(0.0)
+        systemAltitude.postValue(0.0)
     }
 
     // 当前信号是否良好

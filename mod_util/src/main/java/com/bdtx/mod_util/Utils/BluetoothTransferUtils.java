@@ -431,7 +431,7 @@ public class BluetoothTransferUtils {
             }
             FileUtils3.recordBDLog(FileUtils.getLogFile(),"****** 断开北斗设备连接 ******");
 //            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 直接初始化所有连接参数
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initDeviceParameter();  // 直接初始化所有连接参数
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -453,7 +453,8 @@ public class BluetoothTransferUtils {
                     sleep(300);
                     write(BDProtocolUtils.CCPRS());  // 关闭盒子自带上报
                     sleep(300);
-                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+//                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
                     sleep(300);

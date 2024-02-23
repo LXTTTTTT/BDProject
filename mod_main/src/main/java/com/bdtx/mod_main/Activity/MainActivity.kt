@@ -7,7 +7,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.launcher.ARouter
@@ -168,12 +167,13 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
         viewBinding.test5.setOnClickListener {
             loge("key：${Variable.getKey()}")
+            throw RuntimeException("崩它！")
         }
 
     }
 
     fun init_view_model(){
-        // 全局数据变化监听
+        // 数据变化监听
         viewModel.isConnectDevice.observe(this,object : Observer<Boolean?>{
             override fun onChanged(isConnect: Boolean?) {
                 // 连接设备文字变化

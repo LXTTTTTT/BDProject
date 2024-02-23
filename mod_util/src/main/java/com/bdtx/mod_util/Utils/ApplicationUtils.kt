@@ -21,6 +21,7 @@ object ApplicationUtils {
     // 当前是否为debug环境
     fun isDebug() = isDebug
 
+    // 获取全局单例 viewModel
     private var mainVM : ViewModel? = null
     fun <T : ViewModel> getGlobalViewModel(viewModelClass: Class<T>) : T{
         if(mainVM==null){

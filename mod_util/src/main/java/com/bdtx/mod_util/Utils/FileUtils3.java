@@ -27,7 +27,7 @@ public class FileUtils3 {
             String curTime = DataUtils.getTimeString();  // yyyy-MM-dd HH:mm:ss
             info += curTime + "\n" ;
             info += content + "\n";
-            final File kmlFile = new File(filePath+"log_error_" +today+ ".txt");
+            final File kmlFile = new File(filePath+"LOG_ERROR_" + today + ".txt");
             if (!kmlFile.exists()) {
                 kmlFile.createNewFile();
             }
@@ -49,7 +49,7 @@ public class FileUtils3 {
             String curTime = DataUtils.getTimeString();  // yyyy-MM-dd HH:mm:ss
             info += curTime + "\n" ;
             info += content + "\n";
-            final File kmlFile = new File(filePath+"log_BD_" +today+ ".txt");
+            final File kmlFile = new File(filePath+"LOG_BD_" +today+ ".txt");
             if (!kmlFile.exists()) {
                 kmlFile.createNewFile();
             }

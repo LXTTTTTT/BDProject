@@ -17,7 +17,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
     // 数据
     private var data: MutableList<T> = mutableListOf()
 
-    // 这里用不上
+    // 这个项目用不上
     private lateinit var mHeaderLayout: LinearLayout  // 头布局
     private lateinit var mFooterLayout: LinearLayout  // 脚布局
 
@@ -135,9 +135,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * 重写此方法，返回你的ViewType
-     */
+    // 重写此方法，返回 ViewType
     protected open fun getDefItemViewType(position: Int): Int {
         return super.getItemViewType(position)
     }
@@ -149,16 +147,13 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         return headerLayoutCount + getDefItemCount() + footerLayoutCount
     }
 
-    /**
-     * 重写此方法，返回你的数据量
-     */
+
+    // 重写此方法，返回数据量
     protected open fun getDefItemCount(): Int {
         return data.size
     }
 
-    /**
-     * 子类实现创建自定义ViewHolder，父类提供了LayoutInflater
-     */
+    // 子类实现创建自定义ViewHolder，父类提供了LayoutInflater
     protected open fun onCreateDefViewHolder(
         layoutInflater: LayoutInflater,
         parent: ViewGroup,
@@ -167,11 +162,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         return BaseBindViewHolder(getViewBinding(layoutInflater, parent, viewType))
     }
 
-    /**
-     * 子类实现ViewBinding，父类提供了LayoutInflater
-     * 可以根据不同的viewType传递不同的viewBinding
-     */
-    // 获取子项的 ViewBinding
+    // 获取子项的 ViewBinding ：子类实现ViewBinding，父类提供了LayoutInflater，可以根据不同的viewType传递不同的viewBinding
     abstract fun getViewBinding(layoutInflater: LayoutInflater, parent: ViewGroup, viewType: Int): B
 
     /**
@@ -198,10 +189,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         return mIndex
     }
 
-    /**
-     * 移除头布局
-     * @param header
-     */
+    // 移除头布局
     fun removeHeadView(header: View) {
         if (hasHeaderView()) {
             mHeaderLayout.removeView(header)
@@ -211,9 +199,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * 移除所有头布局
-     */
+    // 移除所有头布局
     fun removeAllHeadView() {
         if (hasHeaderView()) {
             mHeaderLayout.removeAllViews()
@@ -221,9 +207,8 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * Heater位置
-     */
+
+    // Heater 位置
     val headerViewPosition: Int = 0
 
     // 是否有头布局
@@ -299,7 +284,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
     }
 
 
-    // 移除所有尾布局
+    // 移除所有脚布局
     fun removeAllFootView() {
         if (hasFooterView()) {
             mFooterLayout.removeAllViews()
@@ -307,24 +292,17 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * 有FooterView
-     * @return Boolean
-     */
+    // 是否有 FooterView
     fun hasFooterView(): Boolean {
         return this::mFooterLayout.isInitialized && mFooterLayout.childCount > 0
     }
 
-    /**
-     * footer位置
-     */
+
     // 脚布局的位置是 头布局+子项数量
     val footerViewPosition: Int
         get() = headerLayoutCount + data.size
 
-    /**
-     * footerLayout数量
-     */
+    // 脚布局数量
     val footerLayoutCount: Int
         get() {
             return if (hasFooterView()) {
@@ -334,9 +312,8 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
             }
         }
 
-    /**
-     * footerView的子View数量
-     */
+
+    // footerView的子View数量
     val footerViewCount: Int
         get() {
             return if (hasFooterView()) {
@@ -346,9 +323,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
             }
         }
 
-    /**
-     * 获取尾布局
-     */
+    // 获取尾布局
     val footerBinding: LinearLayout?
         get() {
             return if (this::mFooterLayout.isInitialized) {
@@ -358,30 +333,22 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
             }
         }
 
-    /**
-     * 获取data
-     */
+
+    // 获取data
     fun getData(): MutableList<T> {
         return data
     }
 
-    /**
-     * 设置数据
-     */
+    // 设置/更新列表数据
     fun setData(list: Collection<T>?) {
         this.data.clear()
         if (!list.isNullOrEmpty()) {
             this.data.addAll(list)
         }
-
         notifyDataSetChanged()
     }
 
-    /**
-     * 添加数据
-     *
-     * @param newList 添加的数据
-     */
+    // 添加数据
     fun addAll(newList: Collection<T>?) {
         if (newList.isNullOrEmpty()) {
             return
@@ -392,19 +359,13 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * 清空数据
-     */
+    // 清空数据
     fun clear() {
         this.data.clear()
         notifyDataSetChanged()
     }
 
-    /**
-     * 获取指定item
-     * @param position
-     * @return T
-     */
+    // 获取指定item
     fun getItem(@IntRange(from = 0) position: Int): T? {
         if (position >= data.size) {
             return null
@@ -412,11 +373,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         return data[position]
     }
 
-    /**
-     * 如果返回-1，表示不存在
-     * @param item
-     * @return Int
-     */
+    // 获取item位置，如果返回-1，表示不存在
     fun getItemPosition(item: T?): Int {
         return if ((item != null && data.isNotEmpty())) {
             data.indexOf(item)
@@ -425,11 +382,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         }
     }
 
-    /**
-     * 更新某一个位置上的数据
-     * @param position
-     * @param data
-     */
+    // 更新某一个位置上的数据
     fun updateItem(@IntRange(from = 0) position: Int, data: T) {
         if (position >= this.data.size) {
             return
@@ -438,11 +391,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         notifyItemChanged(position + headerLayoutCount)
     }
 
-    /**
-     * 在某一个位置上添加一条数据
-     * @param position
-     * @param data
-     */
+    // 在某一个位置上添加一条数据
     fun setItem(@IntRange(from = 0) position: Int, data: T) {
         //如果超出则添加到最后
         val realPosition = if (position > this.data.size) {
@@ -454,20 +403,13 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         notifyItemInserted(realPosition + headerLayoutCount)
     }
 
-    /**
-     * 增加一条数据到末尾
-     * @param data
-     */
+    // 增加一条数据到末尾
     fun addItem(data: T) {
         this.data.add(data)
         notifyItemInserted(this.data.size - 1 + headerLayoutCount)
     }
 
-    /**
-     * 移除某个位置上的数据
-     * @param position
-     * @return T?
-     */
+    // 移除某个位置上的数据
     fun removeAt(@IntRange(from = 0) position: Int): T? {
         if (position >= data.size) {
             return null
@@ -477,11 +419,7 @@ abstract class BaseRecyclerViewAdapter<T, B : ViewBinding> : RecyclerView.Adapte
         return remove
     }
 
-    /**
-     * 移除某个item数据
-     * @param data
-     * @return -1表示不存在该条数据
-     */
+    // 移除某个item数据，-1表示不存在该条数据
     fun remove(data: T): Int {
         val index = this.data.indexOf(data)
         if (index != -1) {

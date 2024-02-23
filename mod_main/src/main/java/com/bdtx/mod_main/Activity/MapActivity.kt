@@ -37,7 +37,7 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
     var all_marker: ArrayList<Marker> = ArrayList() // 所有标记点管理对象
     var now_contact = 0
     var my_position:LatLng? = null  // 自身位置
-    lateinit var mainVM:MainVM
+    var mainVM:MainVM? = null
 
     override fun beforeSetLayout() {}
     override fun enableEventBus(): Boolean { return true }
@@ -94,11 +94,21 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
         mainVM = ApplicationUtils.getGlobalViewModel(MainVM::class.java)
         mainVM?.let {
             // 全局位置变化监听（改变自身位置）
-            mainVM.deviceLatitude.observe(this,{
+            mainVM!!.deviceLatitude.observe(this,{
                 it?.let {
                     if(it==0.0){return@observe}
                     // 改变我的位置，设备获取的坐标系是地球坐标系需要转换为火星坐标系
-                    my_position = CoordinateSystemUtils.castToOtherPoint(LatLng(it,mainVM.deviceLongitude.value!!),1)
+                    my_position = CoordinateSystemUtils.castToOtherPoint(LatLng(it, mainVM!!.deviceLongitude.value!!),1)
+                }
+            })
+
+            mainVM!!.systemLatitude.observe(this,{  latitude->
+                // 优先使用设备位置
+                if(mainVM!!.deviceLatitude.value!=0.0){return@observe}
+                latitude?.let {
+                    if(it==0.0){return@observe}
+                    // 改变我的位置，设备获取的坐标系是地球坐标系需要转换为火星坐标系
+                    my_position = CoordinateSystemUtils.castToOtherPoint(LatLng(it, mainVM!!.systemLongitude.value!!),1)
                 }
             })
         }
@@ -192,17 +202,16 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
         })
         // 我的定位按键：点击视角移动到自身位置
         viewBinding.myLocation.setOnClickListener(View.OnClickListener {
-            if(mainVM.isConnectDevice.value == false){
-                GlobalControlUtils.showToast("请先连接设备",0)
-                return@OnClickListener
-            }
-            my_position?.let {
-                if (it.latitude != 0.0) {
+            if(my_position!=null){
+                if (my_position!!.latitude != 0.0) {
                     aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(my_position,17.0F))
                 } else {
                     GlobalControlUtils.showToast("暂无设备位置信息",0)
                 }
+            }else{
+                GlobalControlUtils.showToast("暂无设备位置信息",0)
             }
+
         })
         // 发消息按键：跳转到对应设备的聊天窗口
         viewBinding.sendGroup.setOnClickListener(View.OnClickListener {

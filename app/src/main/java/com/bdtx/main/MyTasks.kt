@@ -7,10 +7,8 @@ import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
 import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_data.Global.Variable
-import com.bdtx.mod_util.Utils.ApplicationUtils
+import com.bdtx.mod_util.Utils.*
 import com.bdtx.mod_util.Utils.Log.LogUtils
-import com.bdtx.mod_util.Utils.SystemInfoUtils
-import com.bdtx.mod_util.Utils.ZDCompressionUtils
 import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
@@ -153,6 +151,44 @@ class InitZDCompression() : Task() {
     override fun run() {
         ZDCompressionUtils.getInstance().initZipSdk()
         Log.e(TAG, "初始化压缩库" )
+    }
+}
+
+// 捕获异常注册
+class InitCatchException() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        return tasks
+    }
+
+    override fun run() {
+        CatchExceptionUtils.getInstance().init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化捕获异常" )
+    }
+}
+
+// 系统定位变化监听
+class InitSystemLocation() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        return tasks
+    }
+    override fun run() {
+        SystemLocationUtils.init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化系统定位变化监听" )
     }
 }
 

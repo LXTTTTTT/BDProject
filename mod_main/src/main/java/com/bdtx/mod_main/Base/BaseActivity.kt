@@ -38,13 +38,13 @@ abstract class BaseActivity : AppCompatActivity(){
         setOrientationPortrait()  // 锁定垂直布局
         initView(savedInstanceState);  // 初始化页面
         initData();  // 初始化数据
-        // 侧滑返回
+        // 侧滑返回功能注册
 //        registerSlideBack (true,{
 //            finish()
 //        },{
 //            this.iconViewHeight = dp2px(90)
 //        })
-        if(enableEventBus()){EventBus.getDefault().register(this)}
+        if(enableEventBus()){EventBus.getDefault().register(this)}  // 是否需要开启 EventBus 功能
     }
 
 
@@ -56,12 +56,12 @@ abstract class BaseActivity : AppCompatActivity(){
 
     // 绑定布局
     open fun setActivityLayout(){
-        loge("设置布局")
+        loge("手动绑定布局")
         setLayout()?.let {
             if (setLayout() is Int) {
                 setContentView((setLayout() as Int?)!!) // 手动绑定 R.layout.id
             } else {
-                setContentView(setLayout() as View?) // 使用 ViewBinding （手动设置）
+                setContentView(setLayout() as View?) // 手动绑定 ViewBinding
             }
         }
     }
@@ -74,7 +74,7 @@ abstract class BaseActivity : AppCompatActivity(){
     // 设置页面标题
     fun setTitle(title : String){
         loge("设置页面标题：$title")
-        title_textview?.let { it.text = title;loge("执行") }
+        title_textview?.let { it.text = title }
     }
 
     // 锁定页面垂直

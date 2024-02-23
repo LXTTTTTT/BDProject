@@ -94,6 +94,7 @@ public class TDWTUtils {
     }
 
     // 93 000690259E 65D55F27 06C3DED0 01615240 0028 BAC3B5C4CAD5B5BD
+    // 93 000690259E 65D868E2 06C3DF56 016151F0 002F C8CECEF1D2D1CDEAB3C9
     public static String encapsulated93(Message message){
         String content_str = message.getContent();
         Location location = new Location();
@@ -150,23 +151,32 @@ public class TDWTUtils {
     // 13 00 FFFFFFFFFF 06F27460 017601A9 00C1 06 04 0A C7EBC7F3D6A7D4AE
     // 13 00 FFFFFFFFFF 06F2745C 017601AF 00C2 06 04 0A D3F6B5BDC6E4CBFCD7B4BFF6
     // 13 00 FFFFFFFFFF 06F273CF 01760210 00C1 03 03 01
-    public static String encapsulated13(String status,String body,String count,String content){
+    public static String encapsulated13(String status,String body,String count,String contact){
         StringBuilder hex;
         byte requestHeaderByte = (byte) 0x13;
         hex = new StringBuilder(DataUtils.byte2hex(requestHeaderByte));
         hex.append("00");  // 保留字段
-//        hex.append("FFFFFFFFFF");  // 接收者电话号码
-        String phone_hex = DataUtils.long2Hex(110110110);
+        // 接收者电话号码
+//        hex.append("FFFFFFFFFF");
+        long phone = contact.equals("指挥中心")? 110110110 : Long.parseLong(contact);
+        String phone_hex = DataUtils.long2Hex(phone);
         hex.append(phone_hex.substring(phone_hex.length()-10));
+
         Location location = new Location();
-        location.longitude = getMainVM().getDeviceLongitude().getValue();
-        location.latitude = getMainVM().getDeviceLatitude().getValue();
-        location.altitude = getMainVM().getDeviceAltitude().getValue();
+        if(getMainVM().getDeviceLongitude().getValue()!=0.0d){
+            location.longitude = getMainVM().getDeviceLongitude().getValue();
+            location.latitude = getMainVM().getDeviceLatitude().getValue();
+            location.altitude = getMainVM().getDeviceAltitude().getValue();
+        } else {
+            location.longitude = getMainVM().getSystemLongitude().getValue();
+            location.latitude = getMainVM().getSystemLatitude().getValue();
+            location.altitude = getMainVM().getSystemAltitude().getValue();
+        }
         hex.append(getLocation(location));  // 位置
         hex.append(status);  // 状态
         hex.append(body);  // 身体状况
         hex.append(count);  // 人数
-        hex.append(DataUtils.string2Hex(content));  // 内容
+        hex.append(DataUtils.string2Hex("SOS"));  // 内容
         return hex.toString().toUpperCase();
     }
 
@@ -216,7 +226,7 @@ public class TDWTUtils {
         StringBuilder location_str = new StringBuilder();
         if(location==null || location.longitude==0.0d){
             Log.e(TAG, "location 为 null");
-            location_str.append("FFFFFFFFFFFFFFFFFFFF");
+            location_str.append("FFFFFFFFFFFFFFFFFFFF");  // 无位置补F
         }else{
             double longitude_double = location.longitude;
             String longitude_str = DataUtils.toLength(DataUtils.int2Hex((int)(longitude_double*1000000)),8);
