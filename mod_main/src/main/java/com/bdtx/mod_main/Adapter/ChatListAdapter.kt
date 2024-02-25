@@ -1,12 +1,13 @@
 package com.bdtx.mod_main.Adapter
 
 import android.graphics.drawable.AnimationDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
-import com.bdtx.mod_data.Database.Entity.Location
 import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.databinding.AdapterChatReceiveBinding
@@ -16,7 +17,8 @@ import com.sum.framework.adapter.BaseBindViewHolder
 import com.sum.framework.adapter.BaseRecyclerViewAdapter
 
 class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
-
+    
+    val TAG = "ChatListAdapter";
 //    lateinit var viewBinding:ViewBinding
     override fun getViewBinding(
         layoutInflater: LayoutInflater,
@@ -57,12 +59,16 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
                         playVoice(item.voicePath,voiceImg)
                     }
                 }
+                // 是否SOS
+                sos.isVisible = item.isSOS
                 // 位置
-                item.location?.let { location_entity ->
+                if(item.longitude!=0.0){
                     location.visibility = View.VISIBLE
                     location.setOnClickListener { location_view ->
-                        onMessageClick?.let { it.onLocationClick(location_entity) }
+                        onMessageClick?.let { it.onLocationClick(item.longitude,item.latitude)}
                     }
+                }else{
+                    location.visibility = View.GONE
                 }
                 // 状态
                 if(item.state==Constant.STATE_SUCCESS){
@@ -106,11 +112,13 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
                     }
                 }
                 // 位置
-                item.location?.let { location_entity ->
+                if(item.longitude!=0.0){
                     location.visibility = View.VISIBLE
                     location.setOnClickListener { location_view ->
-                        onMessageClick?.let { it.onLocationClick(location_entity) }
+                        onMessageClick?.let { it.onLocationClick(item.longitude,item.latitude)}
                     }
+                }else{
+                    location.visibility = View.GONE
                 }
             }
         }
@@ -145,7 +153,7 @@ class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
     fun setOnMessageClick(listener: OnMessageClick) { onMessageClick = listener }
     interface OnMessageClick {
         fun onResendClick(message: Message)
-        fun onLocationClick(location: Location)
+        fun onLocationClick(longitude: Double,latitude: Double)
     }
 
 }

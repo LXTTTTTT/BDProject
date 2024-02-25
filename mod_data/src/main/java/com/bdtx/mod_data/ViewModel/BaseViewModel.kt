@@ -14,8 +14,8 @@ open class BaseViewModel : ViewModel() {
     ) {
         // 在主线程调用
         viewModelScope.launch(Dispatchers.Main) {
-            val result = safeApiCallWithResult(responseBlock)  // 子线程执行获取数据
-            successBlock(result)  // 成功拿到数据后在主线程处理它
+            val result = safeApiCallWithResult(responseBlock)  // 子线程获取数据
+            result?.let { successBlock(it) }  // 主线程处理结果
         }
     }
 
@@ -53,7 +53,7 @@ open class BaseViewModel : ViewModel() {
         }
             .flowOn(Dispatchers.Main)
             .onStart { onStart?.invoke() }
-            .onCompletion { onFinish?.invoke() }  // like java finally
+            .onCompletion { onFinish?.invoke() }  // 等效 java finally
             .onEach { onTick.invoke(it) }  // 每次倒计时时执行
             .launchIn(scope)
     }

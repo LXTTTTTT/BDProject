@@ -17,10 +17,10 @@
         android:layout_centerInParent="true">
 
         <ImageView
-            android:id="@+id/test"
+            android:id="@+id/icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/icon"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -51,23 +51,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="广东电力通信科技有限公司  版权所有"
+                android:text="xxx公司  版权所有"
                 android:visibility="gone"/>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="Copyright © 2018 Pancoit Co. Ltd. All rights reserved."/>-->
-
-        </LinearLayout>
 
 
     </LinearLayout>

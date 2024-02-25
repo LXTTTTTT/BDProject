@@ -8,7 +8,9 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bdtx.mod_data.Global.Constant
+import com.bdtx.mod_data.ViewModel.CommunicationVM
 import com.bdtx.mod_data.ViewModel.MainVM
+import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.Base.BaseViewBindingActivity
 import com.bdtx.mod_main.R
 import com.bdtx.mod_main.View.CustomSpinnerLinearLayout
@@ -18,12 +20,14 @@ import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.SendMessageUtils
 
 @Route(path = Constant.SOS_ACTIVITY)
-class SOSActivity:BaseViewBindingActivity<ActivitySosBinding>() {
+class SOSActivity:BaseMVVMActivity<ActivitySosBinding,CommunicationVM>() {
 
     var now_count = 1;
     var status = Constant.SOS_STATUS_OTHER
     var body = Constant.BODY_STATUS_GREAT
-    var content = "请求支援"
+    val PLATFORM = "指挥中心"
+    var content = PLATFORM
+    var listData = mutableListOf<String>()
     override fun beforeSetLayout() {}
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -31,23 +35,25 @@ class SOSActivity:BaseViewBindingActivity<ActivitySosBinding>() {
     }
 
     override fun initData() {
+        super.initData()
         init_view_model()
     }
 
     fun init_control(){
         // 求救内容
-        val data: MutableList<String> = ArrayList()
-        data.add("请求支援")
-        data.add("遇到自然灾害")
-        data.add("有人受伤了")
-        data.add("迷路了")
-        data.add("遇到其它状况")
-        viewBinding.sosContent.setData(data) // 设置选项
+//        listData.add("请求支援")
+//        listData.add("遇到自然灾害")
+//        listData.add("有人受伤了")
+//        listData.add("迷路了")
+//        listData.add("遇到其它状况")
+
+//        viewBinding.sosContent.setData(listData) // 设置选项
+        listData.add(PLATFORM)
         viewBinding.sosContent.setItemCount(3) // 设置项数
         viewBinding.sosContent.setOnSpinnerItemClickListener(object :CustomSpinnerLinearLayout.onSpinnerItemClickListener<Int>{
             override fun onSpinnerItemClick(position: Int?) {
                 position?.let {
-                    content = data[it]
+                    content = listData[it]
                     loge("点击项数：$content")
                 }
             }
@@ -104,6 +110,20 @@ class SOSActivity:BaseViewBindingActivity<ActivitySosBinding>() {
     }
 
     fun init_view_model(){
+
+        viewModel.getContact().observe(this,{
+            it?.let {
+                listData.clear()
+                listData.add(PLATFORM)
+                it.forEach {  contact->
+                    if(contact.number.length==11){
+                        listData.add(contact.number)
+                    }
+                }
+                viewBinding.sosContent.setData(listData)
+            }
+        })
+
         val mainVM = ApplicationUtils.getGlobalViewModel(MainVM::class.java)
         if(mainVM!=null){
             // 设备连接监听

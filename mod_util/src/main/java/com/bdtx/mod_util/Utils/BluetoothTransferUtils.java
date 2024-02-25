@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// 蓝牙连接工具（自动筛选特征值方式，是否需要修改为手动选择更好？）
 public class BluetoothTransferUtils {
 
     private static String TAG = "BluetoothTransferUtil";
@@ -95,10 +96,8 @@ public class BluetoothTransferUtils {
                         devices.add(device);
                         if(onBluetoothWork!=null){onBluetoothWork.onScanningResult(devices, device);}
                     }
-
                 }
             }
-
         }
     };
 
@@ -180,7 +179,7 @@ public class BluetoothTransferUtils {
             Log.e(TAG, " onDescriptorWrite：写入描述符 " + status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 init_device();  // 下发初始化指令
-            }else {
+            } else {
                 Log.e(TAG, "onDescriptorWrite：写入描述符失败");
             }
         }
@@ -219,7 +218,7 @@ public class BluetoothTransferUtils {
         stopDiscovery();
         deviceAddress = device.getAddress();
         // 子线程连接
-        (new Thread() {
+        new Thread() {
             public void run() {
                 if (bluetoothGatt != null) {
                     bluetoothGatt.close();
@@ -233,7 +232,7 @@ public class BluetoothTransferUtils {
                 }
 
             }
-        }).start();
+        }.start();
 
 
     }
@@ -243,7 +242,7 @@ public class BluetoothTransferUtils {
         stopDiscovery();
         deviceAddress = address;
         // 子线程连接
-        (new Thread() {
+        new Thread() {
             public void run() {
                 if (bluetoothAdapter != null && deviceAddress != null && !deviceAddress.equals("")) {
                     BluetoothDevice device;
@@ -256,9 +255,7 @@ public class BluetoothTransferUtils {
                     }
                 }
             }
-        }).start();
-
-
+        }.start();
     }
 
     public boolean setMtu() {
@@ -323,6 +320,7 @@ public class BluetoothTransferUtils {
         writeCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         writeCharacteristic.setValue(data_bytes);
         bluetoothGatt.writeCharacteristic(writeCharacteristic);
+        FileUtils3.recordBDLog(FileUtils.getLogFile(),"send_BD:"+DataUtils.bytes2string(data_bytes));  // 记录日志文件
         Log.e(TAG, "Bluetooth 下发数据: " + DataUtils.bytes2string(data_bytes) );
     }
 
@@ -400,7 +398,7 @@ public class BluetoothTransferUtils {
             String[] data_hex_array = data_hex.split("0d0a");  // 分割后处理
             for (String s : data_hex_array) {
                 String s_str = DataUtils.hex2String(s);
-                Pattern pattern = Pattern.compile("FKI|ICP|TCI|PWI|GGA|GLL|PRX|RNX|ZDX|TXR");
+                Pattern pattern = Pattern.compile("FKI|ICP|ICI|TCI|PWI|SNR|GGA|GLL|PRX|RNX|ZDX|TXR");
                 Matcher matcher = pattern.matcher(s_str);
                 if (matcher.find()) {
                     BDProtocolUtils.getInstance().parseData(s_str);
@@ -431,8 +429,9 @@ public class BluetoothTransferUtils {
             if (onBluetoothWork != null) {
                 onBluetoothWork.onDisconnect();
             }
+            FileUtils3.recordBDLog(FileUtils.getLogFile(),"****** 断开北斗设备连接 ******");
 //            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).isConnectDevice().postValue(false);
-            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initParameter();  // 初始化参数
+            ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).initDeviceParameter();  // 直接初始化所有连接参数
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -454,7 +453,8 @@ public class BluetoothTransferUtils {
                     sleep(300);
                     write(BDProtocolUtils.CCPRS());  // 关闭盒子自带上报
                     sleep(300);
-                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+//                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
                     sleep(300);
@@ -483,6 +483,7 @@ public class BluetoothTransferUtils {
         }
     }
 
+// 设备特征值兼容 --------------------------------------------------------------------
     private static Map<String, List<String>> writeSC = new HashMap();  // 写
     private static Map<String, List<String>> notifySC = new HashMap();  // 读
     // 键

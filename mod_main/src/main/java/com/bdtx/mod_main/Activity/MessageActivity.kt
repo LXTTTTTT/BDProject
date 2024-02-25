@@ -39,17 +39,14 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
                 t?.let { contactListAdapter.setData(it) }
             }
         })
-
     }
 
     fun init_contact_list(){
-
         contactListAdapter = ContactListAdapter()
         contactListAdapter.onItemClickListener = object : (View, Int)->Unit{
             override fun invoke(view: View, position: Int) {
-                loge("点击了 $position")
                 contactListAdapter.getItem(position)?.let {
-                    loge("卡号是： ${it.number}")
+                    loge("点击了 $position 卡号是： ${it.number}")
                     ChatActivity.start(this@MessageActivity,it.number)
                 }
             }
@@ -57,11 +54,10 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
 //        contactListAdapter.onItemClickListener = { view: View, i: Int ->
 //
 //        }
-        viewBinding.contactList.layoutManager = LinearLayoutManager(my_context, LinearLayoutManager.VERTICAL, false)
+        viewBinding.contactList.layoutManager = LinearLayoutManager(my_context, LinearLayoutManager.VERTICAL, true)
         viewBinding.contactList.adapter = contactListAdapter
-
-
     }
+
     fun init_control(){
         viewBinding.addChat.setOnClickListener {
             ChatActivity.start(this@MessageActivity,Constant.NEW_CHAT)
@@ -72,7 +68,7 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
     fun onEvent(eventMsg: BaseMsg<Any>){
         loge("收到广播，类型：${eventMsg.type}")
         if(eventMsg.type==BaseMsg.MSG_UPDATE_CONTACT){
-            viewModel.getContact()
+            viewModel.upDateContact()
         }
     }
 

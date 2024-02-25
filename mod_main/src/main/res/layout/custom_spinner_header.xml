@@ -11,17 +11,19 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gray_4"
-        android:textSize="21dp"
+        android:layout_centerInParent="true"
         android:gravity="center"
         android:text="选项名称"
-        android:layout_centerInParent="true"/>
+        android:textColor="@color/gray_4"
+        android:textSize="21dp" />
 <!--收缩/展开箭头，默认放展开（下）箭头-->
     <ImageView
         android:id="@+id/arrow"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@mipmap/sos_down"
+        android:layout_width="20dp"
+        android:layout_height="25dp"
+        android:paddingTop="5dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"/>
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/sos_down" />
 </RelativeLayout>

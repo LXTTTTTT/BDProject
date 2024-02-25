@@ -11,6 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/LocalRepo" />
+            <option value="$PROJECT_DIR$/LocalRepo/ZDCompression_aar" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/mod_data" />
             <option value="$PROJECT_DIR$/mod_main" />

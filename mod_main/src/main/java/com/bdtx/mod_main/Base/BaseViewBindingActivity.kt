@@ -7,6 +7,7 @@ import com.bdtx.mod_util.Extension.saveAs
 import com.bdtx.mod_util.Extension.saveAsUnChecked
 import java.lang.reflect.ParameterizedType
 
+// ViewBinding 基类
 abstract class BaseViewBindingActivity<VB : ViewBinding> : BaseActivity() {
 
     lateinit var viewBinding : VB
@@ -14,7 +15,7 @@ abstract class BaseViewBindingActivity<VB : ViewBinding> : BaseActivity() {
     // 重写设置布局方法
     override fun setActivityLayout() {
         // 通过反射获取到对应的 Binding 对象并拿到他的 Binding.inflate(layoutInflater) 方法执行
-        val type = javaClass.genericSuperclass  // 相当于 Java getClass().getGenericSuperclass();
+        val type = javaClass.genericSuperclass  // getClass().getGenericSuperclass();
         // 拿到 ViewBinding 类对象
         val vbClass: Class<VB> = type!!.saveAs<ParameterizedType>().actualTypeArguments[0].saveAs()  // genericSuperclass 强转为 ParameterizedType
         // 拿到 ViewBinding 类的inflate方法

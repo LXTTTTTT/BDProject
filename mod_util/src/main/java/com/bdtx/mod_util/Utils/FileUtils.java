@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+// 文件路径
 public class FileUtils {
 
     /** 最外层目录 **/
@@ -429,7 +430,6 @@ public class FileUtils {
 
     /**
      * Uri转File
-     *
      * @param uri
      * @param context
      * @return

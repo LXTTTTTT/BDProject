@@ -10,7 +10,6 @@ import com.bdtx.mod_data.Database.Dao.MessageDao;
 import com.bdtx.mod_data.Database.Entity.Contact;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.EventBus.BaseMsg;
-import com.bdtx.mod_data.EventBus.UpdateContactMsg;
 import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
 import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.Global.Variable;
@@ -101,39 +100,72 @@ public class DaoUtils {
         return getInstance().getDaoSession().getContactDao().loadAll();
     }
 
-    public static List<Message> getMessages(String number){
-        return getInstance().getDaoSession().getMessageDao().queryBuilder().where(MessageDao.Properties.Number.eq(number)).list();
-    }
-
     // 添加联系人
-    public void addContact(String number, String lastContent){
-        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(number)).list();
-        if(contacts.size()<1){
-            Contact contact = new Contact();
-            contact.number = number;
-            contact.updateTime = System.currentTimeMillis() / 1000;
-            contact.lastContent = lastContent;
-            getDaoSession().insertOrReplace(contact);
-            Log.e(TAG, "添加联系人："+number);
-        }else {
-            Contact contact = contacts.get(0);
-            contact.lastContent = lastContent;
-            getDaoSession().insertOrReplace(contact);
+    public void addContact(Message message){
+        String number = message.getNumber();
+        double longitude = 0.0d; double latitude = 0.0d; double altitude = 0.0d;
+        // 只有接收到的消息带位置才更新联系人的位置
+        if(message.getIoType()==Constant.TYPE_RECEIVE && message.getLongitude()!=0.0d){
+            longitude = message.getLongitude();
+            latitude = message.getLatitude();
+            altitude = message.getAltitude();
         }
+        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(number)).list();
+        Contact contact = null;
+        // 新增联系人
+        if(contacts.size()<1){
+            contact = new Contact();
+            contact.number = number;
+            Log.e(TAG, "添加联系人："+number);
+        }
+        // 更新联系人
+        else {
+            contact = contacts.get(0);
+            Log.e(TAG, "更新联系人："+number);
+        }
+
+        contact.remark = number.equals(Constant.PLATFORM_IDENTIFIER)? "指挥中心":number;
+        contact.lastContent = message.getContent();  // 更新最后内容
+        contact.updateTime = System.currentTimeMillis() / 1000;  // 更新时间
+        if(longitude!=0.0d){
+            contact.longitude = longitude;
+            contact.latitude = latitude;
+            contact.altitude = altitude;
+        }
+        // 接收的消息，联系人未读消息数量+1
+        if(message.getIoType()==Constant.TYPE_RECEIVE){
+            contact.unreadCount++;
+        }
+        getDaoSession().insertOrReplace(contact);
         // 发送广播
         EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_CONTACT(), null));
     }
 
+    public void clearContactUnread(String number){
+        List<Contact> contacts = getContactBuilder().where(ContactDao.Properties.Number.eq(number)).list();
+        if(contacts.size()>0){
+            Contact contact = contacts.get(0);
+            contact.unreadCount = 0;
+            getDaoSession().insertOrReplace(contact);
+            EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_CONTACT(), null));
+            Log.e(TAG, "清除未读消息："+number);
+        }
+    }
+
+    public static List<Message> getMessages(String number){
+        return getInstance().getDaoSession().getMessageDao().queryBuilder().where(MessageDao.Properties.Number.eq(number)).list();
+    }
 
     // 添加消息
     public void addMessage(Message message){
-        addContact(message.getNumber(),message.getContent());  // 添加联系人
+        addContact(message);  // 添加联系人
         if(message.getIoType()==Constant.TYPE_SEND){Variable.lastSendMsg = message;Variable.checkSendState();}  // 发送状态检测
         getDaoSession().insertOrReplace(message);
         // 发送广播
         EventBus.getDefault().post(new BaseMsg<>(BaseMsg.Companion.getMSG_UPDATE_MESSAGE(), new UpdateMessageMsg(message.getNumber())));
         Log.e(TAG, "添加消息：id-"+message.getId()+"/"+message.getContent());
     }
+
 
 
 

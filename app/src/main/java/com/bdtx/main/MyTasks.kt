@@ -6,15 +6,14 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.bdtx.main.Task.DispatcherExecutor
 import com.bdtx.main.Task.Task
 import com.bdtx.mod_data.Database.DaoUtils
-import com.bdtx.mod_util.Utils.ApplicationUtils
+import com.bdtx.mod_data.Global.Variable
+import com.bdtx.mod_util.Utils.*
 import com.bdtx.mod_util.Utils.Log.LogUtils
-import com.bdtx.mod_util.Utils.SystemInfoUtils
-import com.bdtx.mod_util.Utils.ZDCompressionUtils
 import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
 
-// 初始化任务 ------------------------------------------------------
+// 任务
 val TAG = "MyTask"
 // 初始化全局APP工具
 class InitAppUtilTask(val application: Application) : Task() {
@@ -42,7 +41,7 @@ class InitMmkvTask() : Task() {
     // 依赖某些任务，在某些任务完成后才能执行（初始化 ApplicationUtil 之后）
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // MMKV初始化需要用到主程序
         return tasks
     }
 
@@ -75,7 +74,7 @@ class InitSystemInfoTask() : Task() {
     //依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 需要用到主程序
         return tasks
     }
 
@@ -95,7 +94,7 @@ class InitGreenDaoTask() : Task() {
     //依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 需要用到主程序
         return tasks
     }
 
@@ -116,7 +115,7 @@ class InitArouterTask() : Task() {
     // 依赖某些任务，在某些任务完成后才能执行
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
-        tasks.add(InitAppUtilTask::class.java)
+        tasks.add(InitAppUtilTask::class.java)  // 好像全部都要用到主程序..
         return tasks
     }
 
@@ -130,7 +129,7 @@ class InitArouterTask() : Task() {
             ARouter.openDebug()
         }
         ARouter.init(ApplicationUtils.getApplication())
-        Log.e(TAG, "初始化ARouter" )
+        Log.e(TAG, "初始化ARouter" ); Variable.isARouterInit = true
     }
 }
 
@@ -145,7 +144,7 @@ class InitZDCompression() : Task() {
     override fun dependsOn(): MutableList<Class<out Task>> {
         val tasks = mutableListOf<Class<out Task?>>()
         tasks.add(InitAppUtilTask::class.java)
-        tasks.add(InitMmkvTask::class.java)  // 压缩库要用到 mmkv
+        tasks.add(InitMmkvTask::class.java)  // 压缩库工具要用到 mmkv
         return tasks
     }
 
@@ -155,7 +154,45 @@ class InitZDCompression() : Task() {
     }
 }
 
-// 其他任务 -------------------------------
+// 捕获异常注册
+class InitCatchException() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        return tasks
+    }
+
+    override fun run() {
+        CatchExceptionUtils.getInstance().init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化捕获异常" )
+    }
+}
+
+// 系统定位变化监听
+class InitSystemLocation() : Task() {
+    // 异步线程执行的Task在被调用await的时候等待
+    override fun needWait(): Boolean {
+        return true
+    }
+    //依赖某些任务，在某些任务完成后才能执行
+    override fun dependsOn(): MutableList<Class<out Task>> {
+        val tasks = mutableListOf<Class<out Task?>>()
+        tasks.add(InitAppUtilTask::class.java)
+        return tasks
+    }
+    override fun run() {
+        SystemLocationUtils.init(ApplicationUtils.getApplication())
+        Log.e(TAG, "初始化系统定位变化监听" )
+    }
+}
+
+// 快捷创建其他任务 -------------------------------
 
 // 初始化A
 class InitTaskA() : Task() {

@@ -2,6 +2,9 @@ package com.bdtx.mod_util.Utils
 
 import android.app.AlertDialog
 import android.app.Application
+import android.content.Context
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -11,13 +14,15 @@ import com.bdtx.mod_util.View.LoadingDialog
 object GlobalControlUtils {
 
     val TAG = "GlobalControlUtil"
-    val APP : Application? by lazy { ApplicationUtils.getApplication() }
+    val APP : Application by lazy { ApplicationUtils.getApplication() }
 //    val APP : Application = ApplicationUtil.getApplication()
 
     // 控件 ------------------------------------------
     var my_toast : Toast? = null
-    var loading_dialog : LoadingDialog? = null
+    var loading_dialog : LoadingDialog? = null  // 加载框
     var alertDialog : AlertDialog? = null  // 警告框
+    // 其他 -----------------------------------------
+    val audioManager:AudioManager? = APP.getSystemService(Context.AUDIO_SERVICE) as AudioManager  // 系统音频管理器
 
 
     // 全局唯一 Toast 方法：0 - 短 ， 1 - 长
@@ -66,6 +71,18 @@ object GlobalControlUtils {
                     onNoClick?.let { onNoClick() }
                 }.create()
             alertDialog?.show()
+        }
+    }
+
+    // 播放系统提示音
+    fun ringBell(){
+        audioManager?.let {
+            if(audioManager.ringerMode == AudioManager.RINGER_MODE_NORMAL){
+                // 播放铃声
+                val defaultNotificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                val defaultNotificationRingtone = RingtoneManager.getRingtone(APP, defaultNotificationUri)
+                defaultNotificationRingtone?.play()
+            }
         }
     }
 }

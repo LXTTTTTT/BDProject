@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:orientation="vertical"
     android:background="@color/black"
+    android:layout_gravity="center_vertical"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="fill_parent"
@@ -35,7 +35,7 @@
              android:textColor="@color/white"
              android:textSize="13sp"
              android:text="语音压缩库激活,请输入授权码。无授权码请联系销售人员"/>
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
@@ -43,21 +43,23 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:background="@color/black"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="3">
 
             <EditText
                 android:id="@+id/key"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/scan"
                 android:background="@null"
+                android:digits="0123456789qwertyuiopasdfghjklzxcvbnm"
                 android:hint="请输入激活码"
                 android:paddingStart="5dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/scan"
@@ -68,7 +70,7 @@
                 android:layout_marginRight="5dp"
                 android:background="@mipmap/scan_icon"
                 android:padding="10dp" />
-        </RelativeLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

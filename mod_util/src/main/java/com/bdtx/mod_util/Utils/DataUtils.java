@@ -5,9 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * 高位在前地位在后
- */
+
 // 数据处理工具
 public class DataUtils {
 
@@ -461,6 +459,11 @@ public class DataUtils {
         return timeStampToString(getTimeSeconds());
     }
 
+    // yyyy-MM-dd
+    public static String getDateString(){
+        return timeStampToString(getTimeSeconds(),FORMAT_DATE_YMD);
+    }
+
     public static String getTimeSerial() {
         return timeStampToString(getTimeSeconds(),FORMAT_DATE_SERIAL);
     }
@@ -500,4 +503,15 @@ public class DataUtils {
         paddedString.append(input); // 添加原始字符串
         return paddedString.toString();
     }
+
+    // 四舍五入：round - true四舍五入，false直接截取
+    public static double roundDouble(double value, int places, boolean round) {
+        if (places < 0) {
+            throw new IllegalArgumentException("小数位数不能小于0");
+        }
+        double scale = Math.pow(10, places);
+        if(round){return Math.round(value * scale) / scale;}
+        else {return Math.floor(value * scale) / scale;}
+    }
+
 }

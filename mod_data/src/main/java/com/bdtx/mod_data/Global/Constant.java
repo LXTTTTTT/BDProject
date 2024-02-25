@@ -29,6 +29,8 @@ public class Constant {
 
     public static final String CONTACT_ID = "contact_id";  // 联系人唯一标识（卡号）
     public static final String NEW_CHAT = "new_chat";  // 新消息页面标识
+    public static final String MAP_LONGITUDE = "map_longitude";  // 地图页经度
+    public static final String MAP_LATITUDE = "map_latitude";  // 地图页纬度
     public static final String SOS_STATUS = "sos_status";  // sos紧急状态
     public static final String SOS_STATUS_OTHER = "其他";
     public static final String SOS_STATUS_LOST = "迷路";
@@ -66,10 +68,6 @@ public class Constant {
     // SharedPreferences 字符变量
     public static final String VOICE_COMPRESSION_RATE = "voice_compression_rate";  // 改变压缩码率
     public static final String SYSTEM_NUMBER = "system_number";  // 平台号码
-
-    public static final String IS_VOICE_AUTH = "is_voice_auth";  // 语音授权标识
-    public static final String VOICE_AUTH_NO = "no";  // 语音未授权
-    public static final String VOICE_AUTH_YES = "yes";  // 语音已授权
 
     public static final String VO_ONLINE_ACTIVATION_KEY = "vo_online_activation_key";  // 语音在线激活key
     public static final String PIC_ONLINE_ACTIVATION_KEY = "pic_online_activation_key";  // 图片在线激活key

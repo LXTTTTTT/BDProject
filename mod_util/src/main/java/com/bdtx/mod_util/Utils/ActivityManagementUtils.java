@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+// 页面管理器
 public class ActivityManagementUtils {
 
 // 单例 --------------------------------------------------

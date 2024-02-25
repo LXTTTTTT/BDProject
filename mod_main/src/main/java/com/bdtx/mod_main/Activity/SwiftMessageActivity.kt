@@ -30,6 +30,9 @@ class SwiftMessageActivity : BaseViewBindingActivity<ActivityMessageTypeBinding>
             viewBinding.messageContent.setText("")
             init_message_data()
         }
+        viewBinding.back.setOnClickListener {
+            finish()
+        }
     }
 
     override fun initData() {

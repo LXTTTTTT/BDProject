@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bdtx.mod_data.Database.Entity.Location;
+import com.bdtx.mod_data.Database.DaoUtils;
 import com.bdtx.mod_data.Database.Entity.Message;
 import com.bdtx.mod_data.EventBus.BaseMsg;
 import com.bdtx.mod_data.EventBus.UpdateMessageMsg;
@@ -32,6 +33,7 @@ import com.bdtx.mod_main.Adapter.SwiftListAdapter;
 import com.bdtx.mod_main.Base.BaseMVVMActivity;
 import com.bdtx.mod_main.R;
 import com.bdtx.mod_main.databinding.ActivityChatBinding;
+import com.bdtx.mod_util.Other.EnglishToChineseInputFilter;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.SendMessageUtils;
@@ -61,6 +63,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
     private GlobalControlUtils globalControl = GlobalControlUtils.INSTANCE;
     private SendMessageUtils sendMessageUtils = SendMessageUtils.INSTANCE;
     private RecordDialog recordDialog;  // 录音dialog
+    private EnglishToChineseInputFilter inputFilter;  // EditText过滤规则
     private MainVM mainVM;  // 全局变量
 
     private Handler handler = new Handler(){
@@ -89,6 +92,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         loge("进入聊天："+target_number);
         if(target_number.equals("")){globalControl.showToast("页面出错了",0);finish();}
         if(target_number.equals(Constant.NEW_CHAT)){viewBinding.targetNumber.setVisibility(View.VISIBLE);}
+        // 判断目标是否手机号码改变输入规则
+        inputFilter = new EnglishToChineseInputFilter();
+        inputFilter.enableFiltering(isPhoneNumber());
         // 初始化动画效果
         alphaAnimation();
         scaleAnimation();
@@ -110,14 +116,15 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         chatListAdapter = new ChatListAdapter();
         chatListAdapter.setOnMessageClick(new ChatListAdapter.OnMessageClick() {
             @Override
-            public void onLocationClick(@NonNull Location location) {
-                loge("消息位置："+location);
+            public void onLocationClick(double longitude, double latitude) {
+                loge("消息位置："+longitude+"/"+latitude);
+                MapActivity.start(ChatActivity.this,longitude,latitude);
             }
 
             @Override
             public void onResendClick(@NonNull Message message) {
                 // 重发消息
-                loge("重发消息："+message.content);
+                loge("重发消息类型："+message.getMessageType());
             }
         });
 
@@ -153,7 +160,6 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         swiftListAdapter.setData(swiftMessages);
         viewBinding.swiftList.setLayoutManager(new LinearLayoutManager(my_context,LinearLayoutManager.VERTICAL,false));
         viewBinding.swiftList.setAdapter(swiftListAdapter);
-
     }
 
     public void init_control(){
@@ -168,7 +174,11 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                 String content = viewBinding.content.getText().toString();
                 if(content.isEmpty()) {globalControl.showToast("请输入内容消息",0);return;}
                 loge("发送消息");
-                sendMessageUtils.send_text(target_number,content,true);
+                if(isPhoneNumber()){
+                    sendMessageUtils.send_SMS(target_number,content);  // 发到手机
+                }else{
+                    sendMessageUtils.send_text(target_number,content,true);  // 发到北斗设备
+                }
                 viewBinding.content.setText("");  // 清空输入栏
                 // 不需要在这里刷新消息列表，发送完后会发广播
             }
@@ -207,6 +217,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
             }
         });
 
+        // 内容栏设置过滤规则
+        viewBinding.content.setFilters(new InputFilter[]{inputFilter});
+
         // 解决键盘弹起时遮挡 recyclerview 问题
         viewBinding.content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -228,14 +241,15 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                     @Override
                     public void run() {
                         target_number = editable.toString();
-                        viewModel.getMessage(target_number);
+                        inputFilter.enableFiltering(isPhoneNumber());  // 切换输入模式
+                        viewModel.upDateMessage(target_number);
                     }
                 },500);
             }
         });
 
         // 初始化录音窗口
-        recordDialog =new RecordDialog(my_context);
+        recordDialog = new RecordDialog(my_context);
         recordDialog.setOnCloseListener(new RecordDialog.OnCloseListener() {
             @Override
             public void onSend(String file, int seconds) {
@@ -309,6 +323,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
 
     }
 
+    private boolean isPhoneNumber(){
+        return target_number.length()==11;
+    }
 
     // 开启发送功能
     private void enableSendGroup(){
@@ -378,7 +395,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         });
     }
 
-    //缩放动画
+    // 缩放动画
     private void scaleAnimation() {
         //放大
         bigAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_big);
@@ -387,7 +404,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
 
     }
 
-    //透明度动画
+    // 透明度动画
     private void alphaAnimation() {
         //显示
         alphaAniShow = new AlphaAnimation(0, 1);//百分比透明度，从0%到100%显示
@@ -403,13 +420,13 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         if(message.getType()==BaseMsg.Companion.getMSG_UPDATE_MESSAGE()){
             UpdateMessageMsg msg = (UpdateMessageMsg) message.getMessage();
             if(msg.number.equals(target_number)){
-                viewModel.getMessage(target_number);
+                viewModel.upDateMessage(target_number);
             }
         }
     }
 
 
-// 暂时不触发这个 ------------------------------------
+// 暂不触发这个 ------------------------------------
     @Override
     protected void onNewIntent(Intent intent) {
         loge("新 intent");

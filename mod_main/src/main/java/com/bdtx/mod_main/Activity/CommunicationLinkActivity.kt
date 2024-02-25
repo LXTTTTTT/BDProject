@@ -12,6 +12,7 @@ import com.bdtx.mod_main.databinding.ActivityCommunicationLinkBinding
 import com.bdtx.mod_main.databinding.ActivityMessageTypeBinding
 import com.bdtx.mod_util.Utils.GlobalControlUtils
 
+// 兼容所有连接方式（画大饼）
 @Route(path = Constant.COMMUNICATION_LINK_ACTIVITY)
 class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationLinkBinding>() {
 
@@ -20,7 +21,6 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
     override fun initView(savedInstanceState: Bundle?) {
         setTitle("通信链路");
         init_control()
-
     }
 
     override fun initData() {

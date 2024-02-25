@@ -1,5 +1,6 @@
 package com.bdtx.mod_main.Adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.sum.framework.adapter.BaseRecyclerViewAdapter
 
 class ContactListAdapter : BaseRecyclerViewAdapter<Contact,AdapterContactItemBinding>() {
 
+    val TAG = "ContactListAdapter"
     // 拿到布局
     override fun getViewBinding(
         layoutInflater: LayoutInflater,
@@ -43,9 +45,11 @@ class ContactListAdapter : BaseRecyclerViewAdapter<Contact,AdapterContactItemBin
             }
             // 未读消息数量
             if(item.unreadCount > 0){
+                Log.e(TAG, "有未读消息${item.unreadCount}" )
                 unreadCount.visibility = View.VISIBLE
                 unreadCount.text = item.unreadCount.toString()
             }else{
+                Log.e(TAG, "无未读消息" )
                 unreadCount.visibility = View.GONE
             }
         }

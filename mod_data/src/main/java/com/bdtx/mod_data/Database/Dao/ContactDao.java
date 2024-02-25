@@ -32,10 +32,8 @@ public class ContactDao extends AbstractDao<Contact, String> {
         public final static Property Draft = new Property(5, String.class, "draft", false, "DRAFT");
         public final static Property Longitude = new Property(6, double.class, "longitude", false, "LONGITUDE");
         public final static Property Latitude = new Property(7, double.class, "latitude", false, "LATITUDE");
-        public final static Property Altitude = new Property(8, int.class, "altitude", false, "ALTITUDE");
+        public final static Property Altitude = new Property(8, double.class, "altitude", false, "ALTITUDE");
     }
-
-    private DaoSession daoSession;
 
 
     public ContactDao(DaoConfig config) {
@@ -44,7 +42,6 @@ public class ContactDao extends AbstractDao<Contact, String> {
     
     public ContactDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -59,7 +56,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
                 "\"DRAFT\" TEXT," + // 5: draft
                 "\"LONGITUDE\" REAL NOT NULL ," + // 6: longitude
                 "\"LATITUDE\" REAL NOT NULL ," + // 7: latitude
-                "\"ALTITUDE\" INTEGER NOT NULL );"); // 8: altitude
+                "\"ALTITUDE\" REAL NOT NULL );"); // 8: altitude
     }
 
     /** Drops the underlying database table. */
@@ -99,7 +96,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
         }
         stmt.bindDouble(7, entity.getLongitude());
         stmt.bindDouble(8, entity.getLatitude());
-        stmt.bindLong(9, entity.getAltitude());
+        stmt.bindDouble(9, entity.getAltitude());
     }
 
     @Override
@@ -133,13 +130,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
         }
         stmt.bindDouble(7, entity.getLongitude());
         stmt.bindDouble(8, entity.getLatitude());
-        stmt.bindLong(9, entity.getAltitude());
-    }
-
-    @Override
-    protected final void attachEntity(Contact entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        stmt.bindDouble(9, entity.getAltitude());
     }
 
     @Override
@@ -158,7 +149,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // draft
             cursor.getDouble(offset + 6), // longitude
             cursor.getDouble(offset + 7), // latitude
-            cursor.getInt(offset + 8) // altitude
+            cursor.getDouble(offset + 8) // altitude
         );
         return entity;
     }
@@ -173,7 +164,7 @@ public class ContactDao extends AbstractDao<Contact, String> {
         entity.setDraft(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setLongitude(cursor.getDouble(offset + 6));
         entity.setLatitude(cursor.getDouble(offset + 7));
-        entity.setAltitude(cursor.getInt(offset + 8));
+        entity.setAltitude(cursor.getDouble(offset + 8));
      }
     
     @Override

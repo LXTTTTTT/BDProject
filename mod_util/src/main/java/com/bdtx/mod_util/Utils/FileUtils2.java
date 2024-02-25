@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-
+// 文件处理
 public class FileUtils2 {
 
     //将字节数转化为MB

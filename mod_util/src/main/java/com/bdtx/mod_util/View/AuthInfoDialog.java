@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +36,7 @@ public class AuthInfoDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setCancelable(false);
+//        setCancelable(false);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_auth_info);
         // 设置触摸外部界面使dialog消失
@@ -44,6 +45,7 @@ public class AuthInfoDialog extends Dialog {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         init();
     }
+
     public void init() {
 
         scan=findViewById(R.id.scan);
