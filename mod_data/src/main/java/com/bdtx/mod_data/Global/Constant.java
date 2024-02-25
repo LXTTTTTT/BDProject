@@ -75,6 +75,8 @@ public class Constant {
     public static final String PIC_OFF_ACTIVATION_VALUE = "A90A411BDBF02DBEBP";  // 离线图片key
     public static final String SWIFT_MESSAGE = "swift_message";  // 快捷消息
     public static final String SWIFT_MESSAGE_SYMBOL = "/lxt/";
+    // 权限请求码
+    public static final int REQUEST_CODE_LOCATION = 6660;
 
 // 音频常量 ---------------------------------------------------------
     public static int sampleRateInHz = 8000;

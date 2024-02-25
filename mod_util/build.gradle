@@ -54,6 +54,8 @@ dependencies {
     // rxjava
     api rootProject.depsLibs.rxjava
     api rootProject.depsLibs.rxandroid
+    // rxPermission
+//    api rootProject.depsLibs.rxPermission
     // 模块导入
     compileOnly project(path: ':mod_data')
     api project(path: ':LocalRepo:ZDCompression_aar')

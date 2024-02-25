@@ -20,12 +20,14 @@ class MainVM : BaseViewModel() {
     val deviceLongitude : MutableLiveData<Double?> = MutableLiveData()  // 设备经度
     val deviceLatitude : MutableLiveData<Double?> = MutableLiveData()  // 设备纬度
     val deviceAltitude : MutableLiveData<Double?> = MutableLiveData()  // 设备高度
+    val waitTime : MutableLiveData<Int?> = MutableLiveData()  // 等待时间
+    val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 总未读消息数量
+
     val systemLongitude : MutableLiveData<Double?> = MutableLiveData()  // 系统经度
     val systemLatitude : MutableLiveData<Double?> = MutableLiveData()  // 系统纬度
     val systemAltitude : MutableLiveData<Double?> = MutableLiveData()  // 系统高度
 
-    val waitTime : MutableLiveData<Int?> = MutableLiveData()  // 等待时间
-    val unreadMessageCount : MutableLiveData<Int?> = MutableLiveData()  // 总未读消息数量
+
 
 
     init {
