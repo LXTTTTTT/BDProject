@@ -1,16 +1,14 @@
 package com.bdtx.mod_util.Utils
 
-import android.graphics.Color
 import android.util.Log
-import android.view.View
 import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
+import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 import com.bdtx.mod_util.Utils.Protocol.TDWTUtils
 import com.pancoit.compression.ZDCompression
-import java.util.*
 
 object SendMessageUtils {
 

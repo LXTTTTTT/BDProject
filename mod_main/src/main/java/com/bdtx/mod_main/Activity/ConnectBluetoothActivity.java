@@ -2,7 +2,6 @@ package com.bdtx.mod_main.Activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -15,7 +14,7 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_main.Adapter.BluetoothListAdapter;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityConnectBluetoothBinding;
-import com.bdtx.mod_util.Utils.BluetoothTransferUtils;
+import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
 import java.util.ArrayList;

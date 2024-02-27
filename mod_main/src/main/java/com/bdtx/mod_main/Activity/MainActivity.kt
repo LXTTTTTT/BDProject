@@ -18,7 +18,7 @@ import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
-import com.bdtx.mod_util.Utils.BluetoothTransferUtils
+import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 import com.bdtx.mod_util.Utils.DataUtils
 import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils

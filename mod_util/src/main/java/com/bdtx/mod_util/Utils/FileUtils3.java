@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-// 文件写入（文本）
+// 文件写入（txt文本）
 public class FileUtils3 {
 
     private static String TAG = "FileUtils3";
