@@ -33,7 +33,7 @@ class SOSActivity:BaseMVVMActivity<ActivitySosBinding,CommunicationVM>() {
     override fun initView(savedInstanceState: Bundle?) {
         init_control()
     }
-
+    override suspend fun initDataSuspend() {}
     override fun initData() {
         super.initData()
         init_view_model()

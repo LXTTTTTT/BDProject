@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
@@ -26,6 +27,9 @@ import com.bdtx.mod_util.Utils.SendMessageUtils;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 
 @Route(path = Constant.HEALTHY_ACTIVITY)
 public class HealthyActivity extends BaseMVVMActivity<ActivityHealthyBinding,MainVM> {
@@ -202,5 +206,11 @@ public class HealthyActivity extends BaseMVVMActivity<ActivityHealthyBinding,Mai
     protected void onStop() {
         super.onStop();
         stopSensor();
+    }
+
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
     }
 }

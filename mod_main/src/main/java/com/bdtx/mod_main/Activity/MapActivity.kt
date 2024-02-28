@@ -40,6 +40,7 @@ class MapActivity : BaseMVVMActivity<ActivityMapBinding,CommunicationVM>(false) 
     var mainVM:MainVM? = null
 
     override fun beforeSetLayout() {}
+    override suspend fun initDataSuspend() {}
     override fun enableEventBus(): Boolean { return true }
     companion object{
         @JvmStatic

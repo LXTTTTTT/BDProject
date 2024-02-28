@@ -3,6 +3,7 @@ package com.bdtx.mod_main.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
@@ -16,6 +17,9 @@ import com.bdtx.mod_main.databinding.ActivityStateBinding;
 
 import java.util.Arrays;
 import java.util.Collections;
+
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 
 @Route(path = Constant.STATE_ACTIVITY)
 public class StateActivity extends BaseMVVMActivity<ActivityStateBinding,MainVM> {
@@ -165,4 +169,9 @@ public class StateActivity extends BaseMVVMActivity<ActivityStateBinding,MainVM>
         viewBinding.signal10.setImageResource(R.mipmap.xhqd_10);
     }
 
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
+    }
 }

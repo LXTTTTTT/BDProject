@@ -38,6 +38,7 @@ class SwiftMessageActivity : BaseViewBindingActivity<ActivityMessageTypeBinding>
     override fun initData() {
 
     }
+    override suspend fun initDataSuspend() {}
 
     fun init_message_list(){
         swiftListAdapter2 = SwiftListAdapter2()

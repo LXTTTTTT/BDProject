@@ -80,6 +80,15 @@
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_util/src/main/res/layout/dialog_loading.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_util/src/main/res/layout/dialog_record.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/BDTX_Watch_Regeneration/mod_util/src/main/res/layout/loading_dialog.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/activity_communication_link.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/activity_connect_bluetooth.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/activity_connect_serial_port.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/activity_connect_usb.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/activity_connect_usb_host.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_bluetooth_item.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_serial_port_item.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_usb_host_item.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_usb_item.xml" value="0.358695652173913" />
       </map>
     </option>
   </component>

@@ -15,6 +15,9 @@ import com.bdtx.mod_util.Utils.ApplicationUtils
 import com.bdtx.mod_util.View.SlideBackView.SlideBack
 import com.bdtx.mod_util.View.SlideBackView.registerSlideBack
 import com.bdtx.mod_util.View.SlideBackView.unregisterSlideBack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -37,7 +40,10 @@ abstract class BaseActivity : AppCompatActivity(){
         try { title_textview = findViewById<TextView>(R.id.title) } catch (e: Exception) { loge("这个页面没有 title bar") }  // 必须放在初始化布局之后，初始化数据之前
         setOrientationPortrait()  // 锁定垂直布局
         initView(savedInstanceState);  // 初始化页面
-        initData();  // 初始化数据
+        CoroutineScope(Dispatchers.Main).launch{
+            initData();  // 初始化数据
+            initDataSuspend()
+        }
         // 侧滑返回功能注册
 //        registerSlideBack (true,{
 //            finish()
@@ -52,6 +58,7 @@ abstract class BaseActivity : AppCompatActivity(){
     abstract fun beforeSetLayout()
     abstract fun initView(savedInstanceState: Bundle?)
     abstract fun initData()
+    abstract suspend fun initDataSuspend()
     open fun enableEventBus():Boolean=false
 
     // 绑定布局

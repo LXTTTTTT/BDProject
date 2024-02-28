@@ -84,6 +84,7 @@ class VoiceAuthActivity : BaseViewBindingActivity<ActivityVoiceAuthBinding>() {
     override fun initData() {
 
     }
+    override suspend fun initDataSuspend() {}
 
     // 认证结果处理
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -56,6 +56,10 @@ dependencies {
     api rootProject.depsLibs.rxandroid
     // rxPermission
 //    api rootProject.depsLibs.rxPermission
+    // 串口第三方库
+    implementation 'io.github.xmaihh:serialport:2.1.1'
+    //gson
+    api rootProject.depsLibs.gson
     // 模块导入
     compileOnly project(path: ':mod_data')
     api project(path: ':LocalRepo:ZDCompression_aar')

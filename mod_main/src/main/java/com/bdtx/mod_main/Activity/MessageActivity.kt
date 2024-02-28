@@ -25,6 +25,7 @@ class MessageActivity : BaseMVVMActivity<ActivityMessageBinding, CommunicationVM
 
     override fun beforeSetLayout() {}
     override fun enableEventBus(): Boolean { return true }
+    override suspend fun initDataSuspend() {}
 
     override fun initView(savedInstanceState: Bundle?) {
         setTitle("所有消息")

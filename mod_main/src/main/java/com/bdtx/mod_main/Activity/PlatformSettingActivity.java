@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -13,6 +14,9 @@ import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityPlatformSettingBinding;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.MMKVUtils;
+
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 
 @Route(path = Constant.PLATFORM_SETTING_ACTIVITY)
 public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPlatformSettingBinding> {
@@ -74,5 +78,11 @@ public class PlatformSettingActivity extends BaseViewBindingActivity<ActivityPla
     @Override
     public void initData() {
 
+    }
+
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
     }
 }

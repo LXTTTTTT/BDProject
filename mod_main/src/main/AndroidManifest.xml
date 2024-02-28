@@ -54,6 +54,15 @@
         <activity
             android:name=".Activity.CommunicationLinkActivity"
             android:exported="false"/>
+        <activity
+            android:name=".Activity.ConnectUSBHostActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Activity.ConnectUSBAccessoryActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Activity.ConnectSerialPortActivity"
+            android:exported="false"/>
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="03ecfdcd966fa5c5c8a6391dcb967d26" /> <!-- 高德官方离线地图页面 -->

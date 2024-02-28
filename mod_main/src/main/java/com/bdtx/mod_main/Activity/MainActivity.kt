@@ -38,7 +38,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         init_control()
         start_timer()
     }
-
+    override suspend fun initDataSuspend() {}
     override fun initData() {
         super.initData()  // 在父类初始化 viewModel
         rxPermissions = RxPermissions(this)
@@ -117,8 +117,8 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                                 startActivity(enableLocation)
                             }
                             if(isBluetoothEnable && isLocationEnabled){
-//                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
-                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
+//                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
                             }else{
                                 GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
                             }

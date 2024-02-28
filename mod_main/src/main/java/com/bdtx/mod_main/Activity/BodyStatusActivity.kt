@@ -34,6 +34,7 @@ class BodyStatusActivity:BaseViewBindingActivity<ActivityBodyStatusBinding>() {
     }
 
     override fun initData() {}
+    override suspend fun initDataSuspend() {}
 
     fun init_control(){
         when(status){

@@ -18,8 +18,11 @@ public class Constant {
     public static final String PLATFORM_SETTING_ACTIVITY = "/main/activity/setting/platform_setting";
     public static final String SWIFT_MESSAGE_ACTIVITY = "/main/activity/setting/swift_message";
     public static final String ABOUT_US_ACTIVITY = "/main/activity/setting/about_us";
-    public static final String CONNECT_BLUETOOTH_ACTIVITY = "/main/activity/connect_bluetooth";
     public static final String COMMUNICATION_LINK_ACTIVITY = "/main/activity/setting/communication_link";
+    public static final String CONNECT_BLUETOOTH_ACTIVITY = "/main/activity/connect_bluetooth";
+    public static final String CONNECT_USB_HOST_ACTIVITY = "/main/activity/connect_usb_host";
+    public static final String CONNECT_USB_ACCESSORY_ACTIVITY = "/main/activity/connect_usb_accessory";
+    public static final String CONNECT_SERIAL_PORT = "/main/activity/connect_serial_port";
 
 
 // 通用常量 ---------------------------------------------------------

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -17,6 +18,9 @@ import com.bdtx.mod_main.databinding.ActivityCompressionRateBinding;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.MMKVUtils;
 import com.pancoit.compression.ZDCompression;
+
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 
 @Route(path = Constant.COMPRESSION_RATE_ACTIVITY)
 public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCompressionRateBinding> {
@@ -141,5 +145,11 @@ public class CompressionRateActivity extends BaseViewBindingActivity<ActivityCom
         view2.setTextColor(Color.WHITE);
         select_text.setTextColor(Color.GRAY);
         select_text = view2;
+    }
+
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
     }
 }

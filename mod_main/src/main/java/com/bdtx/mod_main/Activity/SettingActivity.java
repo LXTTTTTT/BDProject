@@ -3,6 +3,7 @@ package com.bdtx.mod_main.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function2;
 
 @Route(path = Constant.SETTING_ACTIVITY)
@@ -98,6 +100,12 @@ public class SettingActivity extends BaseViewBindingActivity<ActivitySettingBind
         settings.add(e);
         settings.add(f);
         settingListAdapter.setData(settings);
+    }
+
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
     }
 
     public class CustomScrollingLayoutCallback extends WearableLinearLayoutManager.LayoutCallback {

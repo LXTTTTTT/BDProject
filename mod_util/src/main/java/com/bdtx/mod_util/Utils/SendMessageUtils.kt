@@ -6,6 +6,7 @@ import com.bdtx.mod_data.Database.Entity.Message
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
+import com.bdtx.mod_util.Utils.Connection.BaseConnector
 import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 import com.bdtx.mod_util.Utils.Protocol.TDWTUtils
 import com.pancoit.compression.ZDCompression
@@ -41,11 +42,13 @@ object SendMessageUtils {
         DaoUtils.getInstance().addMessage(message)
         // 平台消息
         if (target_number == Constant.PLATFORM_IDENTIFIER) {
-            BluetoothTransferUtils.getInstance().sendMessage(Variable.getSystemNumber().toString(), 2, TDWTUtils.encapsulated93(message))
+            BaseConnector.connector?.sendMessage(Variable.getSystemNumber().toString(), 2, TDWTUtils.encapsulated93(message))
+//            BluetoothTransferUtils.getInstance().sendMessage(Variable.getSystemNumber().toString(), 2, TDWTUtils.encapsulated93(message))
         }
         // 普通消息
         else {
-            BluetoothTransferUtils.getInstance().sendMessage(target_number, 2, TDWTUtils.encapsulated91(message))
+            BaseConnector.connector?.sendMessage(target_number, 2, TDWTUtils.encapsulated91(message))
+//            BluetoothTransferUtils.getInstance().sendMessage(target_number, 2, TDWTUtils.encapsulated91(message))
         }
     }
 
@@ -145,10 +148,10 @@ object SendMessageUtils {
             return false
         }
         // 测试，先
-        if(!getMainVM().isSignalWell()){
-            GlobalControlUtils.showToast("当前卫星信号不佳!",0)
-            return false
-        }
+//        if(!getMainVM().isSignalWell()){
+//            GlobalControlUtils.showToast("当前卫星信号不佳!",0)
+//            return false
+//        }
         if(type == TYPE_VOICE){
             // 测试，先
             // 语音发送等级要求

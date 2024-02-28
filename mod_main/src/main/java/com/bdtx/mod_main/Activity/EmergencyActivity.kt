@@ -34,6 +34,7 @@ class EmergencyActivity:BaseViewBindingActivity<ActivityEmergencyBinding>() {
     }
 
     override fun initData() {}
+    override suspend fun initDataSuspend() {}
 
     fun init_control(){
         when(status){

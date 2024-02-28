@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function2;
 
 public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, CommunicationVM> {
@@ -438,5 +439,9 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
     }
 
 
-
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
+    }
 }

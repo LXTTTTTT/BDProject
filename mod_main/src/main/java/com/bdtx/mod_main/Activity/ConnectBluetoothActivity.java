@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -14,6 +15,7 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_main.Adapter.BluetoothListAdapter;
 import com.bdtx.mod_main.Base.BaseViewBindingActivity;
 import com.bdtx.mod_main.databinding.ActivityConnectBluetoothBinding;
+import com.bdtx.mod_util.Utils.Connection.BaseConnector;
 import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function2;
 
 @Route(path = Constant.CONNECT_BLUETOOTH_ACTIVITY)
@@ -90,7 +93,8 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
         bluetoothListAdapter.setOnItemClickListener(new Function2<View, Integer, Unit>() {
             @Override
             public Unit invoke(View view, Integer integer) {
-                BluetoothTransferUtils.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
+//                BluetoothTransferUtils.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
+                BaseConnector.Companion.getConnector().connect(bluetoothListAdapter.getItem(integer));
                 GlobalControlUtils.INSTANCE.showLoadingDialog("正在连接");
 //                finish();
                 return null;
@@ -100,4 +104,9 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
         getViewBinding().bluetoothList.setAdapter(bluetoothListAdapter);
     }
 
+    @Nullable
+    @Override
+    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
+        return null;
+    }
 }
