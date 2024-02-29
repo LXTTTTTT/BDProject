@@ -46,17 +46,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BluetoothSocketTransferUtils {
 
     private static String TAG = "BluetoothSocketTransferUtils";
-    private Application APP;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket bluetoothSocket;
     private BluetoothServerSocket bluetoothServerSocket;
     private BluetoothDevice nowDevice;
     private InputStream inputStream;
     private OutputStream outputStream;
-    private Set<BluetoothDevice> pairedDeviceList;
-    private List<BluetoothDevice> devices = new ArrayList();
-    private ReceiveDataThread receiveDataThread;
-    private ListenThread listenThread;
+    private ReceiveDataThread receiveDataThread;  // 接收数据线程
+    private ListenThread listenThread;  // 监听连接线程
 
     private final UUID MY_UUID_SECURE = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
@@ -79,7 +76,6 @@ public class BluetoothSocketTransferUtils {
     }
 
     public BluetoothSocketTransferUtils() {
-        APP = ApplicationUtils.INSTANCE.getApplication();
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         executorService = Executors.newFixedThreadPool(100);
     }
@@ -147,7 +143,7 @@ public class BluetoothSocketTransferUtils {
                 }catch (Exception e){
                     e.printStackTrace();
                     // 断开连接了
-                    Log.e(TAG, "BluetoothSocket: 读取数据错误");
+                    Log.e(TAG, "BluetoothSocket: 读取数据错误，断开连接");
                     cancel();
                     disconnect();
                 }
@@ -222,23 +218,6 @@ public class BluetoothSocketTransferUtils {
         }
     }
 
-    public void send_info(String info){
-        if(outputStream==null){return;}
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    byte[] data_bytes = info.getBytes("GB18030");
-                    String head = "$*0*$"+String.format("%08X", data_bytes.length);
-                    outputStream.write(head.getBytes(StandardCharsets.UTF_8));
-                    outputStream.write(data_bytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     public void send_text(String data_str){
         if(outputStream==null){return;}
         if(isSendFile){return;}
@@ -298,6 +277,10 @@ public class BluetoothSocketTransferUtils {
 
     public void disconnect(){
         try {
+            if(receiveDataThread!=null){
+                receiveDataThread.cancel();
+                receiveDataThread = null;
+            }
             if(inputStream!=null){
                 inputStream.close();
                 inputStream=null;
@@ -305,10 +288,6 @@ public class BluetoothSocketTransferUtils {
             if(outputStream!=null){
                 outputStream.close();
                 outputStream=null;
-            }
-            if(receiveDataThread!=null){
-                receiveDataThread.cancel();
-                receiveDataThread = null;
             }
             if(bluetoothSocket!=null){
                 bluetoothSocket.close();
@@ -318,11 +297,8 @@ public class BluetoothSocketTransferUtils {
             state = STATE_DISCONNECT;
             isConnectedDevice = false;
             nowDevice = null;
-
-            isStart = false;
-            file_bytes_baos.reset();
-            file_length = 0;
-            message_type = -1;
+            initReceiveParameter();  // 初始化接收数据参数
+//            listen();  // 断开后重新开启设备连接监听
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -334,6 +310,12 @@ public class BluetoothSocketTransferUtils {
     private long file_length = 0;  // 文件数据长度
     private int message_type = -1;  // 消息类型：-1-未知 0-设备指令 1-文本 2-语音 3-图片
     private Timer resetTimmer = null;
+    private void initReceiveParameter(){
+        isStart = false;
+        file_bytes_baos.reset();
+        file_length = 0;
+        message_type = -1;
+    }
     private synchronized void receiveData(byte[] data_bytes) {
         Log.e(TAG, "处理数据: "+data_bytes.length );
         if(!isStart){
@@ -403,10 +385,7 @@ public class BluetoothSocketTransferUtils {
 
     public void parseData(){
         if(message_type==-1){
-            isStart = false;
-            file_bytes_baos.reset();
-            file_length = 0;
-            message_type = -1;
+            initReceiveParameter();
             return;
         }
         if(message_type==1){
@@ -417,10 +396,7 @@ public class BluetoothSocketTransferUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            isStart = false;
-            file_bytes_baos.reset();
-            file_length = 0;
-            message_type = -1;
+            initReceiveParameter();
         }else if(message_type==2){
             Log.e(TAG, "数据接收完毕，语音" );
             // 保存语音数据
@@ -433,10 +409,7 @@ public class BluetoothSocketTransferUtils {
                         try (FileOutputStream fos = new FileOutputStream(imageFile)) {
                             fos.write(file_bytes_baos.toByteArray());
                         }
-                        isStart = false;
-                        file_bytes_baos.reset();
-                        file_length = 0;
-                        message_type = -1;
+                        initReceiveParameter();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -456,10 +429,7 @@ public class BluetoothSocketTransferUtils {
                             e.printStackTrace();
                         }
                         forceFilesystemCache(imgFilePath);
-                        isStart = false;
-                        file_bytes_baos.reset();
-                        file_length = 0;
-                        message_type = -1;
+                        initReceiveParameter();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -475,10 +445,7 @@ public class BluetoothSocketTransferUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            isStart = false;
-            file_bytes_baos.reset();
-            file_length = 0;
-            message_type = -1;
+            initReceiveParameter();
             // 解析指令
             JsonElement jsonElement = new JsonParser().parse(content);
             // 检查JSON元素是否是JsonObject

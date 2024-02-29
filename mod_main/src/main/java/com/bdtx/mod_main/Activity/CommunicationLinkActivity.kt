@@ -24,19 +24,27 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
         init_control()
     }
 
-    override fun initData() {
-
-    }
+    override fun initData() {}
     override suspend fun initDataSuspend() {}
 
     fun init_control(){
+        // 低功耗蓝牙
         viewBinding.bleConnection.setOnClickListener {
             // 初始化连接器
             val connector = BLEConnector()
             BaseConnector.setConnector(connector)
-            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt("connection_mode",ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
             finish()
         }
+        // 经典蓝牙
+        viewBinding.clsbConnection.setOnClickListener {
+            // 初始化连接器
+            val connector = CLSBConnector()
+            BaseConnector.setConnector(connector)
+            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt("connection_mode",ConnectBluetoothActivity.MODE_CLSB).navigation()  // 页面跳转
+            finish()
+        }
+        // USB Host
         viewBinding.usbHostConnection.setOnClickListener {
             // 初始化连接器
             val connector = USBHostConnector()
@@ -44,6 +52,7 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
             ARouter.getInstance().build(Constant.CONNECT_USB_HOST_ACTIVITY).navigation()  // 页面跳转
             finish()
         }
+        // USB Accessory
         viewBinding.usbAccessoryConnection.setOnClickListener {
             // 初始化连接器
             val connector = USBAccessoryConnector()
@@ -51,6 +60,7 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
             ARouter.getInstance().build(Constant.CONNECT_USB_ACCESSORY_ACTIVITY).navigation()  // 页面跳转
             finish()
         }
+        //
         viewBinding.serialPortConnection.setOnClickListener {
             // 初始化连接器
             val connector = SerialPortConnector()

@@ -53,7 +53,7 @@ abstract class BaseConnector {
     }
 
 
-    // 从所有设备的列表中筛选并连接
+    // 从所有设备的列表中筛选并根据条件自动连接
     open fun <T> connectDevice(
         before: (()->Unit)? = null,  // 前置准备
         search: (suspend ()->MutableList<T>?)?,  // 获取设备

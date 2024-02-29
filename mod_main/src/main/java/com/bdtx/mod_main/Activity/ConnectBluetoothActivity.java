@@ -2,7 +2,12 @@ package com.bdtx.mod_main.Activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,60 +37,83 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
     private BluetoothAdapter bluetoothAdapter;
     private List<BluetoothDevice> devices = new ArrayList<>();
     private BluetoothListAdapter bluetoothListAdapter;
+    public static final int MODE_BLE = 0;
+    public static final int MODE_CLSB = 1;
+    private int connection_mode = MODE_BLE;
 
     @Override public void beforeSetLayout() {}
+    @Nullable @Override public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {return null;}
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
+        connection_mode = getIntent().getIntExtra("connection_mode",MODE_BLE);
         init_bluetooth_list();
-        BluetoothTransferUtils.getInstance().setOnBluetoothWork(new BluetoothTransferUtils.onBluetoothWork() {
-            @Override public void onScanningResult(List<BluetoothDevice> devices, BluetoothDevice new_device) {}
-            @Override public void onConnectSucceed() {
-                GlobalControlUtils.INSTANCE.hideLoadingDialog();
-                GlobalControlUtils.INSTANCE.showToast("连接成功",0);
-                finish();
-            }
-            @Override public void onConnectError() {
-                GlobalControlUtils.INSTANCE.hideLoadingDialog();
-                GlobalControlUtils.INSTANCE.showToast("连接错误",0);
-            }
-            @Override public void onDisconnect() {
-                GlobalControlUtils.INSTANCE.hideLoadingDialog();
-                GlobalControlUtils.INSTANCE.showToast("断开连接",0);
-            }
-            @Override public void sendDataCallback(int var1) {}
-            @Override public void onReceiveData(String data_hex) {}
-        });
+        if(connection_mode==MODE_BLE){
+            BluetoothTransferUtils.getInstance().setOnBluetoothWork(new BluetoothTransferUtils.onBluetoothWork() {
+                @Override public void onScanningResult(List<BluetoothDevice> devices, BluetoothDevice new_device) {
+
+                }
+                @Override public void onConnectSucceed() {
+                    GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                    GlobalControlUtils.INSTANCE.showToast("连接成功",0);
+                    finish();
+                }
+                @Override public void onConnectError() {
+                    GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                    GlobalControlUtils.INSTANCE.showToast("连接错误",0);
+                }
+                @Override public void onDisconnect() {
+                    GlobalControlUtils.INSTANCE.hideLoadingDialog();
+                    GlobalControlUtils.INSTANCE.showToast("断开连接",0);
+                }
+                @Override public void sendDataCallback(int var1) {}
+                @Override public void onReceiveData(String data_hex) {}
+            });
+        }else{
+            registerBroadcast();
+        }
+
     }
 
     @Override
     public void initData() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter.isEnabled()){
-            bluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(BluetoothDevice device, int i, byte[] bytes) {
-//                    loge("搜索到设备");
-                    if (device.getName() == null || device.getName().equals("")) return;
-                    if (devices.contains(device)){
-                        return;
-                    }
-                    devices.add(device);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bluetoothListAdapter.setData(devices);
-                        }
-                    });
-                }
-            });
-        }else {
+            if(connection_mode==MODE_BLE){
+                // 扫描低功耗蓝牙设备
+                bluetoothAdapter.startLeScan(BLECallback);
+                loge("扫描低功耗蓝牙设备");
+            }else{
+                // 扫描所有蓝牙设备
+                bluetoothAdapter.startDiscovery();
+                loge("扫描所有蓝牙设备");
+            }
+        } else {
             Toast.makeText(this, "请打开蓝牙", Toast.LENGTH_SHORT).show();
 //            Intent in = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 //            in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
 //            startActivityForResult(in,1);
         }
     }
+
+    // 蓝牙扫描回调
+    BluetoothAdapter.LeScanCallback BLECallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(BluetoothDevice device, int i, byte[] bytes) {
+//            loge("搜索到低功耗设备");
+            if (device.getName() == null || device.getName().equals("")) return;
+            if (devices.contains(device)){
+                return;
+            }
+            devices.add(device);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    bluetoothListAdapter.setData(devices);
+                }
+            });
+        }
+    };
 
     private void init_bluetooth_list(){
         bluetoothListAdapter = new BluetoothListAdapter();
@@ -95,7 +123,7 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
             public Unit invoke(View view, Integer integer) {
 //                BluetoothTransferUtils.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
                 BaseConnector.Companion.getConnector().connect(bluetoothListAdapter.getItem(integer));
-                GlobalControlUtils.INSTANCE.showLoadingDialog("正在连接");
+//                GlobalControlUtils.INSTANCE.showLoadingDialog("正在连接");
 //                finish();
                 return null;
             }
@@ -104,9 +132,46 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
         getViewBinding().bluetoothList.setAdapter(bluetoothListAdapter);
     }
 
-    @Nullable
+    // 直接用 主程序 作为context
+    public void registerBroadcast() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.bluetooth.device.action.FOUND");
+        filter.addAction("android.bluetooth.adapter.action.DISCOVERY_FINISHED");
+        filter.addAction("android.bluetooth.device.action.ACL_CONNECTED");
+        filter.addAction("android.bluetooth.device.action.ACL_DISCONNECTED");
+        this.registerReceiver(receiver, filter);
+        loge("广播注册成功");
+    }
+
+    // 蓝牙连接监听广播
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if ("android.bluetooth.device.action.FOUND".equals(action)) {
+                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
+                if (device.getName() == null) {return;}
+                if (!devices.contains(device)) {
+                    devices.add(device);
+                    bluetoothListAdapter.setData(devices);
+                }
+                // 蓝牙是否已配对，没配对才操作
+//                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+//                    if (!devices.contains(device)) {
+//                        devices.add(device);
+//                    }
+//                }
+            }
+        }
+    };
+
     @Override
-    public Object initDataSuspend(@NonNull Continuation<? super Unit> $completion) {
-        return null;
+    protected void onDestroy() {
+        if(connection_mode==MODE_BLE){
+            bluetoothAdapter.stopLeScan(BLECallback);
+        }else{
+            if(bluetoothAdapter.isDiscovering()){bluetoothAdapter.cancelDiscovery();}
+            this.unregisterReceiver(receiver);
+        }
+        super.onDestroy();
     }
 }

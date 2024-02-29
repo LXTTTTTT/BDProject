@@ -99,7 +99,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                 )
             }
             else{
-                // 这个手表是android9不需要bluetoothscan等权限
+                // 这个手表是android9不需要bluetoothscan等权限，默认已获取系统权限省略某些权限申请
                 rxPermissions
                     .request(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)  // 定位权限检测
                     .subscribe{  granted->
