@@ -87,8 +87,4 @@ public class Constant {
     public final static int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
     public final static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
     public final static int channelCount = channelConfig == AudioFormat.CHANNEL_IN_STEREO ? 2:1;
-    //比特率
-    public final static int BIT_RATE = 64;
-    //读取数据的最大字节数
-    public final static int KEY_MAX_INPUT_SIZE =20 * 1024;
 }

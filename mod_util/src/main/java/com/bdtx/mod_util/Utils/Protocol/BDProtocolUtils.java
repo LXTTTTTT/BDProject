@@ -7,8 +7,9 @@ import com.bdtx.mod_data.Global.Variable;
 import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
-import com.bdtx.mod_util.Utils.FileUtils;
-import com.bdtx.mod_util.Utils.FileUtils3;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
+import com.bdtx.mod_util.Utils.File.FileUtils;
+import com.bdtx.mod_util.Utils.File.FileUtils3;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 
 import java.util.Arrays;
@@ -66,41 +67,49 @@ public class BDProtocolUtils {
     // $CCICA,15950044,0,1,333211*99
     // 解析数据
     public void parseData(String intactData){
-//        Log.i(TAG, "收到数据 parseData: "+ intactData);
-        // 拆分数据
-        int xorIndex = intactData.indexOf("*");
-        if(xorIndex == -1){
+        // 使用线程池
+        if(DispatcherExecutor.INSTANCE.getIOExecutor()==null){
+            Log.e(TAG, "线程池未初始化!");
             return;
         }
-        String data_str = intactData.substring(0, xorIndex);  // 截取到 * 之前，例：$CCICR,0,00
-        if(!data_str.contains(",")){
-            return;
-        }
-        FileUtils3.recordBDLog(FileUtils.getLogFile(),"parse_BD:"+data_str);  // 记录日志文件
-        String[] values = data_str.split(",", -1);  // , 分割，例：["$CCICR","0","00"]
-        Log.e(TAG, "在解析的数据 parseData: "+ Arrays.toString(values));
-        if (data_str.contains("FKI")) {  // 反馈信息
-            BDFKI(values);
-        } else if (data_str.contains("ICP")) {  // IC信息
-            BDICP(values);
-        } else if (data_str.contains("ICI")) {  // ICI IC信息
-            BDICI(values);
-        } else if (data_str.contains("PWI")) {  // 波束信息
-            BDPWI(values);
-        } else if (data_str.contains("SNR")) {  // SNR波束信息
-            BDSNR(values);
-        } else if (data_str.contains("TCI")||data_str.contains("TXR")){  // 北斗三代通信信息
-            BDMessage(values);
-        } else if (data_str.contains("ZDX")){  // 盒子信息
-            BDZDX(values);
-        }
+        DispatcherExecutor.INSTANCE.getIOExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+//                Log.i(TAG, "收到数据 parseData: "+ intactData);
+                // 拆分数据
+                int xorIndex = intactData.indexOf("*");
+                if(xorIndex == -1){
+                    return;
+                }
+                String data_str = intactData.substring(0, xorIndex);  // 截取到 * 之前，例：$CCICR,0,00
+                if(!data_str.contains(",")){
+                    return;
+                }
+                FileUtils3.recordBDLog(FileUtils.getLogFile(),"parse_BD:"+data_str);  // 记录日志文件
+                String[] values = data_str.split(",", -1);  // , 分割，例：["$CCICR","0","00"]
+                Log.e(TAG, "在解析的数据 parseData: "+ Arrays.toString(values));
+                if (data_str.contains("FKI")) {  // 反馈信息
+                    BDFKI(values);
+                } else if (data_str.contains("ICP")) {  // IC信息
+                    BDICP(values);
+                } else if (data_str.contains("ICI")) {  // ICI IC信息
+                    BDICI(values);
+                } else if (data_str.contains("PWI")) {  // 波束信息
+                    BDPWI(values);
+                } else if (data_str.contains("SNR")) {  // SNR波束信息
+                    BDSNR(values);
+                } else if (data_str.contains("TCI")||data_str.contains("TXR")){  // 北斗三代通信信息
+                    BDMessage(values);
+                } else if (data_str.contains("ZDX")){  // 盒子信息
+                    BDZDX(values);
+                }
 
-    // 其余类型的应该都是 RNSS 定位数据
-        else {
-            parseRNSS(values);
-        }
-
-
+                // 其余类型的应该都是 RNSS 定位数据
+                else {
+                    parseRNSS(values);
+                }
+            }
+        });
     }
 
     // 解析 RNSS 位置数据

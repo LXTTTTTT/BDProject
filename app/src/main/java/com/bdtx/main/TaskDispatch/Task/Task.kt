@@ -1,10 +1,10 @@
-package com.bdtx.main.Task
+package com.bdtx.main.TaskDispatch.Task
 
 import android.content.Context
 import android.os.Process
-import com.bdtx.main.Task.DispatcherExecutor
-import com.bdtx.main.Task.TaskDispatcher
-import com.bdtx.main.Task.TaskDispatcher.Companion.context
+import com.bdtx.main.TaskDispatch.Dispatcher.TaskDispatcher
+import com.bdtx.mod_util.Utils.DispatcherExecutor
+import com.bdtx.main.TaskDispatch.Dispatcher.TaskDispatcher.Companion.context
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 
@@ -80,7 +80,7 @@ abstract class Task : ITask {
      * @return
      */
     override fun runOn(): ExecutorService? {
-        return DispatcherExecutor.iOExecutor
+        return DispatcherExecutor.IOExecutor
     }
 
     /**

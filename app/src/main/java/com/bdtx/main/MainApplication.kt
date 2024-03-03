@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
-import com.bdtx.main.Task.TaskDispatcher
+import com.bdtx.main.TaskDispatch.Dispatcher.TaskDispatcher
 import com.bdtx.mod_util.Utils.ActivityManagementUtils
 import com.bdtx.mod_util.Utils.SystemLocationUtils
 

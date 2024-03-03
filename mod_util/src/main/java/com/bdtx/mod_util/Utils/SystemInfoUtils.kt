@@ -9,7 +9,6 @@ import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
-import com.bdtx.mod_util.Utils.Log.LogUtils
 import kotlin.math.max
 import kotlin.math.min
 

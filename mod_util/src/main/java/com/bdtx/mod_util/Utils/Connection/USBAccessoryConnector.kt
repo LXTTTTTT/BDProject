@@ -2,6 +2,8 @@ package com.bdtx.mod_util.Utils.Connection
 
 import android.hardware.usb.UsbAccessory
 import android.util.Log
+import com.bdtx.mod_util.Utils.GlobalControlUtils
+import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 import com.bdtx.mod_util.Utils.Transfer.USB.USBAccessoryTransferUtils
 
 class USBAccessoryConnector:BaseConnector() {
@@ -19,7 +21,7 @@ class USBAccessoryConnector:BaseConnector() {
         connectDeviceWithCondition(
             device,
             before = {
-                // 前置操作
+                GlobalControlUtils.showLoadingDialog("正在连接设备")
             },
             // 设置连接前置条件
             condition = object :()->Boolean{
@@ -32,8 +34,18 @@ class USBAccessoryConnector:BaseConnector() {
                 // 连接设备
                 USBAccessoryTransferUtils.getInstance().connectDevice(it)
             },
-            after = {
-                // 连接后操作
+            conditionFail = {
+                GlobalControlUtils.hideLoadingDialog()
+            },
+            success = {
+                // 连接成功操作
+                initDevice()
+                GlobalControlUtils.hideLoadingDialog()
+            },
+            fail = {
+                // 连接失败操作
+                GlobalControlUtils.hideLoadingDialog()
+                GlobalControlUtils.showToast("连接失败",0)
             }
         )
     }
@@ -49,9 +61,13 @@ class USBAccessoryConnector:BaseConnector() {
         })?.let { it as MutableList<UsbAccessory> }
     }
 
+    override fun initDevice() {
+        USBAccessoryTransferUtils.getInstance().init_device()
+    }
+
 
     // 实现发送消息
     override fun sendMessage(targetCardNumber: String, type: Int, content_str: String) {
-
+        USBAccessoryTransferUtils.getInstance().sendMessage(targetCardNumber, type, content_str)
     }
 }

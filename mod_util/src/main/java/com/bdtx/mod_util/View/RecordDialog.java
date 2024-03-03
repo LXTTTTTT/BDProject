@@ -21,14 +21,13 @@ import com.bdtx.mod_util.R;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.AudioRecordUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
-import com.bdtx.mod_util.Utils.FileUtils;
+import com.bdtx.mod_util.Utils.File.FileUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.pancoit.compression.ZDCompression;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 public class RecordDialog extends Dialog{
 

@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    // 基本导入
+    // 基本导入 ---------------------------------------------------
     compileOnly rootProject.depsLibs.coreKtx
     compileOnly rootProject.depsLibs.appcompat
     compileOnly rootProject.depsLibs.material
@@ -44,23 +44,19 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.extJunit
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
-    // 额外导入
+    // 额外导入 ---------------------------------------------------
 //    api project(':app').files('libs/compression_interior.aar')  // 中大压缩库
-
-    api 'com.journeyapps:zxing-android-embedded:4.3.0'  // 扫码
+    api rootProject.depsLibs.zxing  // 扫码
     // okhttp
     api rootProject.depsLibs.okhttp3
     api rootProject.depsLibs.okio
     // rxjava
     api rootProject.depsLibs.rxjava
     api rootProject.depsLibs.rxandroid
-    // rxPermission
-//    api rootProject.depsLibs.rxPermission
-    // 串口第三方库
-    implementation 'io.github.xmaihh:serialport:2.1.1'
-    //gson
-    api rootProject.depsLibs.gson
-    // 模块导入
-    compileOnly project(path: ':mod_data')
+
+    implementation rootProject.depsLibs.serialport  // 串口第三方库
+    api rootProject.depsLibs.gson  // gson
+    // 模块导入 ---------------------------------------------------
+    api project(path: ':mod_data')
     api project(path: ':LocalRepo:ZDCompression_aar')
 }

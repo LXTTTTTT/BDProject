@@ -1,5 +1,7 @@
 package com.bdtx.mod_util.Utils.Transfer.USB;
 
+import static java.lang.Thread.sleep;
+
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -12,8 +14,10 @@ import android.os.Build;
 import android.util.Log;
 
 
+import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 import com.bdtx.mod_util.Utils.Transfer.USB.USBSerial.driver.UsbSerialDriver;
@@ -25,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,25 +116,27 @@ public class USBHostTransferUtils {
     }
 
     // 连接设备
-    public void connectDevice(UsbSerialDriver usbSerialDriver){
+    public boolean connectDevice(UsbSerialDriver usbSerialDriver){
         this.usbSerialDriver = usbSerialDriver;
         usbSerialPort = usbSerialDriver.getPorts().get(0);  // 一般设备的端口都只有一个，具体要参考设备的说明文档
         usbDeviceConnection = manager.openDevice(usbSerialDriver.getDevice());  // 拿到连接对象
-        if(usbSerialPort == null){return;}
+        if(usbSerialPort == null){return false;}
         try {
             usbSerialPort.open(usbDeviceConnection);  // 打开串口
             usbSerialPort.setParameters(baudRate, dataBits, stopBits, parity);  // 设置串口参数：波特率 - 115200 ， 数据位 - 8 ， 停止位 - 1 ， 奇偶校验 - 无
-            startReceiveData();  // 开启读数据线程
-        } catch (IOException e) {
+            return startReceiveData();  // 开启读数据线程
+        } catch (Exception e) {
             e.printStackTrace();
+            Log.e(TAG, "连接错误" );
+            return false;
         }
     }
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private byte[] readBuffer = new byte[1024 * 2];  // 缓冲区
     // 开启数据接收监听
-    public void startReceiveData(){
-        if(usbSerialPort == null || !usbSerialPort.isOpen()){return;}
+    public boolean startReceiveData(){
+        if(usbSerialPort == null || !usbSerialPort.isOpen()){return false;}
         inputOutputManager = new SerialInputOutputManager(usbSerialPort, new SerialInputOutputManager.Listener() {
             @Override
             public void onNewData(byte[] data) {
@@ -162,6 +169,7 @@ public class USBHostTransferUtils {
             }
         });
         inputOutputManager.start();
+        return true;
     }
 
     // 下发数据：建议使用线程池
@@ -181,6 +189,43 @@ public class USBHostTransferUtils {
                 GlobalControlUtils.INSTANCE.showToast("usb 未连接" ,0);
             }
         }
+    }
+
+    // 下发北斗消息
+    public void sendMessage(String targetCardNumber, int type, String content_str){
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
+                    // 开始倒计时
+                    ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
+                }
+            });
+        }
+    }
+
+    // 下发初始化指令
+    public void init_device(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sleep(300);
+                    write(BDProtocolUtils.CCPWD());  // 登录
+                    sleep(300);
+                    write(BDProtocolUtils.CCICR(0,"00"));  // 查询ic信息
+                    sleep(300);
+                    write(BDProtocolUtils.CCRMO("PWI",2,5));  // 北三信号间隔 5
+                    sleep(300);
+                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 
@@ -218,14 +263,5 @@ public class USBHostTransferUtils {
     }
 
 
-    // 下发初始化指令
-    public void init_device(){
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        write(BDProtocolUtils.CCICR(0,"00"));  // 查询 IC 信息
-    }
 
 }

@@ -2,6 +2,7 @@ package com.bdtx.mod_util.Utils.Connection
 
 import android.bluetooth.BluetoothDevice
 import android.util.Log
+import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.Transfer.BluetoothSocketTransferUtils
 import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 
@@ -19,6 +20,9 @@ class CLSBConnector:BaseConnector() {
         }
         connectDeviceWithCondition(
             device,
+            before = {
+                GlobalControlUtils.showLoadingDialog("正在连接设备")
+            },
             // 蓝牙连接前置条件
             condition = object :()->Boolean{
                 override fun invoke(): Boolean {
@@ -29,8 +33,15 @@ class CLSBConnector:BaseConnector() {
                 // 连接蓝牙
                 BluetoothSocketTransferUtils.getInstance().connect(it)
             },
-            after = {
-                // 连接蓝牙后操作
+            success = {
+                // 连接成功操作
+                initDevice()
+                GlobalControlUtils.hideLoadingDialog()
+            },
+            fail = {
+                // 连接失败操作
+                GlobalControlUtils.hideLoadingDialog()
+                GlobalControlUtils.showToast("连接失败",0)
             }
         )
     }
@@ -44,9 +55,13 @@ class CLSBConnector:BaseConnector() {
         return null
     }
 
+    override fun initDevice() {
+        BluetoothSocketTransferUtils.getInstance().init_device()
+    }
+
 
     // 实现发送消息
     override fun sendMessage(targetCardNumber: String, type: Int, content_str: String) {
-
+        BluetoothSocketTransferUtils.getInstance().send_message(targetCardNumber,type,content_str)
     }
 }

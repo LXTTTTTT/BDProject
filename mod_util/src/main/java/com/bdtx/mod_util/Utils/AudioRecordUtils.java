@@ -1,8 +1,12 @@
 package com.bdtx.mod_util.Utils;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.bdtx.mod_data.Global.Constant;
 
@@ -26,6 +30,7 @@ public class AudioRecordUtils {
 
 
     private static AudioRecordUtils audioRecordUtils = new AudioRecordUtils();
+
     public static AudioRecordUtils getInstance() {
         return audioRecordUtils;
     }
@@ -33,7 +38,9 @@ public class AudioRecordUtils {
     public void init() {
         Log.e(TAG, "初始话语音工具");
         //  根据录音参数构造AudioRecord实体对象
-        if(audioRecord!=null){stop();}
+        if (audioRecord != null) {
+            stop();
+        }
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, Constant.sampleRateInHz, Constant.channelConfig, Constant.audioFormat, recordMinBufferSize);
     }
 

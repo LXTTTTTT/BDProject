@@ -7,7 +7,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import com.bdtx.mod_util.Utils.Log.LogUtils
 import java.io.FileInputStream
 import java.net.NetworkInterface
 

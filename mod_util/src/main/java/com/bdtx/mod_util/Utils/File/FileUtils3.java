@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Utils;
+package com.bdtx.mod_util.Utils.File;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -7,6 +7,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.bdtx.mod_util.Utils.DataUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

@@ -10,7 +10,7 @@ abstract class BaseConnector {
     var isConnected = false  // 连接状态
 
     companion object{
-        var connector:BaseConnector? = null
+        var connector:BaseConnector? = null  // 全局唯一连接器
         @JvmName("setConnectorJava")
         fun setConnector(connector: BaseConnector?){
             this.connector = connector
@@ -20,19 +20,26 @@ abstract class BaseConnector {
     abstract fun connect(device:Any)  // 连接设备
     abstract fun disconnect()  // 断开连接
     abstract suspend fun getDevices():List<Any>?  // 获取可用设备
+    abstract fun initDevice()  // 初始化设备（下发指令）
     abstract fun sendMessage(targetCardNumber:String, type:Int, content_str:String)  // 发送消息
 
 
     // 连接设备
     open fun <T> connectDevice(
         device: T,
-        before: (()->Unit)?,  // 前置准备
-        connectWithTransfer:(T)->Unit,  // 连接操作
-        after: (()->Unit)?  // 后置处理
+        before: (()->Unit)?=null,  // 前置准备
+        connectWithTransfer:(T)->Boolean,  // 连接操作
+        success: (()->Unit)?=null,  // 成功
+        fail: (()->Unit)?=null,  // 失败
     ){
         before?.let { it.invoke() }
-        connectWithTransfer(device)
-        after?.let { it.invoke() }
+        if(connectWithTransfer(device)){
+            Log.e(TAG, "设备连接成功" )
+            success?.let { it.invoke() }
+        }else{
+            Log.e(TAG, "设备连接失败" )
+            fail?.let { it.invoke() }
+        }
     }
 
     // 连接设备（前置条件）
@@ -40,15 +47,23 @@ abstract class BaseConnector {
         device: T,
         before: (()->Unit)?=null,  // 前置准备
         condition: (()->Boolean),  // 前置条件
-        connectWithTransfer:(T)->Unit,  // 连接操作
-        after: (()->Unit)?=null  // 后置处理
+        connectWithTransfer:(T)->Boolean,  // 连接操作
+        conditionFail: (()->Unit)?=null,  // 条件检测失败
+        success: (()->Unit)?=null,  // 成功
+        fail: (()->Unit)?=null,  // 失败
     ){
         before?.let { it.invoke() }
         if(condition()){
-            connectWithTransfer(device)
-            after?.let { it.invoke() }
+            if(connectWithTransfer(device)){
+                Log.e(TAG, "设备连接成功" )
+                success?.let { it.invoke() }
+            }else{
+                Log.e(TAG, "设备连接失败" )
+                fail?.let { it.invoke() }
+            }
         }else{
             Log.e(TAG, "连接条件不足！")
+            conditionFail?.let { it.invoke() }
         }
     }
 
@@ -72,7 +87,7 @@ abstract class BaseConnector {
         }
     }
 
-    // 获取可用设备设备
+    // 获取可用设备列表
     open suspend fun <T> getDevicesWithCondition(
         before: (()->Unit)?=null,
         search: suspend ()->MutableList<T>?,

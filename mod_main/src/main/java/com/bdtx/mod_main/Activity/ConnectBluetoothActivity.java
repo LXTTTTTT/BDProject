@@ -39,6 +39,7 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
     private BluetoothListAdapter bluetoothListAdapter;
     public static final int MODE_BLE = 0;
     public static final int MODE_CLSB = 1;
+    public static final String CONNECTION_MODE = "connection_mode";
     private int connection_mode = MODE_BLE;
 
     @Override public void beforeSetLayout() {}
@@ -46,7 +47,7 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-        connection_mode = getIntent().getIntExtra("connection_mode",MODE_BLE);
+        connection_mode = getIntent().getIntExtra(CONNECTION_MODE,MODE_BLE);
         init_bluetooth_list();
         if(connection_mode==MODE_BLE){
             BluetoothTransferUtils.getInstance().setOnBluetoothWork(new BluetoothTransferUtils.onBluetoothWork() {
@@ -123,8 +124,6 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
             public Unit invoke(View view, Integer integer) {
 //                BluetoothTransferUtils.getInstance().connectDevice(bluetoothListAdapter.getItem(integer));
                 BaseConnector.Companion.getConnector().connect(bluetoothListAdapter.getItem(integer));
-//                GlobalControlUtils.INSTANCE.showLoadingDialog("正在连接");
-//                finish();
                 return null;
             }
         });
@@ -132,7 +131,6 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
         getViewBinding().bluetoothList.setAdapter(bluetoothListAdapter);
     }
 
-    // 直接用 主程序 作为context
     public void registerBroadcast() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.bluetooth.device.action.FOUND");
@@ -154,12 +152,6 @@ public class ConnectBluetoothActivity extends BaseViewBindingActivity<ActivityCo
                     devices.add(device);
                     bluetoothListAdapter.setData(devices);
                 }
-                // 蓝牙是否已配对，没配对才操作
-//                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-//                    if (!devices.contains(device)) {
-//                        devices.add(device);
-//                    }
-//                }
             }
         }
     };

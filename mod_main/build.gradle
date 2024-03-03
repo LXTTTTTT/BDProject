@@ -64,13 +64,10 @@ dependencies {
     compileOnly rootProject.depsLibs.aroutreApi
 //    compileOnly (rootProject.depsLibs.aroutreApi){transitive(false)}
     kapt rootProject.depsLibs.arouterCompiler
-
-    implementation 'androidx.wear:wear:1.2.0'  // 弧形列表（androidx.core:core-ktx 要改成1.6.0）
+    implementation rootProject.depsLibs.wear  // 弧形列表（androidx.core:core-ktx 要改成1.6.0）
     // kotlin viewModel 同时要导入activityKtx适配
     implementation rootProject.depsLibs.activityKtx
     compileOnly rootProject.depsLibs.rxPermission
     // 导入模块 ---------------------------------------------------
     compileOnly project(path: ':mod_util')
-    compileOnly project(path: ':mod_data')
-
 }

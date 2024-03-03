@@ -5,6 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
+// 线程池工具（不用这个，用另一个）
 object ThreadPoolManagementUtils {
     private val corePoolSize = 5
     private val maximumPoolSize = 10

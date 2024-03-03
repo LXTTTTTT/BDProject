@@ -3,12 +3,12 @@ package com.bdtx.main
 import android.app.Application
 import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
-import com.bdtx.main.Task.DispatcherExecutor
-import com.bdtx.main.Task.Task
+import com.bdtx.mod_util.Utils.DispatcherExecutor
+import com.bdtx.main.TaskDispatch.Task.Task
 import com.bdtx.mod_data.Database.DaoUtils
 import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_util.Utils.*
-import com.bdtx.mod_util.Utils.Log.LogUtils
+import com.bdtx.mod_util.Utils.LogUtils
 import com.tencent.mmkv.MMKV
 import com.tencent.mmkv.MMKVLogLevel
 import java.util.concurrent.ExecutorService
@@ -47,7 +47,7 @@ class InitMmkvTask() : Task() {
 
     // 指定需要使用的线程池
     override fun runOn(): ExecutorService? {
-        return DispatcherExecutor.iOExecutor
+        return DispatcherExecutor.IOExecutor
     }
 
     // 执行任务

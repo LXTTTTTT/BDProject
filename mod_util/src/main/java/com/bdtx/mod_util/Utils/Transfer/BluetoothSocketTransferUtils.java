@@ -1,25 +1,21 @@
 package com.bdtx.mod_util.Utils.Transfer;
 
-import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
-import com.bdtx.mod_util.Utils.FileUtils;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
+import com.bdtx.mod_util.Utils.File.FileUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
-import com.google.gson.Gson;
+import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,16 +27,12 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 // 蓝牙 Socket 数据传输工具
 public class BluetoothSocketTransferUtils {
@@ -64,7 +56,6 @@ public class BluetoothSocketTransferUtils {
 
     public boolean isConnectedDevice = false;
     public boolean isSendFile = false;
-    public static ExecutorService executorService;
 // 单例 ----------------------------------------------------------------
     private static BluetoothSocketTransferUtils bluetoothSocketUtils;
 
@@ -77,7 +68,6 @@ public class BluetoothSocketTransferUtils {
 
     public BluetoothSocketTransferUtils() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        executorService = Executors.newFixedThreadPool(100);
     }
 
     public Set<BluetoothDevice> getPairedDeviceList(){
@@ -85,34 +75,58 @@ public class BluetoothSocketTransferUtils {
     }
 
 
-    public synchronized void connect(BluetoothDevice device) {
+    public synchronized boolean connect(BluetoothDevice device) {
         Log.e(TAG, "连接设备: " + device.getName()+"/"+state);
         if (state == STATE_CONNECTING || state == STATE_CONNECTED) {
-            GlobalControlUtils.INSTANCE.showToast("正在连接设备",0);return;
+            GlobalControlUtils.INSTANCE.showToast("正在连接设备",0);return false;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
-                    state = STATE_CONNECTING;
-                    if(onBluetoothSocketWork!=null){onBluetoothSocketWork.onConnecting();}
-                    bluetoothSocket.connect();
-                    inputStream = bluetoothSocket.getInputStream();
-                    outputStream = bluetoothSocket.getOutputStream();
-                    state = STATE_CONNECTED;
-                    isConnectedDevice = true;
-                    nowDevice = device;
-                    receiveDataThread = new ReceiveDataThread();
-                    receiveDataThread.start();  // 开启读数据线程
-                    if(onBluetoothSocketWork!=null){onBluetoothSocketWork.onConnected(device.getName());}
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Log.e(TAG, "连接失败了" );
-                    disconnect();
-                }
+        Connection connection = new Connection(device);
+        Thread connectThread = new Thread(connection);
+        connectThread.start();
+        try {
+            connectThread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        boolean result = connection.getResult();
+        return result;
+    }
+
+    private class Connection implements Runnable {
+        private BluetoothDevice device;
+        private boolean result;
+        public Connection(BluetoothDevice device){
+            this.device = device;
+        }
+        @Override
+        public void run() {
+            // 执行任务，这里简单地模拟一个耗时操作
+            try {
+                bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
+                state = STATE_CONNECTING;
+                if(onBluetoothSocketWork!=null){onBluetoothSocketWork.onConnecting();}
+                bluetoothSocket.connect();
+                inputStream = bluetoothSocket.getInputStream();
+                outputStream = bluetoothSocket.getOutputStream();
+                state = STATE_CONNECTED;
+                isConnectedDevice = true;
+                nowDevice = device;
+                receiveDataThread = new ReceiveDataThread();
+                receiveDataThread.start();  // 开启读数据线程
+                if(onBluetoothSocketWork!=null){onBluetoothSocketWork.onConnected(device.getName());}
+                Log.e(TAG, "连接成功" );
+                result = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "连接失败了" );
+                disconnect();
+                result = false;
             }
-        }).start();
+        }
+
+        public boolean getResult() {
+            return result;
+        }
     }
 
     private byte[] readBuffer = new byte[1024*1024];
@@ -130,9 +144,12 @@ public class BluetoothSocketTransferUtils {
                     if(size>0){
                         baos.write(buffer, 0, size);
                         readBuffer = baos.toByteArray();
-                        executorService.execute(new Runnable() {@Override public void run() {
-                            receiveData(readBuffer);
-                        }});
+
+                        if(DispatcherExecutor.INSTANCE.getIOExecutor()!=null){
+                            DispatcherExecutor.INSTANCE.getIOExecutor().execute(new Runnable() {@Override public void run() {
+                                receiveData(readBuffer);
+                            }});
+                        }
                         baos.reset();
                     }else if(size==-1){
                         Log.e(TAG, "BluetoothSocket: 断开了");
@@ -221,19 +238,29 @@ public class BluetoothSocketTransferUtils {
     public void send_text(String data_str){
         if(outputStream==null){return;}
         if(isSendFile){return;}
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    byte[] data_bytes = data_str.getBytes("GB18030");
-                    String head = "$*1*$"+String.format("%08X", data_bytes.length);
-                    outputStream.write(head.getBytes(StandardCharsets.UTF_8));
-                    outputStream.write(data_bytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        byte[] data_bytes = data_str.getBytes("GB18030");
+                        String head = "$*1*$"+String.format("%08X", data_bytes.length);
+                        outputStream.write(head.getBytes(StandardCharsets.UTF_8));
+                        outputStream.write(data_bytes);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }).start();
+            });
+        }
+    }
+
+    // 下发北斗消息
+    public void send_message(String targetCardNumber, int type, String content_str){
+        send_text(DataUtils.hex2String(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str)));
+        // 开始倒计时
+        ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
     }
 
     public final int SEND_FILE_AUDIO = 0;
@@ -241,38 +268,49 @@ public class BluetoothSocketTransferUtils {
     public void send_file(String path,int type){
         if(outputStream==null){return;}
         if(isSendFile){return;}
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File file = new File(path);
-                if (!file.exists() || !file.isFile()) {
-                    Log.e(TAG, "文件不存在");
-                    return;
-                }else {
-                    GlobalControlUtils.INSTANCE.showToast("开始发送文件",0);
-                    Log.e(TAG, "开始发送文件");
-                    isSendFile = true;
-                }
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    File file = new File(path);
+                    if (!file.exists() || !file.isFile()) {
+                        Log.e(TAG, "文件不存在");
+                        return;
+                    }else {
+                        GlobalControlUtils.INSTANCE.showToast("开始发送文件",0);
+                        Log.e(TAG, "开始发送文件");
+                        isSendFile = true;
+                    }
 
-                byte[] file_byte = fileToBytes(path);
-                try {
-                    Thread.sleep(500);
-                    int bytesRead;
-                    // 写入文件内容到输出流
-                    String head;
-                    if(type==SEND_FILE_AUDIO){head = "$*2*$"+String.format("%08X", file_byte.length);}
-                    else {head = "$*3*$"+String.format("%08X", file_byte.length);}
-                    Log.e(TAG, "head: "+head );
-                    outputStream.write(head.getBytes(StandardCharsets.UTF_8));
-                    outputStream.write(file_byte);
-                    isSendFile = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "文件发送失败", e);
-                    isSendFile = false;
+                    byte[] file_byte = fileToBytes(path);
+                    try {
+                        Thread.sleep(500);
+                        int bytesRead;
+                        // 写入文件内容到输出流
+                        String head;
+                        if(type==SEND_FILE_AUDIO){head = "$*2*$"+String.format("%08X", file_byte.length);}
+                        else {head = "$*3*$"+String.format("%08X", file_byte.length);}
+                        Log.e(TAG, "head: "+head );
+                        outputStream.write(head.getBytes(StandardCharsets.UTF_8));
+                        outputStream.write(file_byte);
+                        isSendFile = false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "文件发送失败", e);
+                        isSendFile = false;
+                    }
                 }
-            }
-        }).start();
+            });
+        }
+    }
+
+    // 下发初始化指令
+    public void init_device(){
+        send_text(DataUtils.hex2String(BDProtocolUtils.CCPWD()));
+        send_text(DataUtils.hex2String(BDProtocolUtils.CCICR(0,"00")));
+        send_text(DataUtils.hex2String(BDProtocolUtils.CCRMO("PWI",2,5)));
+        send_text(DataUtils.hex2String(BDProtocolUtils.CCRNS(0,0,0,0,0,0)));
     }
 
     public void disconnect(){
@@ -355,11 +393,9 @@ public class BluetoothSocketTransferUtils {
                 e.printStackTrace();
             }
         }else {
-
             try {
                 file_bytes_baos.write(data_bytes);
                 Log.e(TAG, "总长度: "+file_length+" /已接收长度："+file_bytes_baos.size());
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -400,42 +436,32 @@ public class BluetoothSocketTransferUtils {
         }else if(message_type==2){
             Log.e(TAG, "数据接收完毕，语音" );
             // 保存语音数据
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        String imgFilePath= FileUtils.getTransferImgFile()+"transfer" + DataUtils.getTimeSerial()+".pcm";
-                        File imageFile = new File(imgFilePath);
-                        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-                            fos.write(file_bytes_baos.toByteArray());
-                        }
-                        initReceiveParameter();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            try {
+                String imgFilePath= FileUtils.getTransferImgFile()+"transfer" + DataUtils.getTimeSerial()+".pcm";
+                File imageFile = new File(imgFilePath);
+                try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+                    fos.write(file_bytes_baos.toByteArray());
                 }
-            }).start();
+                initReceiveParameter();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }else if(message_type==3){
             Log.e(TAG, "数据接收完毕，图片" );
-            executorService.execute(new Runnable() {
-                @Override public void run() {
-                    try {
-                        String imgFilePath= FileUtils.getTransferImgFile()+"transfer" + DataUtils.getTimeSerial()+".jpg";
-                        File imageFile = new File(imgFilePath);
-                        try (FileOutputStream fos = new FileOutputStream(imageFile); FileChannel channel = fos.getChannel()) {
-                            ByteBuffer buffer = ByteBuffer.wrap(file_bytes_baos.toByteArray());
-                            channel.write(buffer);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        forceFilesystemCache(imgFilePath);
-                        initReceiveParameter();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            try {
+                String imgFilePath= FileUtils.getTransferImgFile()+"transfer" + DataUtils.getTimeSerial()+".jpg";
+                File imageFile = new File(imgFilePath);
+                try (FileOutputStream fos = new FileOutputStream(imageFile); FileChannel channel = fos.getChannel()) {
+                    ByteBuffer buffer = ByteBuffer.wrap(file_bytes_baos.toByteArray());
+                    channel.write(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
-
+                forceFilesystemCache(imgFilePath);
+                initReceiveParameter();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if(message_type==0){
             Log.e(TAG, "数据接收完毕，指令" );
             String content = "";

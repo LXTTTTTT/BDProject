@@ -1,5 +1,6 @@
 package com.bdtx.mod_main.Activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.SendMessageUtils;
 import com.bdtx.mod_util.View.RecordDialog;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.rxjava3.functions.Consumer;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function2;
@@ -66,6 +69,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
     private RecordDialog recordDialog;  // 录音dialog
     private EnglishToChineseInputFilter inputFilter;  // EditText过滤规则
     private MainVM mainVM;  // 全局变量
+    private RxPermissions rxPermissions;
 
     private Handler handler = new Handler(){
         public void handleMessage(android.os.Message msg) {
@@ -96,6 +100,7 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         // 判断目标是否手机号码改变输入规则
         inputFilter = new EnglishToChineseInputFilter();
         inputFilter.enableFiltering(isPhoneNumber());
+        rxPermissions = new RxPermissions(this);
         // 初始化动画效果
         alphaAnimation();
         scaleAnimation();
@@ -262,22 +267,32 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
         viewBinding.voiceButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                int action = motionEvent.getAction();
-                // 刚按下时那一瞬间，显示 dialog
-                if (action == MotionEvent.ACTION_DOWN) {
-                    viewBinding.voiceButton.setSelected(true);
-                    if(!recordDialog.isShowing()){
-                        recordDialog.show();
-                    }
-                }
-                // 过了刚按下时的那一瞬间，这里只把 ACTION_DOWN 和 ACTION_UP 传进去
-                if (recordDialog.isShowing()) {
-                    recordDialog.dialogTouch(motionEvent);
-                }
-                // 点击事件被dialog遮挡了，手动换背景
-                if (action == MotionEvent.ACTION_UP) {
-                    viewBinding.voiceButton.setSelected(false);
-                }
+                rxPermissions
+                        .request(Manifest.permission.RECORD_AUDIO)  // 录音权限检测
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Throwable {
+                                if(aBoolean){
+                                    int action = motionEvent.getAction();
+                                    // 刚按下时那一瞬间，显示 dialog
+                                    if (action == MotionEvent.ACTION_DOWN) {
+                                        viewBinding.voiceButton.setSelected(true);
+                                        if(!recordDialog.isShowing()){
+                                            recordDialog.show();
+                                        }
+                                    }
+                                    // 过了刚按下时的那一瞬间，这里只把 ACTION_DOWN 和 ACTION_UP 传进去
+                                    if (recordDialog.isShowing()) {
+                                        recordDialog.dialogTouch(motionEvent);
+                                    }
+                                    // 点击事件被dialog遮挡了，手动换背景
+                                    if (action == MotionEvent.ACTION_UP) {
+                                        viewBinding.voiceButton.setSelected(false);
+                                    }
+                                }
+
+                            }
+                        });
                 return true;
             }
         });
@@ -303,7 +318,8 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                     enableSendGroup();
                 }
                 else {
-                    disableSendGroup("未连接");
+                    enableSendGroup();
+//                    disableSendGroup("未连接");
                 }
             });
 

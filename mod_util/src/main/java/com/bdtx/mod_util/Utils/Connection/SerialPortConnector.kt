@@ -1,6 +1,7 @@
 package com.bdtx.mod_util.Utils.Connection
 
 import android.util.Log
+import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.Transfer.SerialPortTransferUtils
 import com.bdtx.mod_util.Utils.Transfer.USB.USBHostTransferUtils
 import com.bdtx.mod_util.Utils.Transfer.USB.USBSerial.driver.UsbSerialDriver
@@ -21,8 +22,8 @@ class SerialPortConnector:BaseConnector() {
         connectDeviceWithCondition(
             device,
             before = {
-                // 设置连接参数
-                SerialPortTransferUtils.getInstance().setSerialPortParameters(device,115200)
+                GlobalControlUtils.showLoadingDialog("正在连接设备")
+                SerialPortTransferUtils.getInstance().setSerialPortParameters(device,115200)  // 设置连接参数
             },
             // 设置连接前置条件
             condition = object :()->Boolean{
@@ -34,8 +35,15 @@ class SerialPortConnector:BaseConnector() {
                 // 打开串口
                 SerialPortTransferUtils.getInstance().openSerialPort()  // 打开串口前需要进行上电操作(未实现)
             },
-            after = {
-                // 连接后操作
+            success = {
+                // 连接成功操作
+                initDevice()
+                GlobalControlUtils.hideLoadingDialog()
+            },
+            fail = {
+                // 连接失败操作
+                GlobalControlUtils.hideLoadingDialog()
+                GlobalControlUtils.showToast("连接失败",0)
             }
         )
     }
@@ -51,9 +59,13 @@ class SerialPortConnector:BaseConnector() {
         }) as MutableList<String>
     }
 
+    override fun initDevice() {
+        SerialPortTransferUtils.getInstance().init_device()
+    }
+
 
     // 实现发送消息
     override fun sendMessage(targetCardNumber: String, type: Int, content_str: String) {
-//        USBHostTransferUtil.getInstance().sendMessage(targetCardNumber, type, content_str)
+        SerialPortTransferUtils.getInstance().sendMessage(targetCardNumber, type, content_str)
     }
 }

@@ -33,7 +33,7 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
             // 初始化连接器
             val connector = BLEConnector()
             BaseConnector.setConnector(connector)
-            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt("connection_mode",ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
+            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
             finish()
         }
         // 经典蓝牙
@@ -41,7 +41,7 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
             // 初始化连接器
             val connector = CLSBConnector()
             BaseConnector.setConnector(connector)
-            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt("connection_mode",ConnectBluetoothActivity.MODE_CLSB).navigation()  // 页面跳转
+            ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_CLSB).navigation()  // 页面跳转
             finish()
         }
         // USB Host
@@ -60,7 +60,7 @@ class CommunicationLinkActivity : BaseViewBindingActivity<ActivityCommunicationL
             ARouter.getInstance().build(Constant.CONNECT_USB_ACCESSORY_ACTIVITY).navigation()  // 页面跳转
             finish()
         }
-        //
+        // 串口
         viewBinding.serialPortConnection.setOnClickListener {
             // 初始化连接器
             val connector = SerialPortConnector()

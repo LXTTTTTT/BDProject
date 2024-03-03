@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    // 基本导入
+    // 基本导入 ---------------------------------------------------
     compileOnly rootProject.depsLibs.coreKtx
     compileOnly rootProject.depsLibs.appcompat
     compileOnly rootProject.depsLibs.material
@@ -40,13 +40,11 @@ dependencies {
     androidTestCompileOnly rootProject.depsLibs.extJunit
     androidTestCompileOnly rootProject.depsLibs.espressoCore
 
-    // 额外导入
+    // 额外导入 ---------------------------------------------------
     api rootProject.depsLibs.greendao  // greenDAO 数据库
     // kotlin viewModel
     api rootProject.depsLibs.viewModelKtx
     api rootProject.depsLibs.liveDataKtx
-//    compileOnly rootProject.depsLibs.activity
-//    compileOnly rootProject.depsLibs.activityKtx
     api rootProject.depsLibs.mmkv  // MMKV
     api rootProject.depsLibs.eventbus  // eventbus
     /**
@@ -55,8 +53,7 @@ dependencies {
      * 最新版本location:6.2.0+3dmap:9.7.0 安装包会增加20+MB。
      * 固选择location:5.5.1+3dmap:8.0.0
      */
-    // 高德地图，不使用定位
-    api 'com.amap.api:3dmap:8.0.0'
+    api rootProject.depsLibs.amap  // 高德地图，不使用定位
 }
 
 // 数据库配置参数

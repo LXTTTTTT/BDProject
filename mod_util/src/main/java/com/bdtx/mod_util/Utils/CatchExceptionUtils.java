@@ -1,16 +1,15 @@
 package com.bdtx.mod_util.Utils;
 
 import android.content.Context;
-import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
+
+import com.bdtx.mod_util.Utils.File.FileUtils;
+import com.bdtx.mod_util.Utils.File.FileUtils3;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.HashMap;
-import java.util.Map;
 
 // 捕获异常
 public class CatchExceptionUtils implements UncaughtExceptionHandler {

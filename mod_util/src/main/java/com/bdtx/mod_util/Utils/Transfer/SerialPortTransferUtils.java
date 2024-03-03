@@ -1,9 +1,14 @@
 package com.bdtx.mod_util.Utils.Transfer;
 
 
+import static java.lang.Thread.sleep;
+
 import android.util.Log;
 
+import com.bdtx.mod_data.ViewModel.MainVM;
+import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -13,6 +18,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,18 +52,22 @@ public class SerialPortTransferUtils {
     public void setSerialPortParameters(String path,int baudrate){
         this.path = path; this.baudrate = baudrate;
     }
-    public void openSerialPort(){
+    public boolean openSerialPort(){
+        boolean result = false;
         try{
             serialPort = new SerialPort(new File(path), baudrate, stopBits, dataBits, parity, flowCon, flags);  // 打开串口
             outputStream = serialPort.getOutputStream();  // 拿到输出流
             inputStream = serialPort.getInputStream();  // 拿到输出流
             readThread = new ReadThread();  // 开启读数据线程
             readThread.start();
+            result = true;
             Log.e(TAG, "打开串口成功" );
         }catch (Exception e){
+            result = false;
             Log.e(TAG, "打开串口失败" );
             e.printStackTrace();
         }
+        return result;
     }
 
     public List<String> getSerialPortPaths(){
@@ -86,6 +96,46 @@ public class SerialPortTransferUtils {
             e.printStackTrace();
         }
     }
+
+    // 下发北斗消息
+    public void sendMessage(String targetCardNumber, int type, String content_str){
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
+                    // 开始倒计时
+                    ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
+                }
+            });
+        }
+    }
+
+    public void init_device(){
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        write(BDProtocolUtils.CCPWD());  // 登录
+                        sleep(300);
+                        write(BDProtocolUtils.CCICR(0,"00"));  // 查询ic信息
+                        sleep(300);
+                        write(BDProtocolUtils.CCRMO("PWI",2,5));  // 北三信号间隔 5
+                        sleep(300);
+                        write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+        }
+    }
+
 
     public void close(){
         try {

@@ -73,7 +73,7 @@ android {
 
 dependencies {
     // 调用 config.gradle 里面的 depsLibs 里面的变量
-    // 基本导入 -----------------
+    // 基本导入 ---------------------------------------------------
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.depsLibs.coreKtx
     implementation rootProject.depsLibs.appcompat
@@ -82,24 +82,17 @@ dependencies {
     testImplementation rootProject.depsLibs.junit
     androidTestImplementation rootProject.depsLibs.extJunit
     androidTestImplementation rootProject.depsLibs.espressoCore
-    // 额外导入 -----------------
+    // 额外导入 ---------------------------------------------------
     implementation rootProject.depsLibs.mmkv  // MMKV（强化版SharedPreferences）
     // 路由
     implementation rootProject.depsLibs.aroutreApi
 //    implementation (rootProject.depsLibs.aroutreApi){transitive(false)}
     kapt rootProject.depsLibs.arouterCompiler
-    implementation rootProject.depsLibs.greendao  // greenDAO 数据库
-    // viewModel
-//    implementation rootProject.depsLibs.viewModelKtx
-//    implementation rootProject.depsLibs.liveDataKtx
-//    implementation rootProject.depsLibs.activityKtx
     // rx
     implementation rootProject.depsLibs.rxPermission
     implementation rootProject.depsLibs.rxjava
     implementation rootProject.depsLibs.rxandroid
-
-
-    // 模块导入 -----------------
+    // 模块导入 ---------------------------------------------------
     implementation project(path: ':mod_main')
     implementation project(path: ':mod_util')
     implementation project(path: ':mod_data')

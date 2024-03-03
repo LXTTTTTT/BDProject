@@ -12,8 +12,10 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
 import com.bdtx.mod_util.Utils.GlobalControlUtils;
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 
@@ -24,6 +26,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,7 +106,8 @@ public class USBAccessoryTransferUtils {
     }
 
     // 连接设备
-    public void connectDevice(UsbAccessory usbAccessory){
+    public boolean connectDevice(UsbAccessory usbAccessory){
+        boolean result = false;
 //        if(!checkDevice(usbAccessory)){return;}
         this.usbAccessory = usbAccessory;
         fileDescriptor = usbManager.openAccessory(usbAccessory);
@@ -115,7 +119,9 @@ public class USBAccessoryTransferUtils {
             // 开启接收数据线程
             readThread = new ReadThread();
             readThread.start();
+            result = true;
         }
+        return result;
     }
 
     public boolean checkPermission(UsbAccessory usbAccessory){
@@ -163,6 +169,20 @@ public class USBAccessoryTransferUtils {
         }
     }
 
+    // 下发北斗消息
+    public void sendMessage(String targetCardNumber, int type, String content_str){
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
+                    // 开始倒计时
+                    ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
+                }
+            });
+        }
+    }
 
 
     // 下发初始化指令
@@ -171,40 +191,19 @@ public class USBAccessoryTransferUtils {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                SetConfig(19200,(byte)8,(byte)1,(byte)0,(byte)0);
-
-                try {
                     Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                write(BDProtocolUtils.CCRMO("PWI",2,9));  // 设置pwi信号输出频度
-
-                try {
+                    SetConfig(19200,(byte)8,(byte)1,(byte)0,(byte)0);
                     Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                write(BDProtocolUtils.CCRMO("MCH",1,0));  // 关闭设备的HCM指令输出
-
-                try {
+                    write(BDProtocolUtils.CCRMO("PWI",2,9));  // 设置pwi信号输出频度
                     Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                write(BDProtocolUtils.CCRNS(5,5,5,5,5,5));  // 设置rn指令输出频度
-
-                try {
+                    write(BDProtocolUtils.CCRMO("MCH",1,0));  // 关闭设备的HCM指令输出
                     Thread.sleep(300);
-                } catch (InterruptedException e) {
+                    write(BDProtocolUtils.CCRNS(5,5,5,5,5,5));  // 设置rn指令输出频度
+                    Thread.sleep(300);
+                    write(BDProtocolUtils.CCICR(0,"00"));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                write(BDProtocolUtils.CCICR(0,"00"));
-
             }
         }).start();
 
@@ -252,7 +251,7 @@ public class USBAccessoryTransferUtils {
 
     // 读取 USB附件 数据线程
     private byte[] readBuffer = new byte[1024 * 2];  // 缓冲区
-    private class ReadThread  extends Thread {
+    private class ReadThread extends Thread {
         boolean alive = true;
         ReadThread(){
             this.setPriority(Thread.MAX_PRIORITY);  // 设置线程的优先级：最高级
@@ -262,7 +261,7 @@ public class USBAccessoryTransferUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         public void run() {
             if(inputStream == null){return;}
-            init_device();  // 下发初始化指令，根据自己的设备修改或直接删掉
+//            init_device();  // 下发初始化指令
             Log.e(TAG, "开启数据监听");
             while(alive) {
                 try {

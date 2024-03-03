@@ -68,7 +68,8 @@ object SendMessageUtils {
         DaoUtils.getInstance().addMessage(message)
         // 平台消息
         var target = if(target_number == Constant.PLATFORM_IDENTIFIER){Variable.getSystemNumber().toString()}else{target_number}
-        BluetoothTransferUtils.getInstance().sendMessage(target, 2, TDWTUtils.encapsulatedA7(message))
+        BaseConnector.connector?.sendMessage(target, 2, TDWTUtils.encapsulatedA7(message))
+//        BluetoothTransferUtils.getInstance().sendMessage(target, 2, TDWTUtils.encapsulatedA7(message))
     }
 
     fun send_sos(status: String,body: String,count: Int,contact: String){
@@ -92,7 +93,8 @@ object SendMessageUtils {
         val status_code = getStatusCode(status)
         val body_code = getStatusCode(body)
         val count_code = DataUtils.padWithZeros(Integer.toHexString(count),2)
-        BluetoothTransferUtils.getInstance().sendMessage(target, 2, TDWTUtils.encapsulated13(status_code,body_code,count_code,contact))
+        BaseConnector.connector?.sendMessage(target, 2, TDWTUtils.encapsulated13(status_code,body_code,count_code,contact))
+//        BluetoothTransferUtils.getInstance().sendMessage(target, 2, TDWTUtils.encapsulated13(status_code,body_code,count_code,contact))
     }
 
     fun getStatusCode(status: String):String{
@@ -133,7 +135,8 @@ object SendMessageUtils {
         }
         DaoUtils.getInstance().addMessage(message)
         // 手机消息
-        BluetoothTransferUtils.getInstance().sendMessage(target_number, 1, content)
+        BaseConnector.connector?.sendMessage(target_number, 1, content)
+//        BluetoothTransferUtils.getInstance().sendMessage(target_number, 1, content)
     }
 
     // 发送条件检测
@@ -148,10 +151,10 @@ object SendMessageUtils {
             return false
         }
         // 测试，先
-//        if(!getMainVM().isSignalWell()){
-//            GlobalControlUtils.showToast("当前卫星信号不佳!",0)
-//            return false
-//        }
+        if(!getMainVM().isSignalWell()){
+            GlobalControlUtils.showToast("当前卫星信号不佳!",0)
+            return false
+        }
         if(type == TYPE_VOICE){
             // 测试，先
             // 语音发送等级要求

@@ -1,4 +1,4 @@
-package com.bdtx.mod_util.Utils.Log
+package com.bdtx.mod_util.Utils
 
 import android.app.Application
 import android.content.Context
@@ -6,7 +6,6 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
-import com.bdtx.mod_util.Utils.DeviceInfoUtils
 
 // 不用这个
 object LogUtils {

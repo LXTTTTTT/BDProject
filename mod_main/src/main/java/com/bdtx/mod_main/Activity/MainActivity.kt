@@ -18,8 +18,11 @@ import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
+import com.bdtx.mod_util.Utils.Connection.BLEConnector
+import com.bdtx.mod_util.Utils.Connection.BaseConnector
 import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
 import com.bdtx.mod_util.Utils.DataUtils
+import com.bdtx.mod_util.Utils.DispatcherExecutor
 import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
@@ -92,9 +95,10 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         viewBinding.connectBluetoothGroup.setOnClickListener {
             if(!Variable.isARouterInit) return@setOnClickListener
             if(viewModel.isConnectDevice.value==true){
-                GlobalControlUtils.showAlertDialog("断开蓝牙？","当前已连接蓝牙，是否需要断开蓝牙",
+                GlobalControlUtils.showAlertDialog("断开连接？","当前已连接北斗设备，是否需要断开",
                     onYesClick = {
-                        BluetoothTransferUtils.getInstance().disconnectDevice();
+//                        BluetoothTransferUtils.getInstance().disconnectDevice();
+                        BaseConnector.connector?.disconnect()
                     }
                 )
             }
@@ -117,8 +121,12 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                                 startActivity(enableLocation)
                             }
                             if(isBluetoothEnable && isLocationEnabled){
-                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
-//                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).navigation()  // 页面跳转
+                                if(BaseConnector.connector==null){
+                                    val connector = BLEConnector()
+                                    BaseConnector.setConnector(connector)
+                                }
+                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
+//                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
                             }else{
                                 GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
                             }
@@ -241,7 +249,9 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
     override fun onDestroy() {
         timer?.let { it.cancel(); timer=null }
-        BluetoothTransferUtils.getInstance().disconnectDevice();
+//        BluetoothTransferUtils.getInstance().disconnectDevice();
+        BaseConnector.connector?.disconnect()  // 断开连接
+        DispatcherExecutor.destroy()  // 销毁线程池
         super.onDestroy()
     }
 

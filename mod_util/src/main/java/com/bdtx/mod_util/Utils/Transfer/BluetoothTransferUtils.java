@@ -22,8 +22,9 @@ import com.bdtx.mod_data.Global.Constant;
 import com.bdtx.mod_data.ViewModel.MainVM;
 import com.bdtx.mod_util.Utils.ApplicationUtils;
 import com.bdtx.mod_util.Utils.DataUtils;
-import com.bdtx.mod_util.Utils.FileUtils;
-import com.bdtx.mod_util.Utils.FileUtils3;
+import com.bdtx.mod_util.Utils.DispatcherExecutor;
+import com.bdtx.mod_util.Utils.File.FileUtils;
+import com.bdtx.mod_util.Utils.File.FileUtils3;
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils;
 import com.tencent.mmkv.MMKV;
 
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,7 +192,14 @@ public class BluetoothTransferUtils {
 
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             // 接收数据处理
-            receiveData(characteristic);
+            if(DispatcherExecutor.INSTANCE.getIOExecutor()!=null){
+                DispatcherExecutor.INSTANCE.getIOExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        receiveData(characteristic);
+                    }
+                });
+            }
         }
 
         // 写入数据 write(byte[] data) 方法里面 bluetoothGatt.writeCharacteristic 时被调用，每次下发数据后判断 remainQueue 拆包后的数据有没有下发完
@@ -218,7 +227,7 @@ public class BluetoothTransferUtils {
     };
 
     // 通过设备连接
-    public void connectDevice(final BluetoothDevice device) {
+    public boolean connectDevice(final BluetoothDevice device) {
         stopDiscovery();
         deviceAddress = device.getAddress();
         // 子线程连接
@@ -234,11 +243,9 @@ public class BluetoothTransferUtils {
                 } else {
                     bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback);
                 }
-
             }
         }.start();
-
-
+        return true;
     }
 
     // 通过地址连接
@@ -314,9 +321,17 @@ public class BluetoothTransferUtils {
 
     // 下发北斗消息
     public void sendMessage(String targetCardNumber, int type, String content_str){
-        write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
-        // 开始倒计时
-        ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
+        ExecutorService executorService = DispatcherExecutor.INSTANCE.getIOExecutor();
+        if(executorService!=null){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    write(BDProtocolUtils.CCTCQ(targetCardNumber,type,content_str));
+                    // 开始倒计时
+                    ApplicationUtils.INSTANCE.getGlobalViewModel(MainVM.class).startCountDown();
+                }
+            });
+        }
     }
 
     public void write(byte[] data_bytes) {
@@ -461,7 +476,6 @@ public class BluetoothTransferUtils {
                     write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
-                    sleep(300);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
