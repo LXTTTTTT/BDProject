@@ -318,8 +318,8 @@ public class ChatActivity extends BaseMVVMActivity<ActivityChatBinding, Communic
                     enableSendGroup();
                 }
                 else {
-                    enableSendGroup();
-//                    disableSendGroup("未连接");
+//                    enableSendGroup();
+                    disableSendGroup("未连接");
                 }
             });
 
