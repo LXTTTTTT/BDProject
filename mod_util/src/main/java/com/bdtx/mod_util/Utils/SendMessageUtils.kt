@@ -85,9 +85,15 @@ object SendMessageUtils {
             setIoType(Constant.TYPE_SEND)
             setState(Constant.STATE_SENDING)
             isSOS = true
-            longitude = getMainVM().deviceLongitude.value!!
-            latitude = getMainVM().deviceLatitude.value!!
-            altitude = getMainVM().deviceAltitude.value!!
+            if(getMainVM().deviceLongitude.value!=0.0){
+                longitude = getMainVM().deviceLongitude.value!!
+                latitude = getMainVM().deviceLatitude.value!!
+                altitude = getMainVM().deviceAltitude.value!!
+            }else{
+                longitude = getMainVM().systemLongitude.value!!
+                latitude = getMainVM().systemLatitude.value!!
+                altitude = getMainVM().systemAltitude.value!!
+            }
         }
         DaoUtils.getInstance().addMessage(message)
         val status_code = getStatusCode(status)

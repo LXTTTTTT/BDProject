@@ -1,4 +1,4 @@
-package com.sum.framework.adapter
+package com.bdtx.mod_main.Adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

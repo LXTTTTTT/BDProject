@@ -8,9 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bdtx.mod_main.databinding.AdapterUsbItemBinding;
-import com.bdtx.mod_util.Utils.Transfer.USB.USBSerial.driver.UsbSerialDriver;
-import com.sum.framework.adapter.BaseBindViewHolder;
-import com.sum.framework.adapter.BaseRecyclerViewAdapter;
 
 public class USBAccessoryListAdapter extends BaseRecyclerViewAdapter<UsbAccessory, AdapterUsbItemBinding> {
 

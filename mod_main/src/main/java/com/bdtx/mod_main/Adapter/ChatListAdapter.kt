@@ -1,7 +1,6 @@
 package com.bdtx.mod_main.Adapter
 
 import android.graphics.drawable.AnimationDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,8 @@ import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.databinding.AdapterChatReceiveBinding
 import com.bdtx.mod_main.databinding.AdapterChatSendBinding
 import com.bdtx.mod_util.Utils.AudioTrackUtils
-import com.sum.framework.adapter.BaseBindViewHolder
-import com.sum.framework.adapter.BaseRecyclerViewAdapter
 
-class ChatListAdapter : BaseRecyclerViewAdapter<Message,ViewBinding>() {
+class ChatListAdapter : BaseRecyclerViewAdapter<Message, ViewBinding>() {
     
     val TAG = "ChatListAdapter";
 //    lateinit var viewBinding:ViewBinding

@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bdtx.mod_main.databinding.AdapterSettingItemBinding;
-import com.sum.framework.adapter.BaseBindViewHolder;
-import com.sum.framework.adapter.BaseRecyclerViewAdapter;
 
 import java.util.List;
 

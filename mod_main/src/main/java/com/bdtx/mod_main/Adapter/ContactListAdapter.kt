@@ -8,11 +8,9 @@ import com.bdtx.mod_data.Database.Entity.Contact
 import com.bdtx.mod_data.Global.Constant
 import com.bdtx.mod_main.R
 import com.bdtx.mod_main.databinding.AdapterContactItemBinding
-import com.sum.framework.adapter.BaseBindViewHolder
-import com.sum.framework.adapter.BaseRecyclerViewAdapter
 
 
-class ContactListAdapter : BaseRecyclerViewAdapter<Contact,AdapterContactItemBinding>() {
+class ContactListAdapter : BaseRecyclerViewAdapter<Contact, AdapterContactItemBinding>() {
 
     val TAG = "ContactListAdapter"
     // 拿到布局

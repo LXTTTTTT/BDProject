@@ -1,6 +1,5 @@
 package com.bdtx.mod_main.Adapter;
 
-import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,8 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.bdtx.mod_main.databinding.AdapterUsbItemBinding;
 import com.bdtx.mod_util.Utils.Transfer.USB.USBSerial.driver.UsbSerialDriver;
-import com.sum.framework.adapter.BaseBindViewHolder;
-import com.sum.framework.adapter.BaseRecyclerViewAdapter;
 
 public class USBHostListAdapter extends BaseRecyclerViewAdapter<UsbSerialDriver, AdapterUsbItemBinding> {
 

@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bdtx.mod_main.databinding.AdapterBluetoothItemBinding;
-import com.sum.framework.adapter.BaseBindViewHolder;
-import com.sum.framework.adapter.BaseRecyclerViewAdapter;
 
 public class BluetoothListAdapter extends BaseRecyclerViewAdapter<BluetoothDevice, AdapterBluetoothItemBinding> {
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -89,6 +90,7 @@
         <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_serial_port_item.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_usb_host_item.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/adapter_usb_item.xml" value="0.358695652173913" />
+        <entry key="..\:/my_project/My_Project/BDTX/mod_main/src/main/res/layout/layout_title_bar.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/My_Project/BDTX/mod_util/src/main/res/layout/dialog_auth_info.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/My_Project/BDTX/mod_util/src/main/res/layout/dialog_loading.xml" value="0.358695652173913" />
         <entry key="..\:/my_project/My_Project/BDTX/mod_util/src/main/res/layout/dialog_record.xml" value="0.358695652173913" />

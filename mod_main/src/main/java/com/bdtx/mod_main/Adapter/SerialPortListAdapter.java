@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bdtx.mod_main.databinding.AdapterSerialPortItemBinding;
-import com.sum.framework.adapter.BaseBindViewHolder;
-import com.sum.framework.adapter.BaseRecyclerViewAdapter;
 
 public class SerialPortListAdapter extends BaseRecyclerViewAdapter<String, AdapterSerialPortItemBinding> {
 
