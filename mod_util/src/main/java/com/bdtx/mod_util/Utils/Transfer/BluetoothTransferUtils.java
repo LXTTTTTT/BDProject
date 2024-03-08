@@ -238,8 +238,8 @@ public class BluetoothTransferUtils {
                     bluetoothGatt = null;
                 }
                 if (Build.VERSION.SDK_INT >= 23) {
-                    bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback);
-//                    bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback, BluetoothDevice.TRANSPORT_LE);  // 低功耗
+//                    bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback);
+                    bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback, BluetoothDevice.TRANSPORT_LE);  // 低功耗
                 } else {
                     bluetoothGatt = device.connectGatt(APP, false, bluetoothGattCallback);
                 }
@@ -462,6 +462,7 @@ public class BluetoothTransferUtils {
             public void run() {
                 try {
                     Log.e(TAG, "设备初始化" );
+                    sleep(500);  // 一定要延迟一点再下发！否则发送指令设备不接收导致登录失败
                     write(BDProtocolUtils.CCPWD());  // 登录
                     sleep(300);
                     write(BDProtocolUtils.CCICR(0,"00"));  // 查询ic信息
@@ -472,8 +473,9 @@ public class BluetoothTransferUtils {
                     sleep(300);
                     write(BDProtocolUtils.CCPRS());  // 关闭盒子自带上报
                     sleep(300);
-//                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
-                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
+                    // 测试，先
+                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+//                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
                 }catch (Exception e){

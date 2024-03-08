@@ -18,6 +18,7 @@ import com.bdtx.mod_util.View.SlideBackView.unregisterSlideBack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -42,7 +43,9 @@ abstract class BaseActivity : AppCompatActivity(){
         initView(savedInstanceState);  // 初始化页面
         CoroutineScope(Dispatchers.Main).launch{
             initData();  // 初始化数据
-            initDataSuspend()
+            withContext(Dispatchers.IO){
+                initDataSuspend()
+            }
         }
         // 侧滑返回功能注册
 //        registerSlideBack (true,{
