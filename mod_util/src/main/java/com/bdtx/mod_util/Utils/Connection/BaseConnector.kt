@@ -69,43 +69,59 @@ abstract class BaseConnector {
 
 
     // 从所有设备的列表中筛选并根据条件自动连接
-    open fun <T> connectDevice(
+    open fun <T> autoConnectDevice(
         before: (()->Unit)? = null,  // 前置准备
-        search: (suspend ()->MutableList<T>?)?,  // 获取设备
-        successHandler:(MutableList<T>?)->Unit,  // 获取设备成功处理
-        after: (()->Unit)? = null  // 后置处理
+        searchCondition: (()->Boolean),  // 获取设备前置条件
+        search: suspend ()->MutableList<T>?,  // 获取设备
+        filtrationDevice:(MutableList<T>?)->T,  // 过滤设备
+        connectionCondition: ()->Boolean,  // 连接设备
+        connectDevice:(T)->Boolean,
+        success: (()->Unit)?=null,  // 成功
+        fail: (()->Unit)?=null,  // 失败
     ){
         GlobalScope.launch(Dispatchers.Main) {
             before?.let { it.invoke() }
-            search?.let {
-                val devices = getDevicesWithCondition(search=it)
+            withContext(Dispatchers.IO){
+                val devices = getDevicesWithCondition(condition = searchCondition, search = search)
                 devices?.let {
-                    successHandler(it)
+                    val device = filtrationDevice(it)
+                    connectDeviceWithCondition(device, condition = connectionCondition, connectWithTransfer = connectDevice, success = success, fail = fail)
                 }
             }
-            after?.let { it.invoke() }
+
         }
     }
 
     // 获取可用设备列表
     open suspend fun <T> getDevicesWithCondition(
         before: (()->Unit)?=null,
+        condition: (()->Boolean),
         search: suspend ()->MutableList<T>?,
         after: (()->Unit)?=null
     ): MutableList<T>? {
         try {
             before?.let { it.invoke() }
-            val devices = withContext(Dispatchers.IO){
-                withTimeout(10*1000){
-                    search()
+            if(condition()){
+                val devices = withContext(Dispatchers.IO){
+                    withTimeout(10*1000){
+                        search()
+                    }
                 }
-            } ?: return null
-            after?.let { it.invoke() }
-            return devices
+                return if(devices!=null){
+                    after?.invoke()
+                    devices
+                }else{
+                    null
+                }
+
+            }else{
+                Log.e(TAG, "获取设备条件不足！")
+                return null
+            }
         }catch (e:Exception){
             e.printStackTrace()
+            return null
         }
-        return null
     }
 
 

@@ -474,7 +474,7 @@ public class BluetoothTransferUtils {
                     write(BDProtocolUtils.CCPRS());  // 关闭盒子自带上报
                     sleep(300);
                     // 测试，先
-                    write(BDProtocolUtils.CCRNS(5,0,5,0,0,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
+                    write(BDProtocolUtils.CCRNS(5,0,5,0,5,0));  // rn输出频度，只用到GGA和GLL其它关闭减少蓝牙负荷
 //                    write(BDProtocolUtils.CCRNS(0,0,0,0,0,0));
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("MCH",1,0));  // 星宇关掉mch输出
