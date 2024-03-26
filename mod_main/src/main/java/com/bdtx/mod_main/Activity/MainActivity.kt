@@ -31,7 +31,6 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 
-// 用不上 ViewModel
 class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
     lateinit var rxPermissions : RxPermissions
@@ -125,8 +124,8 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                                     val connector = BLEConnector()
                                     BaseConnector.setConnector(connector)
                                 }
-                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
-//                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
+//                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
+                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
                             }else{
                                 GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
                             }

@@ -57,9 +57,12 @@ class USBHostConnector:BaseConnector() {
     }
 
     override suspend fun getDevices(): List<Any>? {
-        return getDevicesWithCondition(search = {
-            USBHostTransferUtils.getInstance().refreshDevice()
-        }) as MutableList<UsbSerialDriver>
+        return getDevicesWithCondition(
+            condition = {return@getDevicesWithCondition true},
+            search = {
+                USBHostTransferUtils.getInstance().refreshDevice()
+            }
+        ) as MutableList<UsbSerialDriver>
     }
 
     override fun initDevice() {
