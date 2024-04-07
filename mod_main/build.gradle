@@ -68,6 +68,8 @@ dependencies {
     // kotlin viewModel 同时要导入activityKtx适配
     implementation rootProject.depsLibs.activityKtx
     compileOnly rootProject.depsLibs.rxPermission
+    // kotlin 反射
+    implementation rootProject.depsLibs.ktxReflect
     // 导入模块 ---------------------------------------------------
     compileOnly project(path: ':mod_util')
 }

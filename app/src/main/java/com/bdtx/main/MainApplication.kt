@@ -4,11 +4,13 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import com.bdtx.main.TaskDispatch.Dispatcher.TaskDispatcher
 import com.bdtx.mod_util.Utils.ActivityManagementUtils
 import com.bdtx.mod_util.Utils.SystemLocationUtils
 
-class MainApplication:Application() {
+class MainApplication:Application(), ViewModelStoreOwner {
 
 // 常量 ------------------------------------------
     val TAG = "MainApplication"
@@ -64,6 +66,8 @@ class MainApplication:Application() {
         SystemLocationUtils.init(this)
     }
 
-
-
+    private val appViewModelStore: ViewModelStore by lazy { ViewModelStore() }
+    override fun getViewModelStore(): ViewModelStore {
+        return appViewModelStore
+    }
 }
