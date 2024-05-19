@@ -18,6 +18,9 @@ import com.bdtx.mod_data.Global.Variable
 import com.bdtx.mod_data.ViewModel.MainVM
 import com.bdtx.mod_main.Base.BaseMVVMActivity
 import com.bdtx.mod_main.databinding.ActivityMainBinding
+import com.bdtx.mod_network.Response.Account
+import com.bdtx.mod_network.Response.BaseResponse
+import com.bdtx.mod_network.Utils.RequestUtils
 import com.bdtx.mod_util.Utils.Connection.BLEConnector
 import com.bdtx.mod_util.Utils.Connection.BaseConnector
 import com.bdtx.mod_util.Utils.Transfer.BluetoothTransferUtils
@@ -26,6 +29,9 @@ import com.bdtx.mod_util.Utils.DispatcherExecutor
 import com.bdtx.mod_util.Utils.GlobalControlUtils
 import com.bdtx.mod_util.Utils.Protocol.BDProtocolUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -124,8 +130,8 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                                     val connector = BLEConnector()
                                     BaseConnector.setConnector(connector)
                                 }
-                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
-//                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
+//                                ARouter.getInstance().build(Constant.CONNECT_BLUETOOTH_ACTIVITY).withInt(ConnectBluetoothActivity.CONNECTION_MODE,ConnectBluetoothActivity.MODE_BLE).navigation()  // 页面跳转
+                                ARouter.getInstance().build(Constant.COMMUNICATION_LINK_ACTIVITY).navigation()  // 页面跳转
                             }else{
                                 GlobalControlUtils.showToast("请先打开系统蓝牙和定位功能！",0)
                             }
@@ -169,7 +175,34 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
         }
 
         viewBinding.test4.setOnClickListener {
-            loge("获取快捷消息：${Variable.getSwiftMsg()}")
+//            loge("获取快捷消息：${Variable.getSwiftMsg()}")
+            // 网络请求测试
+            viewModel.upDateAccountInfo()  // Flow 请求
+            // RxJava 请求
+            val login_data = hashMapOf<String,String>()
+            login_data["account"] = "test_lxt"
+            login_data["password"] = DataUtils.string2MD5("123456")
+            RequestUtils.rxAPI.pwdLogin(login_data)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : io.reactivex.rxjava3.core.Observer<BaseResponse<Account>> {
+                    override fun onSubscribe(d: Disposable) {
+                        loge("Observer:onSubscribe");
+                    }
+
+                    override fun onNext(t: BaseResponse<Account>) {
+                        loge("拿到数据${t.toString()}")
+                    }
+
+                    override fun onError(e: Throwable) {
+                        loge("Observer:onError");
+                        e.printStackTrace()
+                    }
+
+                    override fun onComplete() {
+                        loge("Observer:onComplete");
+                    }
+                })
         }
 
         viewBinding.test5.setOnClickListener {
@@ -180,6 +213,13 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
     }
 
     fun init_view_model(){
+        // 账号信息变化监听（未使用）
+        viewModel.getAccountInfo().observe(this,{
+            it?.let {
+                loge("监听到账号信息变化 $it")
+            }
+        })
+
         // 数据变化监听
         viewModel.isConnectDevice.observe(this,object : Observer<Boolean?>{
             override fun onChanged(isConnect: Boolean?) {
@@ -203,6 +243,7 @@ class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
                 viewBinding.unreadCount.isVisible = it>0
             }
         })
+
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

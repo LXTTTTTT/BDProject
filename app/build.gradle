@@ -96,4 +96,5 @@ dependencies {
     implementation project(path: ':mod_main')
     implementation project(path: ':mod_util')
     implementation project(path: ':mod_data')
+    implementation project(path: ':mod_network')
 }

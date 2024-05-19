@@ -1,10 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.greenrobot.greendao'
 }
 
 android {
+    namespace 'com.bdtx.mod_network'
     compileSdk rootProject.android.compileSdk
 
     defaultConfig {
@@ -39,28 +39,11 @@ dependencies {
     testCompileOnly rootProject.depsLibs.junit
     androidTestCompileOnly rootProject.depsLibs.extJunit
     androidTestCompileOnly rootProject.depsLibs.espressoCore
-
     // 额外导入 ---------------------------------------------------
-    api rootProject.depsLibs.greendao  // greenDAO 数据库
-    // kotlin viewModel
-    api rootProject.depsLibs.viewModelKtx
-    api rootProject.depsLibs.liveDataKtx
-    api rootProject.depsLibs.mmkv  // MMKV
-    api rootProject.depsLibs.eventbus  // eventbus
-    /**
-     * location:4.5.1+3dmap:6.8.0出现Android高版本定位不准问题。
-     * location:5.6.0+3dmap:8.1.0之后 需要加入隐私权限，并且安装包会变大10+MB。
-     * 最新版本location:6.2.0+3dmap:9.7.0 安装包会增加20+MB。
-     * 固选择location:5.5.1+3dmap:8.0.0
-     */
-    api rootProject.depsLibs.amap  // 高德地图，不使用定位
-    // 模块导入 ---------------------------------------------------
-    api project(path: ':mod_network')
-}
-
-// 数据库配置参数
-greendao {
-    schemaVersion 1  // 指定数据库schema版本号，迁移等操作会用到;
-    daoPackage 'com.bdtx.mod_data.Database.Dao'  // 指定生成数据库文件的dao包名（不需要先创建）
-    targetGenDir 'src/main/java'  // 生成数据库文件的目录
+    api rootProject.depsLibs.retrofit2
+    api rootProject.depsLibs.retrofit2Gson
+    api rootProject.depsLibs.retrofit2Rxjava3
+    api rootProject.depsLibs.loggingInterceptor
+    implementation rootProject.depsLibs.rxjava
+    implementation rootProject.depsLibs.rxandroid
 }

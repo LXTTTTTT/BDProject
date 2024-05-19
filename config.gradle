@@ -40,7 +40,8 @@ ext {
 
             multidexVersion       : '2.0.1',
             retrofitVersion       : '2.9.0',
-            retrofitGsonVersion   : '2.4.0',
+            retrofitGsonVersion   : '2.9.0',
+            retrofitRxjavaVersion : '2.9.0',
     ]
 
     depsLibs = [
@@ -98,6 +99,7 @@ ext {
             // 网络请求
             retrofit2         : "com.squareup.retrofit2:retrofit:${dependVersion["retrofitVersion"]}",
             retrofit2Gson     : "com.squareup.retrofit2:converter-gson:${dependVersion["retrofitGsonVersion"]}",
+            retrofit2Rxjava3  : "com.squareup.retrofit2:adapter-rxjava3:${dependVersion["retrofitRxjavaVersion"]}"
     ]
 
 }

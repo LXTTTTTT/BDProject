@@ -1,9 +1,13 @@
 package com.bdtx.mod_data.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bdtx.mod_data.Database.DaoUtils
+import com.bdtx.mod_data.Extension.requestFlow
+import com.bdtx.mod_network.Response.Account
+import com.bdtx.mod_network.Utils.RequestUtils
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -27,12 +31,13 @@ class MainVM : BaseViewModel() {
     val systemLatitude : MutableLiveData<Double?> = MutableLiveData()  // 系统纬度
     val systemAltitude : MutableLiveData<Double?> = MutableLiveData()  // 系统高度
 
-
+    val accountInfo : MutableLiveData<Account?> = MutableLiveData()  // 账号信息
 
 
     init {
         initDeviceParameter()
         initSystemParameter()
+        initNetworkParameter()
     }
 
     // 初始化默认参数
@@ -54,6 +59,39 @@ class MainVM : BaseViewModel() {
         systemLongitude.postValue(0.0)
         systemLatitude.postValue(0.0)
         systemAltitude.postValue(0.0)
+    }
+
+    fun initNetworkParameter(){
+        accountInfo.postValue(null)
+    }
+
+    fun getAccountInfo() : LiveData<Account?> {
+        upDateAccountInfo()
+        return accountInfo
+    }
+
+    fun upDateAccountInfo(before: (() -> Unit)? = null,after: (() -> Unit)? = null){
+        viewModelScope.launch {
+            val data = requestFlow(
+                before = {
+                    before?.invoke()
+                },
+                requestCall = {
+                    val login_data = hashMapOf<String,String>()
+                    login_data["account"] = "test_chen"
+                    login_data["password"] = "123456"
+                    RequestUtils.API.pwdLogin(login_data)
+                },
+                after = {
+                    after?.invoke()
+                },
+                errorHandler = { code, error ->
+                    Log.e(TAG, "获取数据失败，错误码：$code 原因：$error")
+                    accountInfo.value = null
+                }
+            )
+            accountInfo.value = data
+        }
     }
 
     // 当前信号是否良好
