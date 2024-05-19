@@ -28,14 +28,14 @@ object SendMessageUtils {
             setIoType(Constant.TYPE_SEND)
             setState(Constant.STATE_SENDING)
             if(have_location){
-                if(getMainVM().deviceLongitude.value!=0.0){
-                    longitude = getMainVM().deviceLongitude.value!!
-                    latitude = getMainVM().deviceLatitude.value!!
-                    altitude = getMainVM().deviceAltitude.value!!
+                if(getMainVM()!!.deviceLongitude.value!=0.0){
+                    longitude = getMainVM()!!.deviceLongitude.value!!
+                    latitude = getMainVM()!!.deviceLatitude.value!!
+                    altitude = getMainVM()!!.deviceAltitude.value!!
                 }else{
-                    longitude = getMainVM().systemLongitude.value!!
-                    latitude = getMainVM().systemLatitude.value!!
-                    altitude = getMainVM().systemAltitude.value!!
+                    longitude = getMainVM()!!.systemLongitude.value!!
+                    latitude = getMainVM()!!.systemLatitude.value!!
+                    altitude = getMainVM()!!.systemAltitude.value!!
                 }
             }
         }
@@ -85,14 +85,14 @@ object SendMessageUtils {
             setIoType(Constant.TYPE_SEND)
             setState(Constant.STATE_SENDING)
             isSOS = true
-            if(getMainVM().deviceLongitude.value!=0.0){
-                longitude = getMainVM().deviceLongitude.value!!
-                latitude = getMainVM().deviceLatitude.value!!
-                altitude = getMainVM().deviceAltitude.value!!
+            if(getMainVM()!!.deviceLongitude.value!=0.0){
+                longitude = getMainVM()!!.deviceLongitude.value!!
+                latitude = getMainVM()!!.deviceLatitude.value!!
+                altitude = getMainVM()!!.deviceAltitude.value!!
             }else{
-                longitude = getMainVM().systemLongitude.value!!
-                latitude = getMainVM().systemLatitude.value!!
-                altitude = getMainVM().systemAltitude.value!!
+                longitude = getMainVM()!!.systemLongitude.value!!
+                latitude = getMainVM()!!.systemLatitude.value!!
+                altitude = getMainVM()!!.systemAltitude.value!!
             }
         }
         DaoUtils.getInstance().addMessage(message)
@@ -148,23 +148,23 @@ object SendMessageUtils {
     // 发送条件检测
     val TYPE_TEXT = 0; val TYPE_VOICE = 1
     fun checkSend(type:Int):Boolean{
-        if(getMainVM().isConnectDevice.value == false){
+        if(getMainVM()!!.isConnectDevice.value == false){
             GlobalControlUtils.showToast("未连接北斗设备!",0)
             return false
         }
-        if(getMainVM().waitTime.value!! > 0){
+        if(getMainVM()!!.waitTime.value!! > 0){
             GlobalControlUtils.showToast("发送频度未到!",0)
             return false
         }
         // 测试，先
-        if(!getMainVM().isSignalWell()){
+        if(!getMainVM()!!.isSignalWell()){
             GlobalControlUtils.showToast("当前卫星信号不佳!",0)
             return false
         }
         if(type == TYPE_VOICE){
             // 测试，先
             // 语音发送等级要求
-            if(getMainVM().deviceCardLevel.value!!<3){
+            if(getMainVM()!!.deviceCardLevel.value!!<3){
                 GlobalControlUtils.showToast("请用三级以上北斗卡发送语音消息!",0)
                 return false
             }

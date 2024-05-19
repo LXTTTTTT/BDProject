@@ -56,9 +56,12 @@ class USBAccessoryConnector:BaseConnector() {
     }
 
     override suspend fun getDevices(): List<Any>? {
-        return getDevicesWithCondition(search = {
-            USBAccessoryTransferUtils.getInstance().refreshDevice()
-        })?.let { it as MutableList<UsbAccessory> }
+        return getDevicesWithCondition(
+            condition = {return@getDevicesWithCondition true},
+            search = {
+                USBAccessoryTransferUtils.getInstance().refreshDevice()
+            }
+        )?.let { it as MutableList<UsbAccessory> }
     }
 
     override fun initDevice() {

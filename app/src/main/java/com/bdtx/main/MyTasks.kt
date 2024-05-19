@@ -25,6 +25,7 @@ class InitAppUtilTask(val application: Application) : Task() {
 
     override fun run() {
         ApplicationUtils.init(application, BuildConfig.DEBUG)
+        ApplicationUtils.globalViewModelStore = MainApplication.getInstance().viewModelStore
         Log.e(TAG, "初始化APP工具" )
     }
 }

@@ -464,7 +464,7 @@ public class BluetoothTransferUtils {
                     Log.e(TAG, "设备初始化" );
                     sleep(500);  // 一定要延迟一点再下发！否则发送指令设备不接收导致登录失败
                     write(BDProtocolUtils.CCPWD());  // 登录
-                    sleep(300);
+                    sleep(1000);
                     write(BDProtocolUtils.CCICR(0,"00"));  // 查询ic信息
                     sleep(300);
                     write(BDProtocolUtils.CCRMO("PWI",2,5));  // 北三信号间隔 5

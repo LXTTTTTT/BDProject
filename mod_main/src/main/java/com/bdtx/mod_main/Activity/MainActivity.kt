@@ -31,7 +31,6 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 
-// 用不上 ViewModel
 class MainActivity : BaseMVVMActivity<ActivityMainBinding,MainVM>(true) {
 
     lateinit var rxPermissions : RxPermissions

@@ -54,9 +54,12 @@ class SerialPortConnector:BaseConnector() {
     }
 
     override suspend fun getDevices(): List<Any>? {
-        return getDevicesWithCondition(search = {
-            SerialPortTransferUtils.getInstance().serialPortPaths
-        }) as MutableList<String>
+        return getDevicesWithCondition(
+            condition = {return@getDevicesWithCondition true},
+            search = {
+                SerialPortTransferUtils.getInstance().serialPortPaths
+            }
+        ) as MutableList<String>
     }
 
     override fun initDevice() {
